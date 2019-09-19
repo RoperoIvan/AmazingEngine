@@ -27,6 +27,7 @@ bool GuiManager::Init()
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
 	ImGui_ImplOpenGL2_Init();
 
+	show_demo_window = false;
 	return true;
 }
 
@@ -47,12 +48,15 @@ update_status GuiManager::PreUpdate(float dt)
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Exit")) ret = false; 
+			if (ImGui::MenuItem("Exit","exit", false)) ret = false; 
+			if (ImGui::MenuItem("Example Window")) show_demo_window = true;
+		
 			ImGui::EndMenu();
 		}	
 		ImGui::EndMainMenuBar();
 	}
-		ImGui::ShowDemoWindow();
+	if(show_demo_window)
+		ImGui::ShowDemoWindow(&show_demo_window);
 
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
 }
