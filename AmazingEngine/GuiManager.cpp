@@ -58,7 +58,7 @@ update_status GuiManager::PostUpdate(float dt)
 {
 	ImGui::Render();
 	ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
-	SDL_GL_SwapWindow(App->window->window);
+	/*SDL_GL_SwapWindow(App->window->window);*/
 	return UPDATE_CONTINUE;
 }
 
