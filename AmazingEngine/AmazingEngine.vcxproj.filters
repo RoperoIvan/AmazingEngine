@@ -58,6 +58,15 @@
     <ClCompile Include="ImGui\imgui_widgets.cpp">
       <Filter>Engine\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="GuiManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_impl_opengl2.cpp">
+      <Filter>Engine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_impl_sdl.cpp">
+      <Filter>Engine\ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -130,6 +139,15 @@
       <Filter>Engine\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="ImGui\imstb_truetype.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_impl_opengl2.h">
+      <Filter>Engine\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_impl_sdl.h">
       <Filter>Engine\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
