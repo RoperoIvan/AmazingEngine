@@ -1,5 +1,5 @@
 #include "ImGui/imgui.h"
-#include"ImGui/imgui_impl_opengl2.h"
+#include"ImGui/imgui_impl_opengl3.h"
 #include "ImGui/imgui_impl_sdl.h"
 #include <stdio.h>
 #include "SDL/include/SDL.h"
@@ -25,7 +25,7 @@ bool GuiManager::Init()
 
 
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
-	ImGui_ImplOpenGL2_Init();
+	ImGui_ImplOpenGL3_Init();
 
 	show_demo_window = false;
 	return true;
@@ -40,7 +40,8 @@ bool GuiManager::Start()
 update_status GuiManager::PreUpdate(float dt)
 {
 	bool ret = true;
-	ImGui_ImplOpenGL2_NewFrame();
+
+	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
@@ -48,9 +49,9 @@ update_status GuiManager::PreUpdate(float dt)
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Exit","exit", false)) ret = false; 
 			if (ImGui::MenuItem("Example Window")) show_demo_window = true;
-		
+			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
+
 			ImGui::EndMenu();
 		}	
 		ImGui::EndMainMenuBar();
@@ -70,16 +71,19 @@ update_status GuiManager::Update(float dt)
 update_status GuiManager::PostUpdate(float dt)
 {
 	ImGui::Render();
-	ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	return UPDATE_CONTINUE;
 }
 
 bool GuiManager::CleanUp()
 {
-	ImGui_ImplOpenGL2_Shutdown();
+	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
+
+	SDL_GL_DeleteContext(App->renderer3D->context);
+	SDL_DestroyWindow(App->window->window);
 	SDL_Quit();
 	return true;
 }

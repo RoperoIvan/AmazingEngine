@@ -1,12 +1,19 @@
+#include "glew/include/GL/glew.h"
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleRenderer3D.h"
 #include "SDL\include\SDL_opengl.h"
+
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
+
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
+
+#pragma comment( lib, "glew/lib/glew32.lib" )
+#pragma comment( lib, "glew/lib/glew32s.lib" )
+
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -96,6 +103,12 @@ bool ModuleRenderer3D::Init()
 		glEnable(GL_COLOR_MATERIAL);
 	}
 
+	GLenum Glewerror = glewInit();
+	if (Glewerror != GL_NO_ERROR)
+	{
+		LOG("Error initializing glew Library /n", SDL_GetError());
+		ret = false;
+	}
 	// Projection matrix for
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 

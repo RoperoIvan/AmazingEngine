@@ -61,10 +61,10 @@
     <ClCompile Include="GuiManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_opengl2.cpp">
+    <ClCompile Include="ImGui\imgui_impl_sdl.cpp">
       <Filter>Engine\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_sdl.cpp">
+    <ClCompile Include="ImGui\imgui_impl_opengl3.cpp">
       <Filter>Engine\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
@@ -144,10 +144,10 @@
     <ClInclude Include="GuiManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_opengl2.h">
+    <ClInclude Include="ImGui\imgui_impl_sdl.h">
       <Filter>Engine\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_sdl.h">
+    <ClInclude Include="ImGui\imgui_impl_opengl3.h">
       <Filter>Engine\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
