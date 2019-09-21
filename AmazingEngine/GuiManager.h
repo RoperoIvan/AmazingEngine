@@ -3,9 +3,6 @@
 
 #include "Module.h"
 #include "Globals.h"
-#include "MathGeoLib/include/MathBuildConfig.h"
-#include "MathGeoLib/include/MathGeoLib.h"
-#include "Math.h"
 
 class GuiManager: public Module
 {
@@ -27,7 +24,6 @@ private:
 
 	SDL_WindowFlags window_flags;
 	SDL_GLContext gl_context;
-	math::Sphere spH;
 
 };
 
