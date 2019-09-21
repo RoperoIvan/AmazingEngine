@@ -107,9 +107,27 @@ void GuiManager::CollisionsBetweenObjects()
 	cap.l.b.Set(cap_posx2, cap_posy2, cap_posz2);
 	cap.r = rand.Float(0, 10);
 
+	float ray_pos_x = rand.Float(0, 20);
+	float ray_pos_y = rand.Float(0, 20);
+	float ray_pos_z = rand.Float(0, 20);
+	ray.pos.Set(ray_pos_x, ray_pos_y, ray_pos_z);
+	float ray_dirx = rand.Float(0, 20);
+	float ray_diry = rand.Float(0, 20);
+	float ray_dirz = rand.Float(0, 20);
+	ray.dir.Set(ray_dirx, ray_diry, ray_dirz);
+
+
 	if (sph.Intersects(cap))
 	{
-		LOG("INTERSECTED");
+		LOG("SPHERE AND CAPSULE ARE INTERSECTED");
+	}
+	if (sph.Intersects(ray))
+	{
+		LOG("SPHERE AND RAY ARE INTERSECTED");
+	}
+	if (cap.Intersects(ray))
+	{
+		LOG("RAY AND CAPSULE ARE INTERSECTED");
 	}
 	LOG("...........................");
 }
