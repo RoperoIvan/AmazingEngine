@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include "SDL/include/SDL.h"
 #include "SDL/include/SDL_opengl.h"
-
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "GuiManager.h"
