@@ -1,4 +1,13 @@
-﻿  GuiManager.cpp
+﻿  Application.cpp
+  GuiManager.cpp
 c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\corecrt_math_defines.h(22): warning C4005: 'M_PI': redefinición de macro
   c:\users\isabel\desktop\class vec3\amazingengine\amazingengine\sdl\include\sdl_stdinc.h(499): note: vea la definición anterior de 'M_PI'
+  Main.cpp
+  ModuleCamera3D.cpp
+  ModuleInput.cpp
+  ModulePhysics3D.cpp
+  ModuleRenderer3D.cpp
+  ModuleWindow.cpp
+  PhysBody3D.cpp
+  Generando código...
   AmazingEngine.vcxproj -> C:\Users\Isabel\Desktop\class vec3\AmazingEngine\AmazingEngine\Debug\AmazingEngine.exe
