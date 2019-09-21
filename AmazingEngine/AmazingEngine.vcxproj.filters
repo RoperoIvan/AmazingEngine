@@ -414,6 +414,15 @@
     <ClInclude Include="MathGeoLib\include\MathGeoLibFwd.h">
       <Filter>Engine\MathGeoLib</Filter>
     </ClInclude>
+    <ClInclude Include="MathGeoLib\include\Algorithm\Random\pcg_extras.hpp">
+      <Filter>Engine\MathGeoLib\Algorithm\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="MathGeoLib\include\Algorithm\Random\pcg_random.hpp">
+      <Filter>Engine\MathGeoLib\Algorithm\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="MathGeoLib\include\Algorithm\Random\pcg_uint128.hpp">
+      <Filter>Engine\MathGeoLib\Algorithm\Random</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">

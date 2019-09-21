@@ -115,7 +115,7 @@ void GuiManager::CollisionsBetweenObjects()
 	float ray_diry = rand.Float(0, 20);
 	float ray_dirz = rand.Float(0, 20);
 	ray.dir.Set(ray_dirx, ray_diry, ray_dirz);
-
+	ray.dir.Normalize();
 
 	if (sph.Intersects(cap))
 	{

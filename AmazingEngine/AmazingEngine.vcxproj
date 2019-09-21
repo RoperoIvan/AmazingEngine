@@ -89,6 +89,9 @@
     <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="MathGeoLib\include\Algorithm\Random\LCG.h" />
+    <ClInclude Include="MathGeoLib\include\Algorithm\Random\pcg_extras.hpp" />
+    <ClInclude Include="MathGeoLib\include\Algorithm\Random\pcg_random.hpp" />
+    <ClInclude Include="MathGeoLib\include\Algorithm\Random\pcg_uint128.hpp" />
     <ClInclude Include="MathGeoLib\include\Geometry\AABB.h" />
     <ClInclude Include="MathGeoLib\include\Geometry\AABB2D.h" />
     <ClInclude Include="MathGeoLib\include\Geometry\Capsule.h" />
