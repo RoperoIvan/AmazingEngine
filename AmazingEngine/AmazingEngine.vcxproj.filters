@@ -168,12 +168,6 @@
     <ClInclude Include="PhysBody3D.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="p2Point.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="p2List.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="p2DynArray.h">
       <Filter>Engine</Filter>
     </ClInclude>
