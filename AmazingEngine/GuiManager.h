@@ -18,7 +18,7 @@ public:
 	update_status Update(float dt);
 	update_status PostUpdate(float dt);
 	bool CleanUp();
-
+	void CollisionsBetweenObjects();
 
 private:
 
@@ -26,8 +26,11 @@ private:
 
 	SDL_WindowFlags window_flags;
 	SDL_GLContext gl_context;
+	math::Sphere sph;
+	math::Cylinder cyl;
+	math::Capsule cap;
+	math::Ray ray;
+	math::AABB aabb;
 
 };
-
-
 #endif

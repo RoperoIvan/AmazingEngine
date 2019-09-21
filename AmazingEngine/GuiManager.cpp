@@ -64,7 +64,7 @@ update_status GuiManager::PreUpdate(float dt)
 
 update_status GuiManager::Update(float dt)
 {
-	
+	CollisionsBetweenObjects();
 	return UPDATE_CONTINUE;
 }
 
@@ -86,4 +86,30 @@ bool GuiManager::CleanUp()
 	SDL_DestroyWindow(App->window->window);
 	SDL_Quit();
 	return true;
+}
+
+void GuiManager::CollisionsBetweenObjects()
+{
+	LCG rand;
+	float sph_posx = rand.Float(0, 20);
+	float sph_posy = rand.Float(0, 20);
+	float sph_posz = rand.Float(0, 20);
+	sph.r = rand.Float(0, 10);
+	sph.pos.Set(sph_posx, sph_posy, sph_posz);
+
+	float cap_posx = rand.Float(0, 20);
+	float cap_posy = rand.Float(0, 20);
+	float cap_posz = rand.Float(0, 20);
+	float cap_posx2 = rand.Float(0, 20);
+	float cap_posy2 = rand.Float(0, 20);
+	float cap_posz2 = rand.Float(0, 20);
+	cap.l.a.Set(cap_posx, cap_posy, cap_posz);
+	cap.l.b.Set(cap_posx2, cap_posy2, cap_posz2);
+	cap.r = rand.Float(0, 10);
+
+	if (sph.Intersects(cap))
+	{
+		LOG("INTERSECTED");
+	}
+	LOG("...........................");
 }

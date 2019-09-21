@@ -1,4 +1,6 @@
-﻿  Application.cpp
+﻿  GuiManager.cpp
+c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\corecrt_math_defines.h(22): warning C4005: 'M_PI': redefinición de macro
+  c:\users\ivan_\onedrive\documentos\github\amazingengine\amazingengine\sdl\include\sdl_stdinc.h(499): note: vea la definición anterior de 'M_PI'
   Generando código...
   Compilando...
   ModuleWindow.cpp
@@ -6,9 +8,8 @@
   ModuleInput.cpp
   ModuleCamera3D.cpp
   Main.cpp
-  GuiManager.cpp
-c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\corecrt_math_defines.h(22): warning C4005: 'M_PI': redefinición de macro
-  c:\users\ivan_\onedrive\documentos\github\amazingengine\amazingengine\sdl\include\sdl_stdinc.h(499): note: vea la definición anterior de 'M_PI'
+  Application.cpp
+c:\users\ivan_\onedrive\documentos\github\amazingengine\amazingengine\application.cpp(9): warning C4316: 'GuiManager': puede que el objeto asignado en el montón no esté alineado 16
   Generando código...
   AmazingEngine.vcxproj -> C:\Users\ivan_\OneDrive\Documentos\GitHub\AmazingEngine\AmazingEngine\Debug\AmazingEngine.exe
   AmazingEngine.vcxproj -> C:\Users\ivan_\OneDrive\Documentos\GitHub\AmazingEngine\AmazingEngine\Debug\AmazingEngine.pdb (Partial PDB)
