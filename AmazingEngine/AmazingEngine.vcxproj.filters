@@ -7,9 +7,6 @@
     <ClCompile Include="Primitive.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="PhysBody3D.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleWindow.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -163,9 +160,6 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Primitive.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysBody3D.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="p2DynArray.h">
