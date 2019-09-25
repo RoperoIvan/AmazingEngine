@@ -45,20 +45,50 @@ update_status GuiManager::PreUpdate(float dt)
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
+	//example menu
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Example Window")) show_demo_window = true;
-			if (ImGui::MenuItem("Exit", "exit", false)) ret = false;
+			if (ImGui::MenuItem("Configuration")) show_demo_window = true;
+			if (ImGui::MenuItem("Exit")) ret = false;
 
 			ImGui::EndMenu();
 		}	
+
+		if (ImGui::BeginMenu("Help"))
+		{
+			if (ImGui::MenuItem("Documentation")) show_demo_window = false;
+
+			if (ImGui::MenuItem("Last version")) show_demo_window = false;
+
+			if (ImGui::MenuItem("Report bug")) show_demo_window = false;
+
+			ImGui::EndMenu();
+
+		}
 		ImGui::EndMainMenuBar();
 	}
-	if(show_demo_window)
-		ImGui::ShowDemoWindow(&show_demo_window);
 
+	ImGui::ShowDemoWindow();
+
+	if (show_demo_window)
+	{
+		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
+		if (ImGui::Begin("Configuration", &show_demo_window))
+		{
+			if (ImGui::BeginMenu("Help"))
+			{
+			
+				ImGui::EndMenu();
+
+			}
+			if (ImGui::MenuItem("Close")) show_demo_window = false;
+			ImGui::End();
+		}
+
+	}
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
 }
 
