@@ -50,7 +50,7 @@ update_status GuiManager::PreUpdate(float dt)
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Configuration")) show_demo_window = true;
+			if (ImGui::MenuItem("Settings")) show_demo_window = true;
 			if (ImGui::MenuItem("Exit")) ret = false;
 
 			ImGui::EndMenu();
@@ -79,7 +79,7 @@ update_status GuiManager::PreUpdate(float dt)
 	{
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
-		if (ImGui::Begin(" ", &show_demo_window),window_flags)
+		if (ImGui::Begin("Settings", &show_demo_window),window_flags)
 		{
 			if (ImGui::CollapsingHeader("Configuration"))
 			{
@@ -89,8 +89,6 @@ update_status GuiManager::PreUpdate(float dt)
 					ImGui::EndMenu();
 
 				}
-				if (ImGui::MenuItem("Close")) 
-					show_demo_window = false;
 			}
 
 			if (ImGui::CollapsingHeader("Application"))
@@ -105,8 +103,17 @@ update_status GuiManager::PreUpdate(float dt)
 				{
 					App->RerquestBrowser("https://www.citm.upc.edu/");
 				}
-				
-				
+				if (ImGui::CollapsingHeader("FPS"))
+				{
+					uint min = 0;
+					uint max = 144;
+					ImGui::SliderScalar("Max FPS", ImGuiDataType_U32, &App->maxFrames, &min, &max, "%d");
+				}
+			}
+
+			if (ImGui::Button("Close", ImVec2(550, 0)))
+			{
+				show_demo_window = false;
 			}
 			ImGui::End();
 		}
