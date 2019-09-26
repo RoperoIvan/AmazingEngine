@@ -1,4 +1,5 @@
 #include "Application.h"
+#include <shellapi.h>
 
 Application::Application()
 {
@@ -106,6 +107,11 @@ bool Application::CleanUp()
 		ret = (*item)->CleanUp();
 	}
 	return ret;
+}
+
+void Application::RerquestBrowser(const char *url)
+{
+	ShellExecuteA(GetActiveWindow(),"open",url,NULL,NULL, SW_SHOWNORMAL);
 }
 
 void Application::AddModule(Module* mod)
