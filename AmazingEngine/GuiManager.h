@@ -30,6 +30,7 @@ private:
 	bool resizable = false;
 	bool borderless = false;
 	bool full_desktop = false;
+	float brightness = 1.0f;
 
 	SDL_WindowFlags window_flags;
 	SDL_GLContext gl_context;

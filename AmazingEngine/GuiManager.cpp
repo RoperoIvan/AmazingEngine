@@ -45,6 +45,8 @@ update_status GuiManager::PreUpdate(float dt)
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
+
+	ImGui::ShowDemoWindow();
 	//example menu
 	if (ImGui::BeginMainMenuBar())
 	{
@@ -189,15 +191,52 @@ update_status GuiManager::PreUpdate(float dt)
 			// Window tab
 			if (ImGui::CollapsingHeader("Window"))
 			{				
-				bool active = true;
-				float brightness = 1.0f;
-				int width = 0;
-				int height = 0;
-				ImGui::Checkbox("Active", &active);
+				ImGui::Checkbox("Active", &App->renderer3D->vsync);
 				ImGui::TextWrapped("Icon:  *default*");
+
 				ImGui::SliderFloat("Brightness", &brightness, 0, 1);
-				ImGui::SliderInt("Width", &width, 0, 3820);
-				ImGui::SliderInt("Height", &height, 0, 2048);
+				SDL_SetWindowBrightness(App->window->window, brightness);
+
+				const char* items[] = { "800x600", "1024x768", "1152x864", "1176x664", "1280x768", "1280x800", "1280x960", "1280x1024", "1360x768", "1440x900" };
+				static int item_current = 7;
+				ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
+
+				switch (item_current)
+				{
+				case 0:
+					SDL_SetWindowSize(App->window->window, 800, 600);
+					break;
+				case 1:
+					SDL_SetWindowSize(App->window->window, 1152, 864);
+					break;
+				case 2:
+					SDL_SetWindowSize(App->window->window, 1152,864);
+					break;
+				case 3:
+					SDL_SetWindowSize(App->window->window, 1176,664);
+					break;
+				case 4:
+					SDL_SetWindowSize(App->window->window, 1280,768);
+					break;
+				case 5:
+					SDL_SetWindowSize(App->window->window, 1280,800);
+					break;
+				case 6:
+					SDL_SetWindowSize(App->window->window, 1280,960);
+					break;
+				case 7:
+					SDL_SetWindowSize(App->window->window, 1280,1024);
+					break;
+				case 8:
+					SDL_SetWindowSize(App->window->window, 1360,768);
+					break;
+				case 9:
+					SDL_SetWindowSize(App->window->window, 1440,900);
+					break;
+				default:
+					break;
+				}
+
 				ImGui::TextWrapped("Refresh Rate: ");
 
 				if (ImGui::Checkbox("Fullscreen", &fullscreen))
