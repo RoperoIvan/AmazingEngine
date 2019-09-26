@@ -75,12 +75,13 @@ update_status GuiManager::PreUpdate(float dt)
 		ImGui::EndMainMenuBar();
 	}
 
-	//ImGui::ShowDemoWindow();
+	// Settings of the engine tab
 
 	if (show_demo_window)
 	{
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
+
 		if (ImGui::Begin("Settings", &show_demo_window),window_flags)
 		{
 			if (ImGui::CollapsingHeader("Configuration"))
@@ -92,7 +93,7 @@ update_status GuiManager::PreUpdate(float dt)
 
 				}
 			}
-
+			// Application options tab
 			if (ImGui::CollapsingHeader("Application"))
 			{
 				static char str0[128] = "Amazing Engine";
@@ -112,34 +113,144 @@ update_status GuiManager::PreUpdate(float dt)
 					ImGui::SliderScalar("Max FPS", ImGuiDataType_U32, &App->maxFrames, &min, &max, "%d");
 				}
 			}
+			// Hardware specs tab
 			if (ImGui::CollapsingHeader("Hardware"))
 			{
-				ImGui::TextWrapped("SDL Version: %i.%i.%i", App->system_specs.sdl_version.major, App->system_specs.sdl_version.minor, App->system_specs.sdl_version.patch);
-				ImGui::TextWrapped("CPUs: %i", App->system_specs.cpus);
-				ImGui::TextWrapped("System Ram: %f", App->system_specs.system_ram);
+				ImGui::TextWrapped("SDL version:");
+				ImGui::SameLine();
+				ImGui::TextColored({ 255, 255, 0, 255 }, "%i.%i.%i", App->system_specs.sdl_version.major, App->system_specs.sdl_version.minor, App->system_specs.sdl_version.patch);
+				ImGui::TextWrapped("CPUs:", App->system_specs.cpus);
+				ImGui::SameLine();
+				ImGui::TextColored({ 255, 255, 0, 255 }, "%i", App->system_specs.cpus);
+				ImGui::TextWrapped("System Ram:");
+				ImGui::SameLine();
+				ImGui::TextColored({ 255, 255, 0, 255 }, "%f", App->system_specs.system_ram);
+				ImGui::TextWrapped("Caps:");
 				if (App->system_specs.altivec)
-					ImGui::TextWrapped("AltiVec");
+				{
+					ImGui::SameLine();
+					ImGui::TextColored({ 255, 255, 0, 255 }, "AltiVec,");
+				}					
 				if (App->system_specs.rdtsc)
-					ImGui::TextWrapped("RDTSC");
+				{
+					ImGui::SameLine();
+					ImGui::TextColored({ 255, 255, 0, 255 }, "RDTSC,");
+				}					
 				if (App->system_specs.mmx)
-					ImGui::TextWrapped("MMX");
+				{
+					ImGui::SameLine();
+					ImGui::TextColored({ 255, 255, 0, 255 }, "MMX,");
+				}					
 				if (App->system_specs.sse)
-					ImGui::TextWrapped("SSE");
+				{
+					ImGui::SameLine();
+					ImGui::TextColored({ 255, 255, 0, 255 }, "SSE,");
+				}					
 				if (App->system_specs.sse2)
-					ImGui::TextWrapped("SSE2");
+				{
+					ImGui::SameLine();
+					ImGui::TextColored({ 255, 255, 0, 255 }, "SSE2,");
+				}				
 				if (App->system_specs.sse3)
-					ImGui::TextWrapped("SSE3");
+				{
+					ImGui::SameLine();
+					ImGui::TextColored({ 255, 255, 0, 255 }, "SSE3,");
+				}					
 				if (App->system_specs.sse41)
-					ImGui::TextWrapped("SSE41");
+				{
+					ImGui::SameLine();
+					ImGui::TextColored({ 255, 255, 0, 255 }, "SSE41,");
+				}					
 				if (App->system_specs.sse42)
-					ImGui::TextWrapped("SSE42");
+				{
+					ImGui::SameLine();
+					ImGui::TextColored({ 255, 255, 0, 255 }, "SSE42,");
+				}					
 				if (App->system_specs.three_d_now)
-					ImGui::TextWrapped("3DNow");
+				{
+					ImGui::SameLine();
+					ImGui::TextColored({ 255, 255, 0, 255 }, "3DNow,");
+				}					
 				if (App->system_specs.avx)
-					ImGui::TextWrapped("AVX");
-				ImGui::Text("GPU vendor: %s", glGetString(GL_VENDOR));
-				ImGui::Text("GPU Model: %s", glGetString(GL_RENDERER));
-				ImGui::Text("GPU Drivers version: %s", glGetString(GL_VERSION));
+				{
+					ImGui::SameLine();
+					ImGui::TextColored({ 255, 255, 0, 255 }, "AVX,");
+				}					
+				ImGui::Text("GPU vendor:");
+				ImGui::SameLine();
+				ImGui::TextColored({ 255, 255, 0, 255 }, "%s", glGetString(GL_VENDOR));
+				ImGui::Text("GPU Model:");
+				ImGui::SameLine();
+				ImGui::TextColored({ 255, 255, 0, 255 }, "%s", glGetString(GL_RENDERER));
+				ImGui::Text("GPU Drivers version:");
+				ImGui::SameLine();
+				ImGui::TextColored({ 255, 255, 0, 255 }, "%s", glGetString(GL_VERSION));
+			}
+			// Window tab
+			if (ImGui::CollapsingHeader("Window"))
+			{				
+				bool active = true;
+				float brightness = 1.0f;
+				int width = 0;
+				int height = 0;
+				ImGui::Checkbox("Active", &active);
+				ImGui::TextWrapped("Icon:  *default*");
+				ImGui::SliderFloat("Brightness", &brightness, 0, 1);
+				ImGui::SliderInt("Width", &width, 0, 3820);
+				ImGui::SliderInt("Height", &height, 0, 2048);
+				ImGui::TextWrapped("Refresh Rate: ");
+
+				if (ImGui::Checkbox("Fullscreen", &fullscreen))
+				{
+					if (fullscreen)
+					{
+						SDL_SetWindowFullscreen(App->window->window, SDL_WINDOW_FULLSCREEN);
+						fullscreen = true;
+					}
+
+					else
+						fullscreen = false;
+				}
+
+				ImGui::SameLine();
+				if (ImGui::Checkbox("Resizable", &resizable))
+				{
+					if (ImGui::IsItemHovered())
+						ImGui::SetTooltip("Restart to apply");
+					if (resizable)
+					{
+						SDL_SetWindowFullscreen(App->window->window, SDL_WINDOW_RESIZABLE);
+						resizable = true;
+					}
+					else
+						resizable = false;
+				}
+
+				if (ImGui::Checkbox("Borderless", &borderless))
+				{
+					if (borderless)
+					{
+						SDL_SetWindowBordered(App->window->window, SDL_FALSE);
+						borderless = true;
+					}
+					else
+					{
+						SDL_SetWindowBordered(App->window->window, SDL_TRUE);
+						borderless = false;
+					}
+				}
+
+				ImGui::SameLine();
+				if (ImGui::Checkbox("Full Desktop", &full_desktop))
+				{
+					if (full_desktop)
+					{
+						SDL_SetWindowFullscreen(App->window->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+						full_desktop = true;
+					}
+					else
+						full_desktop = false;
+				}
 			}
 			if (ImGui::Button("Close", ImVec2(550, 0)))
 			{
