@@ -31,7 +31,8 @@ private:
 	bool borderless = false;
 	bool full_desktop = false;
 	float brightness = 1.0f;
-
+	std::vector<float> fps_log;
+	std::vector<float> ms_log;
 	SDL_WindowFlags window_flags;
 	SDL_GLContext gl_context;
 	math::Sphere sph;

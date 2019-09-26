@@ -74,6 +74,7 @@ public:
 	bool Init();
 	update_status Update();
 	bool CleanUp();
+	void GetFrames(int& frames, float& miliseconds);
 
 	void RerquestBrowser(const char*);
 	HardwareSpecs system_specs;

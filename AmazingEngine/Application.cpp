@@ -150,6 +150,12 @@ void Application::RerquestBrowser(const char *url)
 	ShellExecuteA(GetActiveWindow(),"open",url,NULL,NULL, SW_SHOWNORMAL);
 }
 
+void Application::GetFrames(int & frames, float & miliseconds)
+{
+	frames = frames_on_last_update - 1;
+	//miliseconds = last_frame_miliseconds2;
+}
+
 void Application::AddModule(Module* mod)
 {
 	list_modules.push_back(mod);
