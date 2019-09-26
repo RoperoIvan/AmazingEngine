@@ -58,11 +58,14 @@ update_status GuiManager::PreUpdate(float dt)
 
 		if (ImGui::BeginMenu("Help"))
 		{
-			if (ImGui::MenuItem("Documentation")) show_demo_window = false;
+			if (ImGui::MenuItem("Documentation")) 
+				App->RerquestBrowser("https://github.com/RoperoIvan/AmazingEngine/wiki");
 
-			if (ImGui::MenuItem("Last version")) show_demo_window = false;
+			if (ImGui::MenuItem("Last version")) 
+				App->RerquestBrowser("https://github.com/RoperoIvan/AmazingEngine/releases");
 
-			if (ImGui::MenuItem("Report bug")) show_demo_window = false;
+			if (ImGui::MenuItem("Report bug")) 
+				App->RerquestBrowser("https://github.com/RoperoIvan/AmazingEngine/issues");
 
 			ImGui::EndMenu();
 
@@ -70,21 +73,41 @@ update_status GuiManager::PreUpdate(float dt)
 		ImGui::EndMainMenuBar();
 	}
 
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 
 	if (show_demo_window)
 	{
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
-		if (ImGui::Begin("Configuration", &show_demo_window))
+		if (ImGui::Begin(" ", &show_demo_window),window_flags)
 		{
-			if (ImGui::BeginMenu("Help"))
+			if (ImGui::CollapsingHeader("Configuration"))
 			{
-			
-				ImGui::EndMenu();
+				if (ImGui::BeginMenu("Help"))
+				{
 
+					ImGui::EndMenu();
+
+				}
+				if (ImGui::MenuItem("Close")) 
+					show_demo_window = false;
 			}
-			if (ImGui::MenuItem("Close")) show_demo_window = false;
+
+			if (ImGui::CollapsingHeader("Application"))
+			{
+				static char str0[128] = "Amazing Engine";
+				ImGui::Text("App Name:     ");
+				ImGui::SameLine(); ImGui::InputText(" ", str0, IM_ARRAYSIZE(str0));
+
+				ImGui::Text("Organitzation:");
+				ImGui::SameLine();
+				if (ImGui::Button("UPC CITM", ImVec2(357, 0)))
+				{
+					App->RerquestBrowser("https://www.citm.upc.edu/");
+				}
+				
+				
+			}
 			ImGui::End();
 		}
 
