@@ -62,13 +62,33 @@ bool Application::Init()
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
+	frame_count++;
+	last_sec_frame_count++;
 	dt = (float)ms_timer.Read() / 1000.0f;
+	if (dt > maxFrames)
+		dt = maxFrames;
 	ms_timer.Start();
 }
 
 // ---------------------------------------------
 void Application::FinishUpdate()
 {
+	if (last_sec_frame_time.Read() > 1000)
+	{
+		last_sec_frame_time.Start();
+		prev_last_sec_frame_count = last_sec_frame_count;
+		last_sec_frame_count = 0;
+	}
+
+	avg_fps = float(frame_count) / startup_time.Read()/10000;
+	uint last_frame_ms = frame_time.Read();
+	frames_on_last_update = prev_last_sec_frame_count;
+
+	if (framerate_cap > 0 && last_frame_ms < framerate_cap)
+	{
+		SDL_Delay(framerate_cap - last_frame_ms);
+	}
+
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules
