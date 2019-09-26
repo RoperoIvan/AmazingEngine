@@ -56,6 +56,22 @@ bool Application::Init()
 		ret = (*item)->Start();
 	}
 	
+	//Hardware specs from the pc executing the program
+	SDL_GetVersion(&system_specs.sdl_version);
+	system_specs.cpus = SDL_GetCPUCount();
+	system_specs.system_ram = SDL_GetSystemRAM() / 1000.0f;
+	system_specs.cpu_chache = SDL_GetCPUCacheLineSize();
+	system_specs.altivec = SDL_HasAltiVec();
+	system_specs.rdtsc = SDL_HasRDTSC();
+	system_specs.mmx = SDL_HasMMX();
+	system_specs.sse = SDL_HasSSE();
+	system_specs.sse2 = SDL_HasSSE2();
+	system_specs.sse3 = SDL_HasSSE3();
+	system_specs.sse41 = SDL_HasSSE41();
+	system_specs.sse42 = SDL_HasSSE42();
+	system_specs.three_d_now = SDL_Has3DNow();
+	system_specs.avx = SDL_HasAVX();
+
 	ms_timer.Start();
 	return ret;
 }

@@ -19,11 +19,12 @@ public:
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 	void CollisionsBetweenObjects();
-
+	void AboutWindow(bool show_about_window);
 private:
 
 	bool show_demo_window = false;
-
+	bool show_about_window = false;
+	bool show_license_window = false;
 	SDL_WindowFlags window_flags;
 	SDL_GLContext gl_context;
 	math::Sphere sph;
