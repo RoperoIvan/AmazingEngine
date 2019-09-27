@@ -40,8 +40,10 @@ bool Application::Init()
 {
 	bool ret = true;
 
+	//Console is functioning;
+	is_console = true;
+
 	// Call Init() in all modules
-	
 
 	for(std::list<Module*>::iterator item = list_modules.begin(); item != list_modules.end() && ret == true; ++item)
 	{
@@ -90,6 +92,12 @@ void Application::PrepareUpdate()
 // ---------------------------------------------
 void Application::FinishUpdate()
 {
+	if (frame_count == frame_count++)
+	{
+		frame_ms = ms_time.Read();
+		ms_time.Start();
+	}
+
 	if (last_sec_frame_time.Read() > 1000)
 	{
 		last_sec_frame_time.Start();
@@ -98,7 +106,7 @@ void Application::FinishUpdate()
 	}
 
 	avg_fps = float(frame_count) / startup_time.Read()/10000;
-	uint last_frame_ms = frame_time.Read();
+	last_frame_ms = frame_time.Read();
 	frames_on_last_update = prev_last_sec_frame_count;
 
 	if (framerate_cap > 0 && last_frame_ms < framerate_cap)
@@ -137,6 +145,7 @@ bool Application::CleanUp()
 {
 	bool ret = true;
 	
+	is_console = false;
 
 	for (std::list<Module*>::reverse_iterator item = list_modules.rbegin(); item != list_modules.rend() && ret == true; ++item)
 	{
@@ -153,7 +162,7 @@ void Application::RerquestBrowser(const char *url)
 void Application::GetFrames(int & frames, float & miliseconds)
 {
 	frames = frames_on_last_update - 1;
-	//miliseconds = last_frame_miliseconds2;
+	miliseconds = frame_ms;
 }
 
 void Application::AddModule(Module* mod)

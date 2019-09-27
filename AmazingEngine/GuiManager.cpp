@@ -10,6 +10,7 @@
 #include "ModuleRenderer3D.h"
 #include "Primitive.h"
 
+
 GuiManager::GuiManager(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 }
@@ -108,34 +109,34 @@ update_status GuiManager::PreUpdate(float dt)
 				{
 					App->RerquestBrowser("https://www.citm.upc.edu/");
 				}
+			//FPS tab
 				if (ImGui::CollapsingHeader("FPS"))
 				{
 					uint min = 0;
 					uint max = 144;
 					ImGui::SliderScalar("Max FPS", ImGuiDataType_U32, &App->maxFrames, &min, &max, "%d");
-				}
-				int frames;
-				float milisec;
-				App->GetFrames(frames, milisec);
+			// FPS and MPF graphics logic
+					int frames;
+					float milisec;
+					App->GetFrames(frames, milisec);
 
-				if (fps_log.size() > 100)
-				{
+					if (fps_log.size() > 100)
+					{
+						fps_log.erase(fps_log.begin());
+						ms_log.erase(ms_log.begin());
+					}
+					//TODO: delete memory from vectors in the clean up
+					fps_log.push_back(frames);
+					ms_log.push_back(milisec);
 
-					/*fps_log.pop_back();
-					ms_log.pop_back();*/
-					fps_log.erase(fps_log.begin());
-				}
+					LOG("%i", fps_log.size());
 
-				fps_log.push_back(frames);
-				ms_log.push_back(milisec);
-
-				LOG("%i", fps_log.size());
-
-				char title[25];
-				sprintf_s(title, 25, "Framerate %.1f", fps_log[fps_log.size() - 1]);
-				ImGui::PlotHistogram("##framerate", &fps_log[0], fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
-				/*sprintf_s(title, 25, "Milliseconds %0.1f", ms_log[ms_log.size() - 1]);
-				ImGui::PlotHistogram("##Milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));*/
+					char title[25];
+					sprintf_s(title, 25, "Framerate %.1f", fps_log[fps_log.size() - 1]);
+					ImGui::PlotHistogram("##framerate", &fps_log[0], fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
+					sprintf_s(title, 25, "Milliseconds %0.1f", ms_log[ms_log.size() - 1]);
+					ImGui::PlotHistogram("##Milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
+				}			
 
 			}
 			// Hardware specs tab
@@ -340,7 +341,7 @@ update_status GuiManager::PreUpdate(float dt)
 update_status GuiManager::Update(float dt)
 {
 	CollisionsBetweenObjects();
-
+	ShowAppConsole(show_demo_window);
 	Plane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
@@ -451,4 +452,14 @@ void GuiManager::AboutWindow(bool show_about_win)
 		}
 	}
 	ImGui::End();
+}
+
+void GuiManager::ShowAppConsole(bool show_console)
+{
+	console.Draw("Amazing Engine", &show_console);
+}
+
+void GuiManager::GetLog(const char* log)
+{
+	console.AddLog(log);
 }

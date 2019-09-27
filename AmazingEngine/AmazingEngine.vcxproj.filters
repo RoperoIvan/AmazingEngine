@@ -154,6 +154,9 @@
     <ClCompile Include="MathGeoLib\include\Time\Clock.cpp">
       <Filter>Engine\MathGeoLib\Time</Filter>
     </ClCompile>
+    <ClCompile Include="ConsoleManager.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -410,6 +413,9 @@
     </ClInclude>
     <ClInclude Include="MathGeoLib\include\Algorithm\Random\pcg_uint128.hpp">
       <Filter>Engine\MathGeoLib\Algorithm\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleManager.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

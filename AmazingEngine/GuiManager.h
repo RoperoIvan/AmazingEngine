@@ -6,6 +6,7 @@
 //#include "MathGeoLib/include/MathBuildConfig.h"
 //#include "MathGeoLib/include/MathGeoLib.h"
 #include <vector>
+#include "ConsoleManager.h"
 
 class GuiManager: public Module
 {
@@ -21,7 +22,8 @@ public:
 	bool CleanUp();
 	void CollisionsBetweenObjects();
 	void AboutWindow(bool show_about_window);
-
+	void ShowAppConsole(bool show_console);
+	void GetLog(const char* log);
 private:
 
 	bool show_demo_window = false;
@@ -41,6 +43,7 @@ private:
 	//math::Capsule cap;
 	//math::Ray ray;
 	//math::AABB aabb;
-
+	AppConsole console;
+	ImGuiTextBuffer text;
 };
 #endif
