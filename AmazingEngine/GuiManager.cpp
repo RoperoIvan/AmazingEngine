@@ -4,11 +4,11 @@
 #include <stdio.h>
 #include "SDL/include/SDL.h"
 #include "SDL/include/SDL_opengl.h"
-
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "GuiManager.h"
 #include "ModuleRenderer3D.h"
+#include "Primitive.h"
 
 GuiManager::GuiManager(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -121,12 +121,15 @@ update_status GuiManager::PreUpdate(float dt)
 				if (fps_log.size() > 100)
 				{
 
-					fps_log.pop_back();
-					ms_log.pop_back();
+					/*fps_log.pop_back();
+					ms_log.pop_back();*/
+					fps_log.erase(fps_log.begin());
 				}
 
 				fps_log.push_back(frames);
 				ms_log.push_back(milisec);
+
+				LOG("%i", fps_log.size());
 
 				char title[25];
 				sprintf_s(title, 25, "Framerate %.1f", fps_log[fps_log.size() - 1]);
@@ -337,6 +340,13 @@ update_status GuiManager::PreUpdate(float dt)
 update_status GuiManager::Update(float dt)
 {
 	CollisionsBetweenObjects();
+
+	Plane p(0, 1, 0, 0);
+	p.axis = true;
+	p.Render();
+
+	
+
 	return UPDATE_CONTINUE;
 }
 
@@ -362,7 +372,7 @@ bool GuiManager::CleanUp()
 
 void GuiManager::CollisionsBetweenObjects()
 {
-	LCG rand;
+	/*LCG rand;
 	float sph_posx = rand.Float(0, 20);
 	float sph_posy = rand.Float(0, 20);
 	float sph_posz = rand.Float(0, 20);
@@ -401,7 +411,7 @@ void GuiManager::CollisionsBetweenObjects()
 	{
 		LOG("RAY AND CAPSULE ARE INTERSECTED");
 	}
-	LOG("...........................");
+	LOG("...........................");*/
 }
 
 void GuiManager::AboutWindow(bool show_about_win)

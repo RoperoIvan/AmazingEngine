@@ -3,8 +3,9 @@
 
 #include "Module.h"
 #include "Globals.h"
-#include "MathGeoLib/include/MathBuildConfig.h"
-#include "MathGeoLib/include/MathGeoLib.h"
+//#include "MathGeoLib/include/MathBuildConfig.h"
+//#include "MathGeoLib/include/MathGeoLib.h"
+#include <vector>
 
 class GuiManager: public Module
 {
@@ -35,11 +36,11 @@ private:
 	std::vector<float> ms_log;
 	SDL_WindowFlags window_flags;
 	SDL_GLContext gl_context;
-	math::Sphere sph;
-	math::Cylinder cyl;
-	math::Capsule cap;
-	math::Ray ray;
-	math::AABB aabb;
+	//math::Sphere sph;
+	//math::Cylinder cyl;
+	//math::Capsule cap;
+	//math::Ray ray;
+	//math::AABB aabb;
 
 };
 #endif
