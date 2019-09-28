@@ -411,6 +411,9 @@
     <ClInclude Include="MathGeoLib\include\Algorithm\Random\pcg_uint128.hpp">
       <Filter>Engine\MathGeoLib\Algorithm\Random</Filter>
     </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>Engine\json</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -437,6 +440,9 @@
     <Filter Include="Engine\MathGeoLib\Time">
       <UniqueIdentifier>{873e7280-d66b-4239-a6af-dd183e551459}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\json">
+      <UniqueIdentifier>{8c5fd335-6bf6-4479-af52-06b70ce3c14e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\include\Geometry\KDTree.inl">
@@ -456,6 +462,9 @@
     </None>
     <None Include="MathGeoLib\include\Math\Matrix.inl">
       <Filter>Engine\MathGeoLib\Math</Filter>
+    </None>
+    <None Include="DLL\config.json">
+      <Filter>Engine\json</Filter>
     </None>
   </ItemGroup>
 </Project>

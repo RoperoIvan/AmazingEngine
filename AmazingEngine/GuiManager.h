@@ -36,11 +36,7 @@ private:
 	std::vector<float> ms_log;
 	SDL_WindowFlags window_flags;
 	SDL_GLContext gl_context;
-	//math::Sphere sph;
-	//math::Cylinder cyl;
-	//math::Capsule cap;
-	//math::Ray ray;
-	//math::AABB aabb;
+
 
 };
 #endif

@@ -79,12 +79,15 @@ bool Application::Init()
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
-	frame_count++;
+	if (maxFrames > frame_count)
+	{
+		frame_count++;
+	}
 	last_sec_frame_count++;
-	dt = (float)ms_timer.Read() / 1000.0f;
-	if (dt > maxFrames)
-		dt = maxFrames;
+	dt = 1.0f / framerate_cap;
+
 	ms_timer.Start();
+
 }
 
 // ---------------------------------------------
@@ -97,7 +100,7 @@ void Application::FinishUpdate()
 		last_sec_frame_count = 0;
 	}
 
-	avg_fps = float(frame_count) / startup_time.Read()/10000;
+	avg_fps = float(frame_count) / startup_time.Read()/1000;
 	uint last_frame_ms = frame_time.Read();
 	frames_on_last_update = prev_last_sec_frame_count;
 

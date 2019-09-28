@@ -9,6 +9,12 @@
 #include "GuiManager.h"
 #include "ModuleRenderer3D.h"
 #include "Primitive.h"
+#include "json.hpp"
+
+#include <fstream>
+#include <iomanip>
+
+using json = nlohmann::json;
 
 GuiManager::GuiManager(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -44,6 +50,14 @@ update_status GuiManager::PreUpdate(float dt)
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
+
+
+	json j;
+	std::ifstream ifs("config.json");
+	if (!ifs.is_open())
+		LOG("Error to load file", SDL_GetError());
+
+	ifs >> j;
 
 
 	ImGui::ShowDemoWindow();
@@ -98,9 +112,15 @@ update_status GuiManager::PreUpdate(float dt)
 			// Application options tab
 			if (ImGui::CollapsingHeader("Application"))
 			{
-				static char str0[128] = "Amazing Engine";
+				
+				std::string str0 = j["info"]["name"].get<std::string>();
+
+				static char str1;
+				std::strcpy(&str1, str0.c_str());
+				
+	
 				ImGui::Text("App Name:     ");
-				ImGui::SameLine(); ImGui::InputText(" ", str0, IM_ARRAYSIZE(str0));
+				ImGui::SameLine(); ImGui::InputText(" ", &str1, IM_ARRAYSIZE(&str1));
 
 				ImGui::Text("Organitzation:");
 				ImGui::SameLine();
@@ -112,30 +132,32 @@ update_status GuiManager::PreUpdate(float dt)
 				{
 					uint min = 0;
 					uint max = 144;
-					ImGui::SliderScalar("Max FPS", ImGuiDataType_U32, &App->maxFrames, &min, &max, "%d");
+					ImGui::SliderScalar("Max FPS", ImGuiDataType_U32, &App->framerate_cap, &min, &max, "%d");
+
+					int frames;
+					float milisec;
+					App->GetFrames(frames, milisec);
+
+					if (fps_log.size() > 100)
+					{
+
+						/*fps_log.pop_back();
+						ms_log.pop_back();*/
+						fps_log.erase(fps_log.begin());
+					}
+
+					fps_log.push_back(frames);
+					ms_log.push_back(milisec);
+
+					LOG("%i", fps_log.size());
+
+					char title[25];
+					sprintf_s(title, 25, "Framerate %.1f", fps_log[fps_log.size() - 1]);
+					ImGui::PlotHistogram("##framerate", &fps_log[0], fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
+					/*sprintf_s(title, 25, "Milliseconds %0.1f", ms_log[ms_log.size() - 1]);
+					ImGui::PlotHistogram("##Milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));*/
 				}
-				int frames;
-				float milisec;
-				App->GetFrames(frames, milisec);
-
-				if (fps_log.size() > 100)
-				{
-
-					/*fps_log.pop_back();
-					ms_log.pop_back();*/
-					fps_log.erase(fps_log.begin());
-				}
-
-				fps_log.push_back(frames);
-				ms_log.push_back(milisec);
-
-				LOG("%i", fps_log.size());
-
-				char title[25];
-				sprintf_s(title, 25, "Framerate %.1f", fps_log[fps_log.size() - 1]);
-				ImGui::PlotHistogram("##framerate", &fps_log[0], fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
-				/*sprintf_s(title, 25, "Milliseconds %0.1f", ms_log[ms_log.size() - 1]);
-				ImGui::PlotHistogram("##Milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));*/
+				
 
 			}
 			// Hardware specs tab
