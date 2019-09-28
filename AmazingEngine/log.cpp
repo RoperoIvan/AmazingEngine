@@ -1,5 +1,6 @@
 #pragma once
 #include "Globals.h"
+#include "Application.h"
 
 void log(const char file[], int line, const char* format, ...)
 {
@@ -13,4 +14,10 @@ void log(const char file[], int line, const char* format, ...)
 	va_end(ap);
 	sprintf_s(tmp_string2, 4096, "\n%s(%d) : %s", file, line, tmp_string);
 	OutputDebugString(tmp_string2);
+
+	if (App && App->is_console)
+	{
+		App->guiManager->GetLog(tmp_string2);
+	}
+
 }

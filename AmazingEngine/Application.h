@@ -47,12 +47,14 @@ public:
 private:
 
 	Timer	ms_timer;
-	
+	uint last_frame_ms;
+	uint frame_ms;
 	std::list<Module*> list_modules;
 
 public:
-
+	bool					is_console;
 	Timer					ptimer;
+	Timer					ms_time;
 	uint					frame_count = 0u;
 	Timer					startup_time;
 	Timer					frame_time;
@@ -84,3 +86,5 @@ private:
 	void PrepareUpdate();
 	void FinishUpdate();
 };
+
+extern Application* App;
