@@ -22,11 +22,12 @@ public:
 	bool CleanUp();
 	void CollisionsBetweenObjects();
 	void AboutWindow(bool show_about_window);
+	void ConfigurationWindow(bool show_config_window);
 	void ShowAppConsole(bool show_console);
 	void GetLog(const char* log);
 private:
 
-	bool show_demo_window = false;
+	bool show_config_window = false;
 	bool show_about_window = false;
 	bool show_license_window = false;
 	bool fullscreen = false;

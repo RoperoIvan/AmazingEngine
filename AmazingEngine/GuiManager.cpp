@@ -34,7 +34,7 @@ bool GuiManager::Init()
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
 	ImGui_ImplOpenGL3_Init();
 
-	show_demo_window = false;
+	show_config_window = false;
 	return true;
 }
 
@@ -67,7 +67,7 @@ update_status GuiManager::PreUpdate(float dt)
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Settings")) show_demo_window = true;
+			if (ImGui::MenuItem("Settings")) show_config_window = true;
 			if (ImGui::MenuItem("Exit")) ret = false;
 
 			ImGui::EndMenu();
@@ -94,22 +94,13 @@ update_status GuiManager::PreUpdate(float dt)
 
 	// Settings of the engine tab
 
-	if (show_demo_window)
+	if (show_config_window)
 	{
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
 
-		if (ImGui::Begin("Settings", &show_demo_window),window_flags)
+		if (ImGui::Begin("Settings", &show_config_window),window_flags)
 		{
-			if (ImGui::CollapsingHeader("Configuration"))
-			{
-				if (ImGui::BeginMenu("Help"))
-				{
-
-					ImGui::EndMenu();
-
-				}
-			}
 			// Application options tab
 			if (ImGui::CollapsingHeader("Application"))
 			{
@@ -129,9 +120,6 @@ update_status GuiManager::PreUpdate(float dt)
 				{
 					App->RerquestBrowser("https://www.citm.upc.edu/");
 				}
-			//FPS tab
-				if (ImGui::CollapsingHeader("FPS"))
-				{
 					uint min = 0;
 					uint max = 144;
 
@@ -157,9 +145,7 @@ update_status GuiManager::PreUpdate(float dt)
 					sprintf_s(title, 25, "Framerate %.1f", fps_log[fps_log.size() - 1]);
 					ImGui::PlotHistogram("##framerate", &fps_log[0], fps_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
 					sprintf_s(title, 25, "Milliseconds %0.1f", ms_log[ms_log.size() - 1]);
-					ImGui::PlotHistogram("##Milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
-				}
-
+					ImGui::PlotHistogram("##Milliseconds", &ms_log[0], ms_log.size(), 0, title, 0.0f, 40.0f, ImVec2(310, 100));
 			}
 
 			// Hardware specs tab
@@ -287,11 +273,10 @@ update_status GuiManager::PreUpdate(float dt)
 						break;
 					}
 				}
-				//windows size with slide
-				
 
 				ImGui::TextWrapped("Refresh Rate: ");
 
+				//Window rescale options
 				if (ImGui::Checkbox("Fullscreen", &fullscreen))
 				{
 					if (fullscreen)
@@ -301,7 +286,11 @@ update_status GuiManager::PreUpdate(float dt)
 					}
 
 					else
+					{
 						fullscreen = false;
+						SDL_SetWindowFullscreen(App->window->window, SDL_FALSE);
+					}
+						
 				}
 
 				ImGui::SameLine();
@@ -343,17 +332,16 @@ update_status GuiManager::PreUpdate(float dt)
 					else
 						full_desktop = false;
 				}
+			//------------------------------------------------------------------------------------------------------------
 			}
 			if (ImGui::Button("Close", ImVec2(550, 0)))
 			{
-				show_demo_window = false;
+				show_config_window = false;
 			}
 			ImGui::End();
 		}
 
 	}
-
-
 	if (show_about_window)
 	{
 		AboutWindow(show_about_window);
@@ -364,7 +352,7 @@ update_status GuiManager::PreUpdate(float dt)
 update_status GuiManager::Update(float dt)
 {
 	CollisionsBetweenObjects();
-	ShowAppConsole(show_demo_window);
+	ShowAppConsole(show_config_window);
 	Plane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
@@ -436,6 +424,11 @@ void GuiManager::CollisionsBetweenObjects()
 		LOG("RAY AND CAPSULE ARE INTERSECTED");
 	}
 	LOG("...........................");*/
+}
+
+void GuiManager::ConfigurationWindow(bool show_conf_window)
+{
+
 }
 
 void GuiManager::AboutWindow(bool show_about_win)
