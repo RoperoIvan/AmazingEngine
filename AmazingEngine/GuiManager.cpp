@@ -334,6 +334,37 @@ update_status GuiManager::PreUpdate(float dt)
 				}
 			//------------------------------------------------------------------------------------------------------------
 			}
+			if (ImGui::CollapsingHeader("Render"))
+			{
+
+				if (ImGui::Checkbox("GL Depth", &App->renderer3D->gl_depth_on))
+					(&App->renderer3D->gl_depth_on) ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+
+				else if (ImGui::Checkbox("GL Cull Face", &App->renderer3D->gl_cull_face_on))
+					(App->renderer3D->gl_cull_face_on) ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
+
+				else if (ImGui::Checkbox("GL Lighting", &App->renderer3D->gl_lighting_on))
+					(App->renderer3D->gl_lighting_on) ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING);
+
+				else if (ImGui::Checkbox("GL Color Material", &App->renderer3D->gl_color_material_on))
+					(App->renderer3D->gl_color_material_on) ? glEnable(GL_COLOR_MATERIAL) : glDisable(GL_COLOR_MATERIAL);
+
+				else if (ImGui::Checkbox("GL Texture 2D", &App->renderer3D->gl_texture_2D_on))
+					(App->renderer3D->gl_texture_2D_on) ? glEnable(GL_TEXTURE_2D) : glDisable(GL_TEXTURE_2D);
+
+				else if (ImGui::Checkbox("GL Line Smooth", &App->renderer3D->gl_smooth_line_on))
+					(App->renderer3D->gl_smooth_line_on) ? glEnable(GL_LINE_SMOOTH) : glDisable(GL_LINE_SMOOTH);
+
+				else if (ImGui::Checkbox("Hard Poly", &App->renderer3D->gl_hard_on))
+					(App->renderer3D->gl_hard_on) ? glShadeModel(GL_FLAT) : glShadeModel(GL_SMOOTH);
+
+				else if (ImGui::Checkbox("Wireframe mode", &App->renderer3D->gl_wireframe_on))
+				{
+					if (App->renderer3D->gl_wireframe_on)
+						glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+					else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+				}
+			}
 			if (ImGui::Button("Close", ImVec2(550, 0)))
 			{
 				show_config_window = false;
@@ -366,7 +397,6 @@ update_status GuiManager::PostUpdate(float dt)
 {
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
 	return UPDATE_CONTINUE;
 }
 
