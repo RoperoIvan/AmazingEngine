@@ -102,7 +102,7 @@ bool ModuleWindow::Load(nlohmann::json & j)
 	int w = j["Window"]["sizeW"].get<int>();
 	int h = j["Window"]["sizeH"].get<int>();
 	brightness = j["Window"]["brightness"].get<float>();
-
+	SDL_SetWindowBrightness(window, brightness);
 	SDL_SetWindowSize(window, w, h);
 	return true;
 }
