@@ -62,6 +62,7 @@ update_status GuiManager::PreUpdate(float dt)
 	{
 		if (ImGui::BeginMenu("File"))
 		{
+			if (ImGui::MenuItem("Console")) show_console_window = true;
 			if (ImGui::MenuItem("Settings")) show_config_window = true;
 			if (ImGui::MenuItem("Exit")) ret = false;
 
@@ -94,13 +95,16 @@ update_status GuiManager::PreUpdate(float dt)
 	if (show_about_window)
 		AboutWindow(show_about_window);
 
+	//Console window
+	if(show_console_window)
+		ShowAppConsole(show_console_window);
+
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
 }
 
 update_status GuiManager::Update(float dt)
 {
 	CollisionsBetweenObjects();
-	ShowAppConsole(show_config_window);
 	Plane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
@@ -521,7 +525,7 @@ void GuiManager::AboutWindow(bool show_about_win)
 
 void GuiManager::ShowAppConsole(bool show_console)
 {
-	console.Draw("Amazing Engine", &show_console);
+	console.Draw("Amazing Engine", &show_console_window);
 }
 
 void GuiManager::GetLog(const char* log)

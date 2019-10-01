@@ -29,7 +29,7 @@ private:
 
 	bool show_config_window = false;
 	bool show_about_window = false;
-	bool show_license_window = false;
+	bool show_console_window = false;
 	bool fullscreen = false;
 	bool resizable = false;
 	bool borderless = false;
