@@ -117,6 +117,11 @@ update_status ModuleInput::PreUpdate(float dt)
 	if(quit == true || keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)
 		return UPDATE_STOP;
 
+	if (keyboard[SDL_SCANCODE_F5] == KEY_DOWN)
+		App->Save();
+	if (keyboard[SDL_SCANCODE_F6] == KEY_DOWN)
+		App->Load();
+
 	return UPDATE_CONTINUE;
 }
 
@@ -125,5 +130,18 @@ bool ModuleInput::CleanUp()
 {
 	LOG("Quitting SDL input event subsystem");
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
+	return true;
+}
+
+bool ModuleInput::Save(nlohmann::json & j) const
+{
+	j["Input"]["mousePosX"] = GetMouseX();
+	j["Input"]["mousePosY"] = GetMouseY();
+	return true;
+}
+
+bool ModuleInput::Load(nlohmann::json & j)
+{
+	
 	return true;
 }

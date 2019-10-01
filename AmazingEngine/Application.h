@@ -74,6 +74,10 @@ public:
 	bool Init();
 	update_status Update();
 	bool CleanUp();
+
+	bool Save();
+	bool Load();
+
 	void GetFrames(int& frames, float& miliseconds);
 
 	void RerquestBrowser(const char*);

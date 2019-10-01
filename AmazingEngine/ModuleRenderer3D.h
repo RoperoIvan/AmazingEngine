@@ -17,6 +17,9 @@ public:
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 
+	bool Save(nlohmann::json &j) const override;
+	bool Load(nlohmann::json &j) override;
+
 	void OnResize(int width, int height);
 
 public:

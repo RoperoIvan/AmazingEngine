@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "glmath.h"
+#include "json.hpp"
 
 class ModuleCamera3D : public Module
 {
@@ -12,6 +13,9 @@ public:
 	bool Start();
 	update_status Update(float dt);
 	bool CleanUp();
+
+	bool Save(nlohmann::json &j) const override;
+	bool Load(nlohmann::json &j) override;
 
 	void Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
 	void LookAt(const vec3 &Spot);

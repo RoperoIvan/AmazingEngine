@@ -158,6 +158,18 @@ bool ModuleRenderer3D::CleanUp()
 	return true;
 }
 
+bool ModuleRenderer3D::Save(nlohmann::json & j) const
+{
+	j["Renderer"]["vsync"] = vsync;
+	return true;
+}
+
+bool ModuleRenderer3D::Load(nlohmann::json & j)
+{
+	vsync = j["Renderer"]["vsync"].get<bool>();
+	return true;
+}
+
 
 void ModuleRenderer3D::OnResize(int width, int height)
 {

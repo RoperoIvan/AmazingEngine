@@ -34,6 +34,16 @@ bool ModuleCamera3D::CleanUp()
 	return true;
 }
 
+bool ModuleCamera3D::Save(nlohmann::json & j) const
+{
+	return true;
+}
+
+bool ModuleCamera3D::Load(nlohmann::json & j)
+{
+	return true;
+}
+
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {

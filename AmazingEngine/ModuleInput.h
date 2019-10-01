@@ -23,6 +23,10 @@ public:
 	update_status PreUpdate(float dt);
 	bool CleanUp();
 
+	bool Save(nlohmann::json &j) const override;
+	bool Load(nlohmann::json &j) override;
+
+
 	KEY_STATE GetKey(int id) const
 	{
 		return keyboard[id];

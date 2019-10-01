@@ -20,6 +20,10 @@ public:
 	update_status Update(float dt);
 	update_status PostUpdate(float dt);
 	bool CleanUp();
+
+	bool Save(nlohmann::json &j) const override;
+	bool Load(nlohmann::json &j) override;
+
 	void CollisionsBetweenObjects();
 	void AboutWindow(bool show_about_window);
 	void ConfigurationWindow(bool show_config_window);
@@ -34,7 +38,7 @@ private:
 	bool resizable = false;
 	bool borderless = false;
 	bool full_desktop = false;
-	float brightness = 1.0f;
+	
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;
 	SDL_WindowFlags window_flags;

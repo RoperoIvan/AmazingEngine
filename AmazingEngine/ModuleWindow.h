@@ -18,12 +18,15 @@ public:
 	bool Init();
 	bool CleanUp();
 
+	bool Save(nlohmann::json &j) const override;
+	bool Load(nlohmann::json &j) override;
+
 	void SetTitle(const char* title);
 
 public:
 	//The window we'll be rendering to
 	SDL_Window* window;
-
+	float brightness = 1.0f;
 	//The surface contained by the window
 	SDL_Surface* screen_surface;
 };

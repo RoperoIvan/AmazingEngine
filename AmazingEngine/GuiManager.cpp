@@ -9,13 +9,9 @@
 #include "GuiManager.h"
 #include "ModuleRenderer3D.h"
 #include "Primitive.h"
-#include "json.hpp"
 
 #include <fstream>
 #include <iomanip>
-
-using json = nlohmann::json;
-
 
 GuiManager::GuiManager(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -133,6 +129,16 @@ bool GuiManager::CleanUp()
 	return true;
 }
 
+bool GuiManager::Save(nlohmann::json & j) const
+{
+	return true;
+}
+
+bool GuiManager::Load(nlohmann::json & j)
+{
+	return true;
+}
+
 void GuiManager::CollisionsBetweenObjects()
 {
 	/*LCG rand;
@@ -179,7 +185,7 @@ void GuiManager::CollisionsBetweenObjects()
 
 void GuiManager::ConfigurationWindow(bool show_conf_window)
 {
-	json j;
+	nlohmann::json j;
 	std::ifstream ifs("config.json");
 	if (!ifs.is_open())
 		LOG("Error to load file", SDL_GetError());
@@ -321,8 +327,8 @@ void GuiManager::ConfigurationWindow(bool show_conf_window)
 				ImGui::Checkbox("Active", &App->renderer3D->vsync);
 				ImGui::TextWrapped("Icon:  *default*");
 
-				ImGui::SliderFloat("Brightness", &brightness, 0, 1);
-				SDL_SetWindowBrightness(App->window->window, brightness);
+				ImGui::SliderFloat("Brightness", &App->window->brightness, 0, 1);
+				SDL_SetWindowBrightness(App->window->window, App->window->brightness);
 				//windows size with combo
 				const char* items[] = { "800x600", "1024x768", "1152x864", "1176x664", "1280x768", "1280x800", "1280x960", "1280x1024", "1360x768", "1440x900","1440x1280" };
 				static int item_current = 7;
