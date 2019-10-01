@@ -165,7 +165,6 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Color.cpp" />
-    <ClCompile Include="ConsoleManager.cpp" />
     <ClCompile Include="glmath.cpp" />
     <ClCompile Include="GuiManager.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
