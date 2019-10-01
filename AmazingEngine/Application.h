@@ -50,7 +50,6 @@ private:
 	uint last_frame_ms;
 	uint frame_ms;
 	std::list<Module*> list_modules;
-
 public:
 	bool					is_console;
 	Timer					ptimer;
@@ -66,7 +65,6 @@ public:
 	uint					frames_on_last_update = 0u;
 	float					dt;
 	uint					maxFrames = 60u;
-	
 	std::list<uint>		lastFrames[100];
 public:
 

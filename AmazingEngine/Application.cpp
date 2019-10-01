@@ -117,7 +117,6 @@ void Application::FinishUpdate()
 	{
 		SDL_Delay(framerate_cap - last_frame_ms);
 	}
-
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules

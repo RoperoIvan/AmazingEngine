@@ -41,7 +41,6 @@ private:
 	SDL_GLContext gl_context;
 
 
-
 	//math::Sphere sph;
 	//math::Cylinder cyl;
 	//math::Capsule cap;
