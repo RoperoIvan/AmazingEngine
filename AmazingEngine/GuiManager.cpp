@@ -477,7 +477,15 @@ void GuiManager::AboutWindow(bool show_about_win)
 	{
 		ImGui::Text("Amazing Engine version 0.1");
 		ImGui::NewLine();
-		ImGui::Text("This engine is being developed by Didac Llop and Ivan Ropero.");
+		ImGui::Text("This engine is being developed by ");
+		ImGui::SameLine();
+		if(ImGui::Button("Didac Llop"))
+			App->RerquestBrowser("https://github.com/didaclis");
+		ImGui::SameLine();
+		ImGui::Text("and");
+		ImGui::SameLine();
+		if (ImGui::Button("Ivan Ropero"))
+			App->RerquestBrowser("https://github.com/RoperoIvan");
 		ImGui::NewLine();
 		if (ImGui::CollapsingHeader("License"))
 		{
@@ -492,16 +500,20 @@ void GuiManager::AboutWindow(bool show_about_win)
 		}
 		if (ImGui::CollapsingHeader("Libraries"))
 		{
-			ImGui::Text("SDL 2.0.4");
+			if (ImGui::Button("SDL 2.0.4"))
+				App->RerquestBrowser("https://www.libsdl.org/");
 			ImGui::NewLine();
-			ImGui::Text("GLEW 2.1.0");
+			if (ImGui::Button("GLEW 2.1.0"))
+				App->RerquestBrowser("http://glew.sourceforge.net/");
 			ImGui::NewLine();
-			ImGui::Text("ImGui 1.7.3");
+			if (ImGui::Button("ImGui 1.7.3"))
+				App->RerquestBrowser("https://github.com/ocornut/imgui");
 			ImGui::NewLine();
-			ImGui::Text("MathGeoLib 1.5.0");
+			if(ImGui::Button("MathGeoLib 1.5.0"))
+				App->RerquestBrowser("https://github.com/juj/MathGeoLib");
 			ImGui::NewLine();
-			ImGui::Text("OpenGL 3.1.0");
-			ImGui::NewLine();
+			if(ImGui::Button("OpenGL 3.1.0"))
+				App->RerquestBrowser("https://www.khronos.org/registry/OpenGL-Refpages/es3.0/");
 		}
 	}
 	ImGui::End();
