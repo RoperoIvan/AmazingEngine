@@ -5,8 +5,11 @@
 #include "Globals.h"
 #include "MathGeoLib/include/MathBuildConfig.h"
 #include "MathGeoLib/include/MathGeoLib.h"
+#include "MathGeoLib/include/Math/MathAll.h"
 #include <vector>
 #include "ConsoleManager.h"
+
+typedef unsigned char GLubyte;
 
 class GuiManager: public Module
 {
@@ -42,12 +45,23 @@ private:
 	SDL_WindowFlags window_flags;
 	SDL_GLContext gl_context;
 
+	//Geometry
+	float vertex[120];
 
-	//math::Sphere sph;
-	//math::Cylinder cyl;
-	//math::Capsule cap;
-	//math::Ray ray;
-	//math::AABB aabb;
+	//--indice elements
+	float vertices[24] =
+	{
+		0.0, 0.0, 0.0, //0
+		4.0, 0.0, 0.0, //1
+		0.0, 40.0, 0.0, //2
+	};
+	GLubyte indices[36] =
+	{ 0 ,1 ,2 };
+
+	int num_of_vertex = 0;
+	int my_indices = 0;
+	int num_indices = 8;
+	uint array_id = 0;
 	AppConsole console;
 	ImGuiTextBuffer text;
 
