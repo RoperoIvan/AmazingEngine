@@ -30,6 +30,8 @@ public:
 	
 	vec3 X, Y, Z, Position, Reference;
 
+	float camera_speed = 0.01;
+
 private:
 
 	mat4x4 ViewMatrix, ViewMatrixInverse;

@@ -100,18 +100,66 @@ update_status GuiManager::PreUpdate(float dt)
 
 update_status GuiManager::Update(float dt)
 {
-	CollisionsBetweenObjects();
+	
 	P_Plane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
 
-	// draw a line 10 units upwards
 	glLineWidth(2.0f);
-	glBegin(GL_LINES);
+
+
+	//Direct mode drawing
+	glBegin(GL_TRIANGLES);
+	//1
+	glVertex3f(0.f, 0.f, 2.f);
 	glVertex3f(0.f, 0.f, 0.f);
-	glVertex3f(0.f, 10.f, 0.f);
+	glVertex3f(2.f, 0.f, 0.f);
+	//2
+	glVertex3f(2.f, 0.f, 2.f);
+	glVertex3f(0.f, 0.f, 2.f);
+	glVertex3f(2.f, 0.f, 0.f);
+	//3
+	glVertex3f(2.f, 0.f, 2.f);
+	glVertex3f(2.f, 0.f, 0.f);
+	glVertex3f(2.f, 2.f, 0.f);
+	//4
+	glVertex3f(2.f, 2.f, 2.f);
+	glVertex3f(2.f, 0.f, 2.f);
+	glVertex3f(2.f, 2.f, 0.f);
+	//5
+	glVertex3f(2.f, 0.f, 2.f);
+	glVertex3f(2.f, 2.f, 2.f);
+	glVertex3f(0.f, 2.f, 2.f);
+	//6
+	glVertex3f(0.f, 0.f, 2.f);
+	glVertex3f(2.f, 0.f, 2.f);
+	glVertex3f(0.f, 2.f, 2.f);
+	//7
+	glVertex3f(2.f, 2.f, 2.f);
+	glVertex3f(2.f, 2.f, 0.f);
+	glVertex3f(0.f, 2.f, 0.f);
+	//8
+	glVertex3f(0.f, 2.f, 2.f);
+	glVertex3f(2.f, 2.f, 2.f);
+	glVertex3f(0.f, 2.f, 0.f);
+	//9
+	glVertex3f(0.f, 2.f, 2.f);
+	glVertex3f(0.f, 2.f, 0.f);
+	glVertex3f(0.f, 0.f, 0.f);
+	//10
+	glVertex3f(0.f, 0.f, 2.f);
+	glVertex3f(0.f, 2.f, 2.f);
+	glVertex3f(0.f, 0.f, 0.f);
+	//11
+	glVertex3f(0.f, 0.f, 0.f);
+	glVertex3f(0.f, 2.f, 0.f);
+	glVertex3f(2.f, 2.f, 0.f);
+	//12
+	glVertex3f(2.f, 0.f, 0.f);
+	glVertex3f(0.f, 0.f, 0.f);
+	glVertex3f(2.f, 2.f, 0.f);
 	glEnd();
-	glLineWidth(1.0f);
+
 
 	return UPDATE_CONTINUE;
 }
@@ -143,50 +191,6 @@ bool GuiManager::Save(nlohmann::json & j) const
 bool GuiManager::Load(nlohmann::json & j)
 {
 	return true;
-}
-
-void GuiManager::CollisionsBetweenObjects()
-{
-	/*LCG rand;
-	float sph_posx = rand.Float(0, 20);
-	float sph_posy = rand.Float(0, 20);
-	float sph_posz = rand.Float(0, 20);
-	sph.r = rand.Float(0, 10);
-	sph.pos.Set(sph_posx, sph_posy, sph_posz);
-
-	float cap_posx = rand.Float(0, 20);
-	float cap_posy = rand.Float(0, 20);
-	float cap_posz = rand.Float(0, 20);
-	float cap_posx2 = rand.Float(0, 20);
-	float cap_posy2 = rand.Float(0, 20);
-	float cap_posz2 = rand.Float(0, 20);
-	cap.l.a.Set(cap_posx, cap_posy, cap_posz);
-	cap.l.b.Set(cap_posx2, cap_posy2, cap_posz2);
-	cap.r = rand.Float(0, 10);
-
-	float ray_pos_x = rand.Float(0, 20);
-	float ray_pos_y = rand.Float(0, 20);
-	float ray_pos_z = rand.Float(0, 20);
-	ray.pos.Set(ray_pos_x, ray_pos_y, ray_pos_z);
-	float ray_dirx = rand.Float(0, 20);
-	float ray_diry = rand.Float(0, 20);
-	float ray_dirz = rand.Float(0, 20);
-	ray.dir.Set(ray_dirx, ray_diry, ray_dirz);
-	ray.dir.Normalize();
-
-	if (sph.Intersects(cap))
-	{
-		LOG("SPHERE AND CAPSULE ARE INTERSECTED");
-	}
-	if (sph.Intersects(ray))
-	{
-		LOG("SPHERE AND RAY ARE INTERSECTED");
-	}
-	if (cap.Intersects(ray))
-	{
-		LOG("RAY AND CAPSULE ARE INTERSECTED");
-	}
-	LOG("...........................");*/
 }
 
 void GuiManager::ConfigurationWindow(bool show_conf_window)

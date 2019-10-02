@@ -23,8 +23,6 @@ public:
 
 	bool Save(nlohmann::json &j) const override;
 	bool Load(nlohmann::json &j) override;
-
-	void CollisionsBetweenObjects();
 	void AboutWindow(bool show_about_window);
 	void ConfigurationWindow(bool show_config_window);
 	void ShowAppConsole(bool show_console);
