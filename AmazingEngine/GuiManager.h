@@ -3,8 +3,8 @@
 
 #include "Module.h"
 #include "Globals.h"
-//#include "MathGeoLib/include/MathBuildConfig.h"
-//#include "MathGeoLib/include/MathGeoLib.h"
+#include "MathGeoLib/include/MathBuildConfig.h"
+#include "MathGeoLib/include/MathGeoLib.h"
 #include <vector>
 #include "ConsoleManager.h"
 

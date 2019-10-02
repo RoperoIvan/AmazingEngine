@@ -101,11 +101,17 @@ update_status GuiManager::PreUpdate(float dt)
 update_status GuiManager::Update(float dt)
 {
 	CollisionsBetweenObjects();
-	Plane p(0, 1, 0, 0);
+	P_Plane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
 
-	
+	// draw a line 10 units upwards
+	glLineWidth(2.0f);
+	glBegin(GL_LINES);
+	glVertex3f(0.f, 0.f, 0.f);
+	glVertex3f(0.f, 10.f, 0.f);
+	glEnd();
+	glLineWidth(1.0f);
 
 	return UPDATE_CONTINUE;
 }

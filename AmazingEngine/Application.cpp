@@ -79,7 +79,7 @@ bool Application::Init()
 	ms_timer.Start();
 	
 
-	Load();
+	/*Load();*/
 	return ret;
 }
 
