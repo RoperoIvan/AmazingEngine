@@ -196,7 +196,7 @@ bool GuiManager::Start()
 	vertex[107] = 20.f;
 
 	//alloc vertex
-	num_of_vertex = 39;
+	num_of_vertex = 36;
 	glGenBuffers(1, (GLuint*)& (array_id));
 	glBindBuffer(GL_ARRAY_BUFFER, array_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float)* num_of_vertex * 3, vertex, GL_STATIC_DRAW);
