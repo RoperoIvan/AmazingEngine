@@ -47,21 +47,26 @@ private:
 
 	//Geometry
 	float vertex[120];
-
+	float plane[480];
 	//--indice elements
-	float vertices[24] =
-	{
-		0.0, 0.0, 0.0, //0
-		4.0, 0.0, 0.0, //1
-		0.0, 40.0, 0.0, //2
-	};
-	GLubyte indices[36] =
-	{ 0 ,1 ,2 };
+	float e_vetrex[24] =
+	{	10,0,0,		12,0,0,
+		12,2,0,		10,2,0,
+		10,2,-2,	10,0,-2,
+		12,0,-2,	12,2,-2};
+	GLubyte e_index[36] = {1,2,4, 2,3,4,
+						   2,7,3, 7,8,3,
+						   6,1,5, 1,4,5,
+						   4,3,5, 3,8,5,
+						   1,2,7, 1,6,7,
+						   6,7,8, 6,8,5};
 
 	int num_of_vertex = 0;
 	int my_indices = 0;
 	int num_indices = 8;
 	uint array_id = 0;
+	uint element_id = 2;
+	uint plane_id = 1;
 	AppConsole console;
 	ImGuiTextBuffer text;
 

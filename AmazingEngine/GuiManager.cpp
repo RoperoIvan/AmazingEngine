@@ -197,9 +197,55 @@ bool GuiManager::Start()
 
 	//alloc vertex
 	num_of_vertex = 36;
-	glGenBuffers(1, (GLuint*)& (array_id));
+	glGenBuffers(3, (GLuint*)& (array_id));
 	glBindBuffer(GL_ARRAY_BUFFER, array_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float)* num_of_vertex * 3, vertex, GL_STATIC_DRAW);
+
+	//elements
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_id);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float)* 36, e_index, GL_STATIC_DRAW);
+
+	glColor3f(255, 255, 255);
+	int i = 0;
+	for (int j = 0; j < 20; ++j)
+	{
+		plane[i] = j;
+		plane[i + 1] = 0;
+		plane[i + 2] = -20;
+
+		plane[i + 3] = j;
+		plane[i + 4] = 0;
+		plane[i + 5] = 20;
+
+		plane[i + 6] = -j;
+		plane[i + 7] = 0;
+		plane[i + 8] = -20;
+
+		plane[i + 9] = -j;
+		plane[i + 10] = 0;
+		plane[i + 11] = 20;
+
+		plane[i + 12] = 20;
+		plane[i + 13] = 0;
+		plane[i + 14] = -j;
+
+		plane[i + 15] = -20;
+		plane[i + 16] = 0;
+		plane[i + 17] = -j;
+
+		plane[i + 18] = 20;
+		plane[i + 19] = 0;
+		plane[i + 20] = j;
+
+		plane[i + 21] = -20;
+		plane[i + 22] = 0;
+		plane[i + 23] = j;
+	
+		i+= 24;
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, plane_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float)* 20 * 8 * 3, plane, GL_STATIC_DRAW);
 
 	return true;
 }
@@ -270,6 +316,7 @@ update_status GuiManager::Update(float dt)
 	//Direct mode cube
 	glBegin(GL_TRIANGLES);
 
+	glColor3f(255, 0, 0);
 	// DOWN FACE
 	//1
 	glVertex3f(0.f, 0.f, 2.f);
@@ -334,6 +381,21 @@ update_status GuiManager::Update(float dt)
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 	// ... draw other buffers
 	glDrawArrays(GL_TRIANGLES, 0, num_of_vertex * 3);
+
+
+	//draw Elements
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_id);
+	glVertexPointer(3, GL_FLOAT, 0, e_index);
+	// ... draw other buffers
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT,NULL);
+
+	// draw plane
+	glColor3f(255,255,255);
+	glBindBuffer(GL_ARRAY_BUFFER, plane_id);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	// ... draw other buffers
+	glDrawArrays(GL_LINES, 0, 20 * 8 * 3);
+
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 
@@ -371,13 +433,6 @@ bool GuiManager::Load(nlohmann::json & j)
 
 void GuiManager::ConfigurationWindow(bool show_conf_window)
 {
-	nlohmann::json j;
-	std::ifstream ifs("config.json");
-	if (!ifs.is_open())
-		LOG("Error to load file", SDL_GetError());
-
-	ifs >> j;
-
 	// Settings of the engine tab
 
 	if (show_config_window)
@@ -390,15 +445,9 @@ void GuiManager::ConfigurationWindow(bool show_conf_window)
 			// Application options tab
 			if (ImGui::CollapsingHeader("Application"))
 			{
-
-				std::string str0 = j["info"]["name"].get<std::string>();
-
-				static char str1;
-				std::strcpy(&str1, str0.c_str());
-
-
+				static char* str1 = "Amazing Engine";
 				ImGui::Text("App Name:     ");
-				ImGui::SameLine(); ImGui::InputText(" ", &str1, IM_ARRAYSIZE(&str1));
+				ImGui::SameLine(); ImGui::InputText(" ", str1, IM_ARRAYSIZE(str1));
 
 				ImGui::Text("Organitzation:");
 				ImGui::SameLine();
