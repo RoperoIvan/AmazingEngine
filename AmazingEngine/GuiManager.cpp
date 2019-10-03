@@ -196,14 +196,21 @@ bool GuiManager::Start()
 	vertex[107] = 20.f;
 
 	//alloc vertex
-	num_of_vertex = 36;
 	glGenBuffers(3, (GLuint*)& (array_id));
 	glBindBuffer(GL_ARRAY_BUFFER, array_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float)* num_of_vertex * 3, vertex, GL_STATIC_DRAW);
 
-	//elements
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_id);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float)* 36, e_index, GL_STATIC_DRAW);
+	//Indices way
+
+	glGenBuffers(1, (GLuint*) &(my_id));
+	glGenBuffers(1, (GLuint*) &(my_indices));
+	glBindBuffer(GL_ARRAY_BUFFER, my_id);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 8 * 3, vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint)*number_of_indices, indices, GL_STATIC_DRAW);
+
+
+	//Plane
 
 	glColor3f(255, 255, 255);
 	int i = 0;
@@ -381,15 +388,21 @@ update_status GuiManager::Update(float dt)
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 	// ... draw other buffers
 	glDrawArrays(GL_TRIANGLES, 0, num_of_vertex * 3);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	//Indeces Cube
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
+	glBindBuffer(GL_ARRAY_BUFFER, my_id);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+	glDrawElements(GL_TRIANGLES, number_of_indices, GL_UNSIGNED_BYTE, NULL);
+	glDisableClientState(GL_VERTEX_ARRAY);
 
 
-	//draw Elements
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_id);
-	glVertexPointer(3, GL_FLOAT, 0, e_index);
-	// ... draw other buffers
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT,NULL);
 
-	// draw plane
+	// Plane
+	glEnableClientState(GL_VERTEX_ARRAY);
 	glColor3f(255,255,255);
 	glBindBuffer(GL_ARRAY_BUFFER, plane_id);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);

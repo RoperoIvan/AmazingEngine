@@ -10,6 +10,7 @@
 #include "ConsoleManager.h"
 
 typedef unsigned char GLubyte;
+typedef float GLfloat;
 
 class GuiManager: public Module
 {
@@ -48,27 +49,31 @@ private:
 	//Geometry
 	float vertex[120];
 	float plane[480];
-	//--indice elements
-	float e_vetrex[24] =
-	{	10,0,0,		12,0,0,
-		12,2,0,		10,2,0,
-		10,2,-2,	10,0,-2,
-		12,0,-2,	12,2,-2};
-	GLubyte e_index[36] = {1,2,4, 2,3,4,
-						   2,7,3, 7,8,3,
-						   6,1,5, 1,4,5,
-						   4,3,5, 3,8,5,
-						   1,2,7, 1,6,7,
-						   6,7,8, 6,8,5};
-
-	int num_of_vertex = 0;
-	int my_indices = 0;
-	int num_indices = 8;
+	//------------------
+	int num_of_vertex = 36;
 	uint array_id = 0;
-	uint element_id = 2;
 	uint plane_id = 1;
 	AppConsole console;
 	ImGuiTextBuffer text;
+	//Indeces
+	GLfloat vertices[24] = 
+	{ 
+		10,0,0,		12,0,0,
+		12,2,0,		10,2,0,
+		10,2,-2,	10,0,-2,
+		12,0,-2,	12,2,-2 
+	};
 
+	GLubyte indices[36] = 
+	  { 0,1,2, 2,3,0,   // 36 of indices
+		0,3,4, 4,5,0,
+		0,5,6, 6,1,0,
+		1,6,7, 7,2,1,
+		7,4,3, 3,2,7,
+		4,7,6, 6,5,4 };
+
+	uint my_id = 2;
+	uint my_indices = 1;
+	uint number_of_indices = 36;
 };
 #endif
