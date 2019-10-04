@@ -196,7 +196,7 @@ bool GuiManager::Start()
 	vertex[107] = 20.f;
 
 	//alloc vertex
-	glGenBuffers(3, (GLuint*)& (array_id));
+	glGenBuffers(1, (GLuint*)& (array_id));
 	glBindBuffer(GL_ARRAY_BUFFER, array_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float)* num_of_vertex * 3, vertex, GL_STATIC_DRAW);
 
@@ -395,7 +395,6 @@ update_status GuiManager::Update(float dt)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
 	glBindBuffer(GL_ARRAY_BUFFER, my_id);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
-
 	glDrawElements(GL_TRIANGLES, number_of_indices, GL_UNSIGNED_BYTE, NULL);
 	glDisableClientState(GL_VERTEX_ARRAY);
 

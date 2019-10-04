@@ -43,7 +43,6 @@ public:
 	ModuleRenderer3D* renderer3D;
 	ModuleCamera3D* camera;
 	GuiManager* guiManager;
-
 private:
 
 	Timer	ms_timer;
