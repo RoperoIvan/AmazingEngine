@@ -412,6 +412,9 @@
     <ClInclude Include="Application.h">
       <Filter>Modules</Filter>
     </ClInclude>
+    <ClInclude Include="PhysFS\include\physfs.h">
+      <Filter>Physfs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\include\Geometry\KDTree.inl">
@@ -454,6 +457,9 @@
     </Filter>
     <Filter Include="JSON">
       <UniqueIdentifier>{274bd92c-4c0f-4fd2-8fb7-fad05c739446}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physfs">
+      <UniqueIdentifier>{5202d10a-90b4-44c0-b219-38b939f7935b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

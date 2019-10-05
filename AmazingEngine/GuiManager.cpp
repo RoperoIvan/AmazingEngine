@@ -14,6 +14,10 @@
 #include <fstream>
 #include <iomanip>
 
+#include "PhysFS/include/physfs.h"
+
+#pragma(lib, "PhysFS/libx86/physfs.lib")
+
 GuiManager::GuiManager(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 }
