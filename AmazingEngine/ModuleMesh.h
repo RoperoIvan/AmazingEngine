@@ -26,14 +26,13 @@ public:
 	~ModuleMesh();
 
 	virtual bool Init();
-
-	virtual bool Start();
-	virtual update_status PreUpdate(float dt);
-	virtual update_status Update(float dt);
-	virtual update_status PostUpdate(float dt);
+	virtual update_status PostUpdate(float dt)override;
 	virtual bool CleanUp();
 
 	bool LoadFile(const char* file_name);
+
+public:
+	Mesh_data* data;
 };
 
 
