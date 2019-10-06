@@ -8,7 +8,9 @@
 
 struct Geometry
 {
-	Geometry(float* ver, uint* ind, uint num_vert, uint num_ind);
+	Geometry(float* ver, uint* ind,float* norm, uint num_vert, uint num_ind, uint num_norm);
+	Geometry(Geometry* geo);
+	Geometry();
 	~Geometry();
 	void Draw();
 
@@ -18,18 +20,10 @@ struct Geometry
 	uint id_indices = 0;  
 	uint num_indices = 0;
 	uint* indices = nullptr;
+	uint id_normals = 2;
+	uint num_normals = 0;
+	float* normals = nullptr;
 };
-
-
-
-
-
-
-
-
-
-
-
 
 
 #endif //_GEOMETRY_H

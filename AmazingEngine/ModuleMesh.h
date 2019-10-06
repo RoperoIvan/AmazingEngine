@@ -8,18 +8,6 @@
 #include "Module.h"
 #include <vector>
 
-struct Mesh_data
-{
-	uint id_index = 0; // index in VRAM
-	uint num_index = 0;
-	uint* index = nullptr;
-
-	uint id_vertex = 0; // unique vertex in VRAM
-	uint num_vertex = 0;
-	float* vertex = nullptr;
-};
-
-
 class ModuleMesh : public Module
 {
 public:
@@ -32,8 +20,9 @@ public:
 
 	bool LoadFile(const char* file_name);
 
+private:
+	float TriangleCenterAxis(const float &p1, const float &p2, const float &p3);
 public:
-	Mesh_data* data;
 	std::vector<Geometry*> geometry;
 };
 

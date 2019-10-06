@@ -47,21 +47,24 @@ bool ModuleMesh::LoadFile(const char * file_name)
 {
 	bool ret = false;
 
-	const aiScene* scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_MaxQuality);
+	const aiScene* scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_Quality);
 	if (scene != nullptr && scene->HasMeshes())
 	{
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		for (int i = 0; i < scene->mNumMeshes; ++i)
 		{
-			data = new Mesh_data();
-			data->num_vertex = scene->mMeshes[i]->mNumVertices;
-			data->num_index = scene->mMeshes[i]->mNumFaces * 3;
-			data->vertex = new float[data->num_vertex * 3];
-			memcpy(data->vertex, scene->mMeshes[i]->mVertices, sizeof(float) * data->num_vertex * 3);
-			data->index = new uint[data->num_index * 3];
-			LOG("New mesh with %d vertices", data->vertex);
+			Geometry* data = new Geometry();
+			//Load vertex
+			data->num_vertices = scene->mMeshes[i]->mNumVertices;
+			data->vertices = new float[data->num_vertices * 3];
+			memcpy(data->vertices, scene->mMeshes[i]->mVertices, sizeof(float) * data->num_vertices * 3);
+			LOG("New mesh with %d vertices", data->vertices);
+
+			//load index
 			if (scene->mMeshes[i]->HasFaces())
-			{						
+			{	
+				data->num_indices = scene->mMeshes[i]->mNumFaces*3;
+				data->indices = new uint[data->num_indices * 3];
 				for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; ++j)
 				{
 					if (scene->mMeshes[i]->mFaces[j].mNumIndices != 3)
@@ -69,19 +72,53 @@ bool ModuleMesh::LoadFile(const char * file_name)
 						LOG("WARNING, geometry face with != 3 indices!");
 					}
 					else
-						memcpy(&data->index[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, 3 * sizeof(uint));
+						memcpy(&data->indices[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, 3 * sizeof(uint));
 				}
+				//load normals
+				if (scene->mMeshes[i]->HasNormals())
+				{
+					for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; ++j)
+					{
+						data->num_normals = scene->mMeshes[i]->mNumFaces * 2;
+						data->normals = new float[data->num_normals * 3];
 
+						aiVector3D *vertx1 = new aiVector3D( data->indices[j * 9],data->indices[j * 3 + 1],data->indices[j * 3 + 2] );
+						aiVector3D *vertx2 = new aiVector3D(data->indices[j * 9 + 3],data->indices[j * 3 + 4],data->indices[j * 3 + 5] );
+						aiVector3D *vertx3 = new aiVector3D(data->indices[j * 9 + 6],data->indices[j * 3 + 7],data->indices[j * 3 + 8] );
+
+						aiVector3D *triangle_middle_point = new aiVector3D (TriangleCenterAxis(vertx1->x,vertx2->x,vertx3->x),TriangleCenterAxis(vertx1->y,vertx2->y,vertx3->y),TriangleCenterAxis(vertx1->z,vertx2->z,vertx3->z));
+						
+						memcpy(&data->normals[j * 6], triangle_middle_point, 3 * sizeof(float));
+
+						aiVector3D *normal_point = new aiVector3D(*triangle_middle_point + *scene->mMeshes[i]->mNormals);
+
+						memcpy(&data->normals[j * 6 + 3], &triangle_middle_point, 3 * sizeof(float));
+
+						delete[] vertx1;
+						vertx1 = nullptr;
+						delete[] vertx2;
+						vertx1 = nullptr;
+						delete[] vertx3;
+						vertx1 = nullptr;
+					}
+				}
 			}
-			Geometry* new_geom = new Geometry(data->vertex, data->index, scene->mMeshes[i]->mNumVertices, scene->mMeshes[i]->mNumFaces);
-
-			geometry.push_back(new_geom);
+			Geometry* geo = new Geometry(data);
+			geometry.push_back(geo);
 			LOG("New mesh created from %s", file_name);
 		}
 		aiReleaseImport(scene);
 	}
 	else
 		LOG("Error loading scene %s", file_name);
-
+	
 	return ret;
 }
+
+float ModuleMesh::TriangleCenterAxis(const float & p1, const float & p2, const float & p3)
+{
+	float middle_point = p1 - p2;
+
+	return (middle_point + p3)*0.5;
+}
+
