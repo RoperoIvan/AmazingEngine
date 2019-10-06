@@ -105,6 +105,10 @@ update_status ModuleInput::PreUpdate(float dt)
 			case SDL_QUIT:
 			quit = true;
 			break;
+			case SDL_DROPFILE:
+				p_file = e.drop.file;
+				file_drop = true;
+				break;
 
 			case SDL_WINDOWEVENT:
 			{
