@@ -8,8 +8,8 @@
 #include "ModuleRenderer3D.h"
 #include "ModuleCamera3D.h"
 #include "GuiManager.h"
+#include "ModuleMesh.h"
 #include "Timer.h"
-
 #include <list>
 #include <vector>
 
@@ -43,6 +43,7 @@ public:
 	ModuleRenderer3D* renderer3D;
 	ModuleCamera3D* camera;
 	GuiManager* guiManager;
+	ModuleMesh* mesh;
 private:
 
 	Timer	ms_timer;

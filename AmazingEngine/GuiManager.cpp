@@ -13,10 +13,9 @@
 #include "SDL/include/SDL_opengl.h"
 #include <fstream>
 #include <iomanip>
-
 #include "PhysFS/include/physfs.h"
 
-#pragma(lib, "PhysFS/libx86/physfs.lib")
+#pragma comment (lib, "PhysFS/libx86/physfs.lib")
 
 GuiManager::GuiManager(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -30,8 +29,6 @@ bool GuiManager::Init()
 {
 	bool ret = true;
 	ImGui::CreateContext();
-
-
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
 	ImGui_ImplOpenGL3_Init();
 
@@ -41,223 +38,15 @@ bool GuiManager::Init()
 
 bool GuiManager::Start()
 {
-	////---1
-	//vertex[0] = 20.f;
-	//vertex[1] = 20.f;
-	//vertex[2] = 30.f;
-
-	//vertex[3] = 20.f;
-	//vertex[4] = 20.f;
-	//vertex[5] = 20.f;
-
-	//vertex[6] = 30.f;
-	//vertex[7] = 20.f;
-	//vertex[8] = 20.f;
-
-	////-----2
-	//vertex[9] = 30.f;
-	//vertex[10] = 20.f;
-	//vertex[11] = 30.f;
-
-	//vertex[12] = 20.f;
-	//vertex[13] = 20.f;
-	//vertex[14] = 30.f;
-
-	//vertex[15] = 30.f;
-	//vertex[16] = 20.f;
-	//vertex[17] = 20.f;
-
-	////------3
-	//vertex[18] = 30.f;
-	//vertex[19] = 20.f;
-	//vertex[20] = 30.f;
-
-	//vertex[21] = 30.f;
-	//vertex[22] = 20.f;
-	//vertex[23] = 20.f;
-
-	//vertex[24] = 30.f;
-	//vertex[25] = 30.f;
-	//vertex[26] = 20.f;
-
-	////-----4
-	//vertex[27] = 30.f;
-	//vertex[28] = 30.f;
-	//vertex[29] = 30.f;
-
-	//vertex[30] = 30.f;
-	//vertex[31] = 20.f;
-	//vertex[32] = 30.f;
-
-	//vertex[33] = 30.f;
-	//vertex[34] = 30.f;
-	//vertex[35] = 20.f;
-
-	////---------------5
-	//vertex[36] = 30.f;
-	//vertex[37] = 20.f;
-	//vertex[38] = 30.f;
-
-	//vertex[39] = 30.f;
-	//vertex[40] = 30.f;
-	//vertex[41] = 30.f;
-
-	//vertex[42] = 20.f;
-	//vertex[43] = 30.f;
-	//vertex[44] = 30.f;
-
-
-	////--------------6
-	//vertex[45] = 20.f;
-	//vertex[46] = 20.f;
-	//vertex[47] = 30.f;
-
-	//vertex[48] = 30.f;
-	//vertex[49] = 20.f;
-	//vertex[50] = 30.f;
-
-	//vertex[51] = 20.f;
-	//vertex[52] = 30.f;
-	//vertex[53] = 30.f;
-
-	////---------------7
-	//vertex[54] = 30.f;
-	//vertex[55] = 30.f;
-	//vertex[56] = 30.f;
-
-	//vertex[57] = 30.f;
-	//vertex[58] = 30.f;
-	//vertex[59] = 20.f;
-
-	//vertex[60] = 20.f;
-	//vertex[61] = 30.f;
-	//vertex[62] = 20.f;
-
-	////---------------8
-	//vertex[63] = 20.f;
-	//vertex[64] = 30.f;
-	//vertex[65] = 30.f;
-
-	//vertex[66] = 30.f;
-	//vertex[67] = 30.f;
-	//vertex[68] = 30.f;
-
-	//vertex[69] = 20.f;
-	//vertex[70] = 30.f;
-	//vertex[71] = 20.f;
-
-	////---------------9
-	//vertex[72] = 20.f;
-	//vertex[73] = 30.f;
-	//vertex[74] = 30.f;
-
-	//vertex[75] = 20.f;
-	//vertex[76] = 30.f;
-	//vertex[77] = 20.f;
-
-	//vertex[78] = 20.f;
-	//vertex[79] = 20.f;
-	//vertex[80] = 20.f;
-
-
-	////-----------10
-	//vertex[81] = 20.f;
-	//vertex[82] = 20.f;
-	//vertex[83] = 30.f;
-
-	//vertex[84] = 20.f;
-	//vertex[85] = 30.f;
-	//vertex[86] = 30.f;
-
-	//vertex[87] = 20.f;
-	//vertex[88] = 20.f;
-	//vertex[89] = 20.f;
-
-	////-----------11	
-	//vertex[90] = 20.f;
-	//vertex[91] = 20.f;
-	//vertex[92] = 20.f;
-
-	//vertex[93] = 20.f;
-	//vertex[94] = 30.f;
-	//vertex[95] = 20.f;
-
-	//vertex[96] = 30.f;
-	//vertex[97] = 30.f;
-	//vertex[98] = 20.f;
-
-	////-----------12
-	//vertex[99] = 30.f;
-	//vertex[100] = 20.f;
-	//vertex[101] = 20.f;
-
-	//vertex[102] = 20.f;
-	//vertex[103] = 20.f;
-	//vertex[104] = 20.f;
-
-	//vertex[105] = 30.f;
-	//vertex[106] = 30.f;
-	//vertex[107] = 20.f;
-
-	////alloc vertex
-	//glGenBuffers(1, (GLuint*)& (array_id));
-	//glBindBuffer(GL_ARRAY_BUFFER, array_id);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(float)* num_of_vertex * 3, vertex, GL_STATIC_DRAW);
-
-	////Indices way
-
-	//glGenBuffers(1, (GLuint*) &(my_id));
-	//glGenBuffers(1, (GLuint*) &(my_indices));
-	//glBindBuffer(GL_ARRAY_BUFFER, my_id);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 8 * 3, vertices, GL_STATIC_DRAW);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint)*number_of_indices, indices, GL_STATIC_DRAW);
-
-
-	//Plane
-
-	glColor3f(255, 255, 255);
-	int i = 0;
-	for (int j = 0; j < 20; ++j)
-	{
-		plane[i] = j;
-		plane[i + 1] = 0;
-		plane[i + 2] = -20;
-
-		plane[i + 3] = j;
-		plane[i + 4] = 0;
-		plane[i + 5] = 20;
-
-		plane[i + 6] = -j;
-		plane[i + 7] = 0;
-		plane[i + 8] = -20;
-
-		plane[i + 9] = -j;
-		plane[i + 10] = 0;
-		plane[i + 11] = 20;
-
-		plane[i + 12] = 20;
-		plane[i + 13] = 0;
-		plane[i + 14] = -j;
-
-		plane[i + 15] = -20;
-		plane[i + 16] = 0;
-		plane[i + 17] = -j;
-
-		plane[i + 18] = 20;
-		plane[i + 19] = 0;
-		plane[i + 20] = j;
-
-		plane[i + 21] = -20;
-		plane[i + 22] = 0;
-		plane[i + 23] = j;
 	
-		i+= 24;
-	}
+	/*glGenBuffers(1, &id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m->npoints * 3, m->points, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ARRAY_BUFFER, plane_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float)* 20 * 8 * 3, plane, GL_STATIC_DRAW);
-
+	glGenBuffers(1, &id_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(PAR_SHAPES_T)*m->ntriangles * 3, m->triangles, GL_STATIC_DRAW);*/
+	
 	return true;
 }
 
@@ -268,12 +57,6 @@ update_status GuiManager::PreUpdate(float dt)
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
-
-
-
-
-
-	ImGui::ShowDemoWindow();
 	//example menu
 	if (ImGui::BeginMainMenuBar())
 	{
@@ -317,10 +100,11 @@ update_status GuiManager::PreUpdate(float dt)
 		ShowAppConsole(show_console_window);
 
 	//PROVE
-	const char* f_path = App->input->DragAndDropped();
-	if (f_path != nullptr)
+	const char* p_file = App->input->DragAndDropped();
+	if (p_file != nullptr)
 	{
-		LOG("%s", f_path);
+		App->mesh->LoadFile(p_file);
+		LOG("%s", p_file);
 	}
 
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
@@ -329,106 +113,15 @@ update_status GuiManager::PreUpdate(float dt)
 update_status GuiManager::Update(float dt)
 {
 
-	//glLineWidth(2.0f);
-
-	////Direct mode cube
-	//glBegin(GL_TRIANGLES);
-
-	//glColor3f(255, 0, 0);
-	//// DOWN FACE
-	////1
-	//glVertex3f(0.f, 0.f, 2.f);
-	//glVertex3f(0.f, 0.f, 0.f);
-	//glVertex3f(2.f, 0.f, 0.f);
-	////2
-	//glVertex3f(2.f, 0.f, 2.f);
-	//glVertex3f(0.f, 0.f, 2.f);
-	//glVertex3f(2.f, 0.f, 0.f);
-	////RIGHT FACE
-	////3
-	//glVertex3f(2.f, 0.f, 2.f);
-	//glVertex3f(2.f, 0.f, 0.f);
-	//glVertex3f(2.f, 2.f, 0.f);
-	////4
-	//glVertex3f(2.f, 2.f, 2.f);
-	//glVertex3f(2.f, 0.f, 2.f);
-	//glVertex3f(2.f, 2.f, 0.f);
-	////BACK FACE
-	////5
-	//glVertex3f(2.f, 0.f, 2.f);
-	//glVertex3f(2.f, 2.f, 2.f);
-	//glVertex3f(0.f, 2.f, 2.f);
-	////6
-	//glVertex3f(0.f, 0.f, 2.f);
-	//glVertex3f(2.f, 0.f, 2.f);
-	//glVertex3f(0.f, 2.f, 2.f);
-	////UP FACE
-	////7
-	//glVertex3f(2.f, 2.f, 2.f);
-	//glVertex3f(2.f, 2.f, 0.f);
-	//glVertex3f(0.f, 2.f, 0.f);
-	////8
-	//glVertex3f(0.f, 2.f, 2.f);
-	//glVertex3f(2.f, 2.f, 2.f);
-	//glVertex3f(0.f, 2.f, 0.f);
-	////LEFT FACE
-	////9
-	//glVertex3f(0.f, 2.f, 2.f);
-	//glVertex3f(0.f, 2.f, 0.f);
-	//glVertex3f(0.f, 0.f, 0.f);
-	////10
-	//glVertex3f(0.f, 0.f, 2.f);
-	//glVertex3f(0.f, 2.f, 2.f);
-	//glVertex3f(0.f, 0.f, 0.f);
-	////FRONT FACE
-	////11
-	//glVertex3f(0.f, 0.f, 0.f);
-	//glVertex3f(0.f, 2.f, 0.f);
-	//glVertex3f(2.f, 2.f, 0.f);
-	////12
-	//glVertex3f(2.f, 0.f, 0.f);
-	//glVertex3f(0.f, 0.f, 0.f);
-	//glVertex3f(2.f, 2.f, 0.f);
-	//glEnd();
-	////------------------------------\\
-
-	////Vertex Array Cube
-
-	//glEnableClientState(GL_VERTEX_ARRAY);
-	//glBindBuffer(GL_ARRAY_BUFFER, array_id);
-	//glVertexPointer(3, GL_FLOAT, 0, NULL);
-	//// ... draw other buffers
-	//glDrawArrays(GL_TRIANGLES, 0, num_of_vertex * 3);
-	//glDisableClientState(GL_VERTEX_ARRAY);
-	////Indeces Cube
-
-	//glEnableClientState(GL_VERTEX_ARRAY);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_indices);
-	//glBindBuffer(GL_ARRAY_BUFFER, my_id);
-	//glVertexPointer(3, GL_FLOAT, 0, NULL);
-	//glDrawElements(GL_TRIANGLES, number_of_indices, GL_UNSIGNED_BYTE, NULL);
-	//glDisableClientState(GL_VERTEX_ARRAY);
-
-
-
-	// Plane
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glColor3f(255,255,255);
-	glBindBuffer(GL_ARRAY_BUFFER, plane_id);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	// ... draw other buffers
-	glDrawArrays(GL_LINES, 0, 20 * 8 * 3);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-
 	return UPDATE_CONTINUE;
 }
 
 update_status GuiManager::PostUpdate(float dt)
 {
+	DrawGeometry();
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 	return UPDATE_CONTINUE;
 }
 
@@ -441,6 +134,7 @@ bool GuiManager::CleanUp()
 	SDL_GL_DeleteContext(App->renderer3D->context);
 	SDL_DestroyWindow(App->window->window);
 	SDL_Quit();
+
 	return true;
 }
 
@@ -795,4 +489,12 @@ void GuiManager::ShowAppConsole(bool show_console)
 void GuiManager::GetLog(const char* log)
 {
 	console.AddLog(log);
+}
+
+void GuiManager::DrawGeometry()
+{
+	for (std::vector<Geometry*>::iterator it = App->mesh->geometry.begin(); it != App->mesh->geometry.end(); it++)
+	{
+		(*it)->Draw();
+	}
 }

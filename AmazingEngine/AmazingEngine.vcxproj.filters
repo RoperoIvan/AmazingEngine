@@ -137,9 +137,6 @@
     <ClCompile Include="Light.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
-    <ClCompile Include="Primitive.cpp">
-      <Filter>Tools</Filter>
-    </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
@@ -150,6 +147,12 @@
       <Filter>Tools</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleMesh.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>
@@ -394,9 +397,6 @@
     <ClInclude Include="Light.h">
       <Filter>Tools</Filter>
     </ClInclude>
-    <ClInclude Include="Primitive.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>Tools</Filter>
     </ClInclude>
@@ -414,6 +414,15 @@
     </ClInclude>
     <ClInclude Include="PhysFS\include\physfs.h">
       <Filter>Physfs</Filter>
+    </ClInclude>
+    <ClInclude Include="par_shapes.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleMesh.h">
+      <Filter>Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

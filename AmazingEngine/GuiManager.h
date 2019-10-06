@@ -8,6 +8,8 @@
 #include "MathGeoLib/include/Math/MathAll.h"
 #include <vector>
 #include "ConsoleManager.h"
+#include "Geometry.h"
+
 
 typedef unsigned char GLubyte;
 typedef float GLfloat;
@@ -31,6 +33,7 @@ public:
 	void ConfigurationWindow(bool show_config_window);
 	void ShowAppConsole(bool show_console);
 	void GetLog(const char* log);
+	void DrawGeometry();
 private:
 
 	bool show_config_window = false;
@@ -75,5 +78,7 @@ private:
 	uint my_id = 2;
 	uint my_indices = 1;
 	uint number_of_indices = 36;
+	uint id_vertex = 0;
+	uint id_index = 0;
 };
 #endif

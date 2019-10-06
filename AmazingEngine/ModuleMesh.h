@@ -2,8 +2,9 @@
 #define _MODULEMESH_H_
 
 #include "Globals.h"
+#include "glew/include/GL/glew.h"
 #include <gl/GL.h>
-
+#include "Geometry.h"
 #include "Module.h"
 #include <vector>
 
@@ -22,17 +23,18 @@ struct Mesh_data
 class ModuleMesh : public Module
 {
 public:
-	ModuleMesh();
+	ModuleMesh(Application* app, bool start_enabled = true);
 	~ModuleMesh();
 
-	virtual bool Init();
-	virtual update_status PostUpdate(float dt)override;
-	virtual bool CleanUp();
+	bool Init();
+	update_status PostUpdate(float dt)override;
+	bool CleanUp();
 
 	bool LoadFile(const char* file_name);
 
 public:
 	Mesh_data* data;
+	std::vector<Geometry*> geometry;
 };
 
 

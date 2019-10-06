@@ -1,7 +1,6 @@
+#include "Application.h"
 #include "ModuleMesh.h"
 #include <vector>
-#include "glew/include/GL/glew.h"
-#include"ImGui/imgui_impl_opengl3.h"
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
 #include "Assimp/include/postprocess.h"
@@ -9,7 +8,7 @@
 
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
 
-ModuleMesh::ModuleMesh()
+ModuleMesh::ModuleMesh(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 }
 
@@ -19,18 +18,27 @@ ModuleMesh::~ModuleMesh()
 
 bool ModuleMesh::Init()
 {
+	bool ret = true;
 	struct aiLogStream stream;
 	stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
 	aiAttachLogStream(&stream);
+
+	return ret;
 }
 
 update_status ModuleMesh::PostUpdate(float dt)
 {
-	return update_status();
+	return UPDATE_CONTINUE;
 }
 
 bool ModuleMesh::CleanUp()
 {
+	for (std::vector<Geometry*>::iterator it = geometry.begin(); it != geometry.end(); it++)
+	{
+		if ((*it) != nullptr)
+			delete (*it);
+		(*it) = nullptr;
+	}
 	aiDetachAllLogStreams();
 	return true;
 }
@@ -47,29 +55,28 @@ bool ModuleMesh::LoadFile(const char * file_name)
 		{
 			Mesh_data *mesh = new Mesh_data();
 			mesh->num_vertex = scene->mMeshes[i]->mNumVertices * 3;
-			uint k = 0;
-			for (int j = 0; j < scene->mMeshes[i]->mNumVertices; ++j)
-			{
-				mesh->vertex[k] = scene->mMeshes[i]->mVertices->x;
-				++k;
-				mesh->vertex[k] = scene->mMeshes[i]->mVertices->y;
-				++k;
-				mesh->vertex[k] = scene->mMeshes[i]->mVertices->z;
-				++k;
-			}
+			mesh->num_vertex = scene->mMeshes[i]->mNumVertices;
+			mesh->vertex = new float[mesh->num_vertex * 3];
+			memcpy(mesh->vertex, scene->mMeshes[i]->mVertices, sizeof(float) * mesh->num_vertex * 3);
+
 			if (scene->mMeshes[i]->HasFaces())
 			{
 				mesh->num_index = scene->mMeshes[i]->mNumFaces * 3;
-				for (uint i = 0; i < scene->mMeshes[i]->mNumFaces; ++i)
+				for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; ++j)
 				{
-					if (scene->mMeshes[i]->mFaces[i].mNumIndices != 3)
+					if (scene->mMeshes[i]->mFaces[j].mNumIndices != 3)
 					{
 						LOG("WARNING, geometry face with != 3 indices!");
 					}
 					else
-						memcpy(&mesh->index[i * 3], scene->mMeshes[i]->mFaces[i].mIndices, 3 * sizeof(uint));
-				}
+						memcpy(&mesh->index[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, 3 * sizeof(uint));
+				}
+
 			}
+			Geometry* new_geom = new Geometry(mesh->vertex, mesh->index, scene->mMeshes[i]->mNumVertices, scene->mMeshes[i]->mNumFaces);
+
+			geometry.push_back(new_geom);
+			LOG("New mesh created from %s", file_name);
 		}
 		aiReleaseImport(scene);
 	}
