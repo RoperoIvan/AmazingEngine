@@ -10,7 +10,6 @@
 #include "ConsoleManager.h"
 #include "Geometry.h"
 
-
 typedef unsigned char GLubyte;
 typedef float GLfloat;
 
@@ -34,6 +33,7 @@ public:
 	void ShowAppConsole(bool show_console);
 	void GetLog(const char* log);
 	void DrawGeometry();
+	void CreatePrimitives();
 private:
 
 	bool show_config_window = false;
@@ -43,7 +43,7 @@ private:
 	bool resizable = false;
 	bool borderless = false;
 	bool full_desktop = false;
-	
+	bool debug_draw = false;
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;
 	SDL_WindowFlags window_flags;

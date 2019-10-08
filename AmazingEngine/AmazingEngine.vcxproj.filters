@@ -415,9 +415,6 @@
     <ClInclude Include="PhysFS\include\physfs.h">
       <Filter>Physfs</Filter>
     </ClInclude>
-    <ClInclude Include="par_shapes.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
     <ClInclude Include="Geometry.h">
       <Filter>Tools</Filter>
     </ClInclude>

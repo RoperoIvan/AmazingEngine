@@ -38,15 +38,8 @@ bool GuiManager::Init()
 
 bool GuiManager::Start()
 {
-	
-	/*glGenBuffers(1, &id_vertex);
-	glBindBuffer(GL_ARRAY_BUFFER, id_vertex);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * m->npoints * 3, m->points, GL_STATIC_DRAW);
+	App->mesh->LoadFile("../Assets/warrior/warrior.fbx");
 
-	glGenBuffers(1, &id_index);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_index);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(PAR_SHAPES_T)*m->ntriangles * 3, m->triangles, GL_STATIC_DRAW);*/
-	
 	return true;
 }
 
@@ -112,6 +105,10 @@ update_status GuiManager::PreUpdate(float dt)
 
 update_status GuiManager::Update(float dt)
 {
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	{
+		debug_draw = !debug_draw;
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -496,5 +493,11 @@ void GuiManager::DrawGeometry()
 	for (std::vector<Geometry*>::iterator it = App->mesh->geometry.begin(); it != App->mesh->geometry.end(); it++)
 	{
 		(*it)->Draw();
+		if (debug_draw)
+			(*it)->DebugDraw();
 	}
+}
+
+void GuiManager::CreatePrimitives()
+{
 }

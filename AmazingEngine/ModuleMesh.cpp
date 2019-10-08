@@ -46,7 +46,7 @@ bool ModuleMesh::CleanUp()
 bool ModuleMesh::LoadFile(const char * file_name)
 {
 	bool ret = false;
-
+	float* texture_coords = nullptr;
 	const aiScene* scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_Quality);
 	if (scene != nullptr && scene->HasMeshes())
 	{
@@ -77,30 +77,19 @@ bool ModuleMesh::LoadFile(const char * file_name)
 				//load normals
 				if (scene->mMeshes[i]->HasNormals())
 				{
-					for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; ++j)
-					{
-						data->num_normals = scene->mMeshes[i]->mNumFaces * 2;
-						data->normals = new float[data->num_normals * 3];
+					data->normals = new float[scene->mMeshes[i]->mNumVertices * 3];
+					memcpy(data->normals, scene->mMeshes[i]->mNormals, sizeof(float) * scene->mMeshes[i]->mNumVertices * 3);
+				}
 
-						aiVector3D *vertx1 = new aiVector3D( data->indices[j * 9],data->indices[j * 3 + 1],data->indices[j * 3 + 2] );
-						aiVector3D *vertx2 = new aiVector3D(data->indices[j * 9 + 3],data->indices[j * 3 + 4],data->indices[j * 3 + 5] );
-						aiVector3D *vertx3 = new aiVector3D(data->indices[j * 9 + 6],data->indices[j * 3 + 7],data->indices[j * 3 + 8] );
+			}
+			if (scene->mMeshes[i]->HasTextureCoords(0))
+			{
+				texture_coords = new float[scene->mMeshes[i]->mNumVertices * 2];
+				for (int k = 0; k < scene->mMeshes[i]->mNumVertices; ++k) {
 
-						aiVector3D *triangle_middle_point = new aiVector3D (TriangleCenterAxis(vertx1->x,vertx2->x,vertx3->x),TriangleCenterAxis(vertx1->y,vertx2->y,vertx3->y),TriangleCenterAxis(vertx1->z,vertx2->z,vertx3->z));
-						
-						memcpy(&data->normals[j * 6], triangle_middle_point, 3 * sizeof(float));
-
-						aiVector3D *normal_point = new aiVector3D(*triangle_middle_point + *scene->mMeshes[i]->mNormals);
-
-						memcpy(&data->normals[j * 6 + 3], &triangle_middle_point, 3 * sizeof(float));
-
-						delete[] vertx1;
-						vertx1 = nullptr;
-						delete[] vertx2;
-						vertx1 = nullptr;
-						delete[] vertx3;
-						vertx1 = nullptr;
-					}
+					texture_coords[k * 2] = scene->mMeshes[i]->mTextureCoords[0][k].x;
+					texture_coords[k * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][k].y;
+					LOG("Texture coords: %f", texture_coords[k]);
 				}
 			}
 			Geometry* geo = new Geometry(data);
