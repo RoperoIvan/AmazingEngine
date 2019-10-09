@@ -14,21 +14,15 @@ struct Geometry
 	~Geometry();
 	void Draw();
 	void DebugDraw();
-
 	uint id_vertices = 0;  
 	uint num_vertices = 0;
 	float* vertices = nullptr;
-
 	uint id_indices = 0;  
 	uint num_indices = 0;
 	uint* indices = nullptr;
-
 	uint id_normals = 2;
 	uint num_normals = 0;
 	float* normals = nullptr;
-
-	uint num_coords = 0;
-	float* uv_coord = nullptr;
 };
 
 

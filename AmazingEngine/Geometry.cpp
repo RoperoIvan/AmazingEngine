@@ -16,8 +16,7 @@ Geometry::Geometry(float* ver, uint* ind, float* norm, uint num_vert, uint num_i
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(int) * num_normals, normals, GL_STATIC_DRAW);
 }
 Geometry::Geometry(Geometry * geo) 
-	: vertices(geo->vertices), indices(geo->indices), normals(geo->normals), num_vertices(geo->num_vertices),
-	num_indices(geo->num_indices), num_normals(geo->num_normals), uv_coord(geo->uv_coord), num_coords(geo->num_coords)
+	: vertices(geo->vertices), indices(geo->indices), normals(geo->normals), num_vertices(geo->num_vertices), num_indices(geo->num_indices), num_normals(geo->num_normals)
 {
 	glGenBuffers(1, (uint*)&(id_vertices));
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
@@ -27,16 +26,9 @@ Geometry::Geometry(Geometry * geo)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, indices, GL_STATIC_DRAW);
 
-	/*GLubyte checkImage[CHECKERS_HEIGHT][CHECKERS_WIDTH][4];
-	for (int i = 0; i < CHECKERS_HEIGHT; i++) {
-		for (int j = 0; j < CHECKERS_WIDTH; j++) {
-			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
-			checkImage[i][j][0] = (GLubyte)c;
-			checkImage[i][j][1] = (GLubyte)c;
-			checkImage[i][j][2] = (GLubyte)c;
-			checkImage[i][j][3] = (GLubyte)255;
-		}
-	}*/
+	//glGenBuffers(1, (uint*)&(id_normals));
+	//glBindBuffer(GL_ARRAY_BUFFER, id_normals);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_normals * 3, normals, GL_STATIC_DRAW);
 }
 Geometry::Geometry()
 {
@@ -81,7 +73,7 @@ void Geometry::DebugDraw()
 		glColor3f(3.0f, 0.0f, 1.0f);
 		glBegin(GL_LINES);
 		glVertex3f(vertices[i], vertices[i + 1], vertices[i + 2]);
-		glVertex3f(vertices[i] + normals[i]*10, vertices[i + 1] + normals[i + 1]*10, vertices[i + 2] + normals[i + 2]*10);
+		glVertex3f(vertices[i] + normals[i]*2, vertices[i + 1] + normals[i + 1]*2, vertices[i + 2] + normals[i + 2]*2);
 		glEnd();
 		glColor3f(1.0f, 1.0f, 1.0f);
 	}
