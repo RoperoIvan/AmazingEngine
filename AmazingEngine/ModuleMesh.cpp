@@ -84,12 +84,12 @@ bool ModuleMesh::LoadFile(const char * file_name)
 			}
 			if (scene->mMeshes[i]->HasTextureCoords(0))
 			{
-				texture_coords = new float[scene->mMeshes[i]->mNumVertices * 2];
+				data->num_coords = scene->mMeshes[i]->mNumVertices * 2;
+				data->uv_coord = new float[data->num_coords];
 				for (int k = 0; k < scene->mMeshes[i]->mNumVertices; ++k) {
-
-					texture_coords[k * 2] = scene->mMeshes[i]->mTextureCoords[0][k].x;
-					texture_coords[k * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][k].y;
-					LOG("Texture coords: %f", texture_coords[k]);
+					 data->uv_coord[k * 2] = scene->mMeshes[i]->mTextureCoords[0][k].x;
+					 data->uv_coord[k * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][k].y;
+					/*LOG("Texture coords: %f", texture_coords[k]);*/
 				}
 			}
 			Geometry* geo = new Geometry(data);
