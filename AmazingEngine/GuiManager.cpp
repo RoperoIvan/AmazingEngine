@@ -14,7 +14,7 @@
 #include <fstream>
 #include <iomanip>
 #include "PhysFS/include/physfs.h"
-#include "par_shapes.h"
+
 #pragma comment (lib, "PhysFS/libx86/physfs.lib")
 
 GuiManager::GuiManager(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -39,169 +39,168 @@ bool GuiManager::Init()
 bool GuiManager::Start()
 {
 	/*App->mesh->LoadFile("../Assets/warrior/warrior.fbx");*/
-	CreatePrimitives(Primitives::SPHERE);
 	//---1
-	vertex[0] = 20.f;
-	vertex[1] = 20.f;
-	vertex[2] = 30.f;
+	//vertex[0] = 20.f;
+	//vertex[1] = 20.f;
+	//vertex[2] = 30.f;
 
-	vertex[3] = 20.f;
-	vertex[4] = 20.f;
-	vertex[5] = 20.f;
+	//vertex[3] = 20.f;
+	//vertex[4] = 20.f;
+	//vertex[5] = 20.f;
 
-	vertex[6] = 30.f;
-	vertex[7] = 20.f;
-	vertex[8] = 20.f;
+	//vertex[6] = 30.f;
+	//vertex[7] = 20.f;
+	//vertex[8] = 20.f;
 
-	//-----2
-	vertex[9] = 30.f;
-	vertex[10] = 20.f;
-	vertex[11] = 30.f;
+	////-----2
+	//vertex[9] = 30.f;
+	//vertex[10] = 20.f;
+	//vertex[11] = 30.f;
 
-	vertex[12] = 20.f;
-	vertex[13] = 20.f;
-	vertex[14] = 30.f;
+	//vertex[12] = 20.f;
+	//vertex[13] = 20.f;
+	//vertex[14] = 30.f;
 
-	vertex[15] = 30.f;
-	vertex[16] = 20.f;
-	vertex[17] = 20.f;
+	//vertex[15] = 30.f;
+	//vertex[16] = 20.f;
+	//vertex[17] = 20.f;
 
-	//------3
-	vertex[18] = 30.f;
-	vertex[19] = 20.f;
-	vertex[20] = 30.f;
+	////------3
+	//vertex[18] = 30.f;
+	//vertex[19] = 20.f;
+	//vertex[20] = 30.f;
 
-	vertex[21] = 30.f;
-	vertex[22] = 20.f;
-	vertex[23] = 20.f;
+	//vertex[21] = 30.f;
+	//vertex[22] = 20.f;
+	//vertex[23] = 20.f;
 
-	vertex[24] = 30.f;
-	vertex[25] = 30.f;
-	vertex[26] = 20.f;
+	//vertex[24] = 30.f;
+	//vertex[25] = 30.f;
+	//vertex[26] = 20.f;
 
-	//-----4
-	vertex[27] = 30.f;
-	vertex[28] = 30.f;
-	vertex[29] = 30.f;
+	////-----4
+	//vertex[27] = 30.f;
+	//vertex[28] = 30.f;
+	//vertex[29] = 30.f;
 
-	vertex[30] = 30.f;
-	vertex[31] = 20.f;
-	vertex[32] = 30.f;
+	//vertex[30] = 30.f;
+	//vertex[31] = 20.f;
+	//vertex[32] = 30.f;
 
-	vertex[33] = 30.f;
-	vertex[34] = 30.f;
-	vertex[35] = 20.f;
+	//vertex[33] = 30.f;
+	//vertex[34] = 30.f;
+	//vertex[35] = 20.f;
 
-	//---------------5
-	vertex[36] = 30.f;
-	vertex[37] = 20.f;
-	vertex[38] = 30.f;
+	////---------------5
+	//vertex[36] = 30.f;
+	//vertex[37] = 20.f;
+	//vertex[38] = 30.f;
 
-	vertex[39] = 30.f;
-	vertex[40] = 30.f;
-	vertex[41] = 30.f;
+	//vertex[39] = 30.f;
+	//vertex[40] = 30.f;
+	//vertex[41] = 30.f;
 
-	vertex[42] = 20.f;
-	vertex[43] = 30.f;
-	vertex[44] = 30.f;
-
-
-	//--------------6
-	vertex[45] = 20.f;
-	vertex[46] = 20.f;
-	vertex[47] = 30.f;
-
-	vertex[48] = 30.f;
-	vertex[49] = 20.f;
-	vertex[50] = 30.f;
-
-	vertex[51] = 20.f;
-	vertex[52] = 30.f;
-	vertex[53] = 30.f;
-
-	//---------------7
-	vertex[54] = 30.f;
-	vertex[55] = 30.f;
-	vertex[56] = 30.f;
-
-	vertex[57] = 30.f;
-	vertex[58] = 30.f;
-	vertex[59] = 20.f;
-
-	vertex[60] = 20.f;
-	vertex[61] = 30.f;
-	vertex[62] = 20.f;
-
-	//---------------8
-	vertex[63] = 20.f;
-	vertex[64] = 30.f;
-	vertex[65] = 30.f;
-
-	vertex[66] = 30.f;
-	vertex[67] = 30.f;
-	vertex[68] = 30.f;
-
-	vertex[69] = 20.f;
-	vertex[70] = 30.f;
-	vertex[71] = 20.f;
-
-	//---------------9
-	vertex[72] = 20.f;
-	vertex[73] = 30.f;
-	vertex[74] = 30.f;
-
-	vertex[75] = 20.f;
-	vertex[76] = 30.f;
-	vertex[77] = 20.f;
-
-	vertex[78] = 20.f;
-	vertex[79] = 20.f;
-	vertex[80] = 20.f;
+	//vertex[42] = 20.f;
+	//vertex[43] = 30.f;
+	//vertex[44] = 30.f;
 
 
-	//-----------10
-	vertex[81] = 20.f;
-	vertex[82] = 20.f;
-	vertex[83] = 30.f;
+	////--------------6
+	//vertex[45] = 20.f;
+	//vertex[46] = 20.f;
+	//vertex[47] = 30.f;
 
-	vertex[84] = 20.f;
-	vertex[85] = 30.f;
-	vertex[86] = 30.f;
+	//vertex[48] = 30.f;
+	//vertex[49] = 20.f;
+	//vertex[50] = 30.f;
 
-	vertex[87] = 20.f;
-	vertex[88] = 20.f;
-	vertex[89] = 20.f;
+	//vertex[51] = 20.f;
+	//vertex[52] = 30.f;
+	//vertex[53] = 30.f;
 
-	//-----------11	
-	vertex[90] = 20.f;
-	vertex[91] = 20.f;
-	vertex[92] = 20.f;
+	////---------------7
+	//vertex[54] = 30.f;
+	//vertex[55] = 30.f;
+	//vertex[56] = 30.f;
 
-	vertex[93] = 20.f;
-	vertex[94] = 30.f;
-	vertex[95] = 20.f;
+	//vertex[57] = 30.f;
+	//vertex[58] = 30.f;
+	//vertex[59] = 20.f;
 
-	vertex[96] = 30.f;
-	vertex[97] = 30.f;
-	vertex[98] = 20.f;
+	//vertex[60] = 20.f;
+	//vertex[61] = 30.f;
+	//vertex[62] = 20.f;
 
-	//-----------12
-	vertex[99] = 30.f;
-	vertex[100] = 20.f;
-	vertex[101] = 20.f;
+	////---------------8
+	//vertex[63] = 20.f;
+	//vertex[64] = 30.f;
+	//vertex[65] = 30.f;
 
-	vertex[102] = 20.f;
-	vertex[103] = 20.f;
-	vertex[104] = 20.f;
+	//vertex[66] = 30.f;
+	//vertex[67] = 30.f;
+	//vertex[68] = 30.f;
 
-	vertex[105] = 30.f;
-	vertex[106] = 30.f;
-	vertex[107] = 20.f;
+	//vertex[69] = 20.f;
+	//vertex[70] = 30.f;
+	//vertex[71] = 20.f;
 
-	//alloc vertex
-	glGenBuffers(3, (GLuint*) & (array_id));
-	glBindBuffer(GL_ARRAY_BUFFER, array_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_of_vertex * 3, vertex, GL_STATIC_DRAW);
+	////---------------9
+	//vertex[72] = 20.f;
+	//vertex[73] = 30.f;
+	//vertex[74] = 30.f;
+
+	//vertex[75] = 20.f;
+	//vertex[76] = 30.f;
+	//vertex[77] = 20.f;
+
+	//vertex[78] = 20.f;
+	//vertex[79] = 20.f;
+	//vertex[80] = 20.f;
+
+
+	////-----------10
+	//vertex[81] = 20.f;
+	//vertex[82] = 20.f;
+	//vertex[83] = 30.f;
+
+	//vertex[84] = 20.f;
+	//vertex[85] = 30.f;
+	//vertex[86] = 30.f;
+
+	//vertex[87] = 20.f;
+	//vertex[88] = 20.f;
+	//vertex[89] = 20.f;
+
+	////-----------11	
+	//vertex[90] = 20.f;
+	//vertex[91] = 20.f;
+	//vertex[92] = 20.f;
+
+	//vertex[93] = 20.f;
+	//vertex[94] = 30.f;
+	//vertex[95] = 20.f;
+
+	//vertex[96] = 30.f;
+	//vertex[97] = 30.f;
+	//vertex[98] = 20.f;
+
+	////-----------12
+	//vertex[99] = 30.f;
+	//vertex[100] = 20.f;
+	//vertex[101] = 20.f;
+
+	//vertex[102] = 20.f;
+	//vertex[103] = 20.f;
+	//vertex[104] = 20.f;
+
+	//vertex[105] = 30.f;
+	//vertex[106] = 30.f;
+	//vertex[107] = 20.f;
+
+	////alloc vertex
+	//glGenBuffers(3, (GLuint*) & (array_id));
+	//glBindBuffer(GL_ARRAY_BUFFER, array_id);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_of_vertex * 3, vertex, GL_STATIC_DRAW);
 
 	return true;
 }
@@ -224,7 +223,12 @@ update_status GuiManager::PreUpdate(float dt)
 
 			ImGui::EndMenu();
 		}	
+		if (ImGui::BeginMenu("Create"))
+		{
+			if (ImGui::MenuItem("Primitives")) show_primitives_window = true;
 
+			ImGui::EndMenu();
+		}
 		if (ImGui::BeginMenu("Help"))
 		{
 			if (ImGui::MenuItem("Documentation")) 
@@ -255,7 +259,11 @@ update_status GuiManager::PreUpdate(float dt)
 	if(show_console_window)
 		ShowAppConsole(show_console_window);
 
-	//PROVE
+	//Primitives window
+	if (show_primitives_window)
+		PrimitivesWindow();
+
+	//TODO: Move this somewhere where it has more sense to be written
 	const char* p_file = App->input->DragAndDropped();
 	if (p_file != nullptr)
 	{
@@ -272,69 +280,69 @@ update_status GuiManager::Update(float dt)
 	{
 		debug_draw = !debug_draw;
 	}
+	ImGui::ShowDemoWindow();
+	//glLineWidth(2.0f);
 
-	glLineWidth(2.0f);
+	////Direct mode cube
+	//glBegin(GL_TRIANGLES);
 
-	//Direct mode cube
-	glBegin(GL_TRIANGLES);
-
-	glColor3f(255, 0, 0);
-	// DOWN FACE
-	//1
-	glVertex3f(0.f, 0.f, 2.f);
-	glVertex3f(0.f, 0.f, 0.f);
-	glVertex3f(2.f, 0.f, 0.f);
-	//2
-	glVertex3f(2.f, 0.f, 2.f);
-	glVertex3f(0.f, 0.f, 2.f);
-	glVertex3f(2.f, 0.f, 0.f);
-	//RIGHT FACE
-	//3
-	glVertex3f(2.f, 0.f, 2.f);
-	glVertex3f(2.f, 0.f, 0.f);
-	glVertex3f(2.f, 2.f, 0.f);
-	//4
-	glVertex3f(2.f, 2.f, 2.f);
-	glVertex3f(2.f, 0.f, 2.f);
-	glVertex3f(2.f, 2.f, 0.f);
-	//BACK FACE
-	//5
-	glVertex3f(2.f, 0.f, 2.f);
-	glVertex3f(2.f, 2.f, 2.f);
-	glVertex3f(0.f, 2.f, 2.f);
-	//6
-	glVertex3f(0.f, 0.f, 2.f);
-	glVertex3f(2.f, 0.f, 2.f);
-	glVertex3f(0.f, 2.f, 2.f);
-	//UP FACE
-	//7
-	glVertex3f(2.f, 2.f, 2.f);
-	glVertex3f(2.f, 2.f, 0.f);
-	glVertex3f(0.f, 2.f, 0.f);
-	//8
-	glVertex3f(0.f, 2.f, 2.f);
-	glVertex3f(2.f, 2.f, 2.f);
-	glVertex3f(0.f, 2.f, 0.f);
-	//LEFT FACE
-	//9
-	glVertex3f(0.f, 2.f, 2.f);
-	glVertex3f(0.f, 2.f, 0.f);
-	glVertex3f(0.f, 0.f, 0.f);
-	//10
-	glVertex3f(0.f, 0.f, 2.f);
-	glVertex3f(0.f, 2.f, 2.f);
-	glVertex3f(0.f, 0.f, 0.f);
-	//FRONT FACE
-	//11
-	glVertex3f(0.f, 0.f, 0.f);
-	glVertex3f(0.f, 2.f, 0.f);
-	glVertex3f(2.f, 2.f, 0.f);
-	//12
-	glVertex3f(2.f, 0.f, 0.f);
-	glVertex3f(0.f, 0.f, 0.f);
-	glVertex3f(2.f, 2.f, 0.f);
-	glEnd();
-	//------------------------------\\
+	//glColor3f(255, 0, 0);
+	//// DOWN FACE
+	////1
+	//glVertex3f(0.f, 0.f, 2.f);
+	//glVertex3f(0.f, 0.f, 0.f);
+	//glVertex3f(2.f, 0.f, 0.f);
+	////2
+	//glVertex3f(2.f, 0.f, 2.f);
+	//glVertex3f(0.f, 0.f, 2.f);
+	//glVertex3f(2.f, 0.f, 0.f);
+	////RIGHT FACE
+	////3
+	//glVertex3f(2.f, 0.f, 2.f);
+	//glVertex3f(2.f, 0.f, 0.f);
+	//glVertex3f(2.f, 2.f, 0.f);
+	////4
+	//glVertex3f(2.f, 2.f, 2.f);
+	//glVertex3f(2.f, 0.f, 2.f);
+	//glVertex3f(2.f, 2.f, 0.f);
+	////BACK FACE
+	////5
+	//glVertex3f(2.f, 0.f, 2.f);
+	//glVertex3f(2.f, 2.f, 2.f);
+	//glVertex3f(0.f, 2.f, 2.f);
+	////6
+	//glVertex3f(0.f, 0.f, 2.f);
+	//glVertex3f(2.f, 0.f, 2.f);
+	//glVertex3f(0.f, 2.f, 2.f);
+	////UP FACE
+	////7
+	//glVertex3f(2.f, 2.f, 2.f);
+	//glVertex3f(2.f, 2.f, 0.f);
+	//glVertex3f(0.f, 2.f, 0.f);
+	////8
+	//glVertex3f(0.f, 2.f, 2.f);
+	//glVertex3f(2.f, 2.f, 2.f);
+	//glVertex3f(0.f, 2.f, 0.f);
+	////LEFT FACE
+	////9
+	//glVertex3f(0.f, 2.f, 2.f);
+	//glVertex3f(0.f, 2.f, 0.f);
+	//glVertex3f(0.f, 0.f, 0.f);
+	////10
+	//glVertex3f(0.f, 0.f, 2.f);
+	//glVertex3f(0.f, 2.f, 2.f);
+	//glVertex3f(0.f, 0.f, 0.f);
+	////FRONT FACE
+	////11
+	//glVertex3f(0.f, 0.f, 0.f);
+	//glVertex3f(0.f, 2.f, 0.f);
+	//glVertex3f(2.f, 2.f, 0.f);
+	////12
+	//glVertex3f(2.f, 0.f, 0.f);
+	//glVertex3f(0.f, 0.f, 0.f);
+	//glVertex3f(2.f, 2.f, 0.f);
+	//glEnd();
+	////------------------------------\\
 
 	return UPDATE_CONTINUE;
 }
@@ -350,6 +358,13 @@ update_status GuiManager::PostUpdate(float dt)
 
 bool GuiManager::CleanUp()
 {
+	for (std::vector<Geometry*>::iterator it = geoms.begin(); it != geoms.end(); it++)
+	{
+		if ((*it) != nullptr)
+			delete (*it);
+		(*it) = nullptr;
+	}
+
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
@@ -709,6 +724,55 @@ void GuiManager::ShowAppConsole(bool show_console)
 	console.Draw("Amazing Engine", &show_console_window);
 }
 
+void GuiManager::PrimitivesWindow()
+{
+	if (show_primitives_window)
+	{
+		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
+		par_shapes_mesh* m = nullptr;
+		if (ImGui::Begin("Create Primitives", &show_primitives_window), window_flags)
+		{
+			if(ImGui::CollapsingHeader("Cube"))
+			{
+				static float col[4] = { 0.4f,0.7f,0.0f,0.5f };
+				ImGui::ColorEdit4("color 2", col);
+				if(ImGui::Button("Create"))
+					CreatePrimitives(m, Primitives::CUBE, col);				
+			}
+			if (ImGui::CollapsingHeader("Sphere"))
+			{
+				static float col[4] = { 0.4f,0.7f,0.0f,0.5f };
+				ImGui::ColorEdit4("color 2", col);
+				if (ImGui::Button("Create"))
+					CreatePrimitives(m, Primitives::SPHERE, col);
+			}
+			if (ImGui::CollapsingHeader("Cone"))
+			{
+				static float col[4] = { 0.4f,0.7f,0.0f,0.5f };
+				ImGui::ColorEdit4("color 2", col);
+				if (ImGui::Button("Create"))
+					CreatePrimitives(m, Primitives::CONE, col);
+			}
+			if (ImGui::CollapsingHeader("Cylinder"))
+			{
+				static float col[4] = { 0.4f,0.7f,0.0f,0.5f };
+				ImGui::ColorEdit4("color 2", col);
+				if (ImGui::Button("Create"))
+					CreatePrimitives(m, Primitives::CYILINDER, col);
+			}
+			if (ImGui::CollapsingHeader("Plane"))
+			{
+				static float col[4] = { 0.4f,0.7f,0.0f,0.5f };
+				ImGui::ColorEdit4("color 2", col);
+				if (ImGui::Button("Create"))
+					CreatePrimitives(m, Primitives::PLANE, col);
+			}
+			ImGui::End();
+		}
+	}
+}
+
 void GuiManager::GetLog(const char* log)
 {
 	console.AddLog(log);
@@ -724,28 +788,35 @@ void GuiManager::DrawGeometry()
 	}
 	for (std::vector<Geometry*>::iterator it = geoms.begin(); it != geoms.end(); it++)
 	{
-		/*(*it)->Draw();*/
-		(*it)->DrawPrimtives();
+		(*it)->DrawPrimitives();
 		if (debug_draw)
 			(*it)->DebugDraw();
 	}
 }
 
-void GuiManager::CreatePrimitives(Primitives prim)
+void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, float col[4])
 {
-	par_shapes_mesh* m;
 	switch (prim)
 	{
 	case Primitives::CUBE:
-		
+		p_mesh = par_shapes_create_cube();
 		break;
 	case Primitives::SPHERE:
-		m = par_shapes_create_subdivided_sphere(5);
+		p_mesh = par_shapes_create_subdivided_sphere(5);
+		break;
+	case Primitives::CONE:
+		p_mesh = par_shapes_create_cone(30, 3);
+		break;
+	case Primitives::CYILINDER:
+		p_mesh = par_shapes_create_cylinder(30, 3);
+		break;
+	case Primitives::PLANE:
+		p_mesh = par_shapes_create_plane(30, 3);
 		break;
 	default:
 		LOG("Uknown primtive selected");
 		break;
 	}
-	Geometry* geo = new Geometry(m->points, m->triangles, m->normals, m->npoints, m->ntriangles);
+	Geometry* geo = new Geometry(p_mesh->points, p_mesh->triangles, p_mesh->normals, p_mesh->npoints, p_mesh->ntriangles,col[0], col[1], col[2], col[3]);
 	geoms.push_back(geo);
 }

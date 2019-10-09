@@ -9,11 +9,12 @@
 #include <vector>
 #include "ConsoleManager.h"
 #include "Geometry.h"
-
+#include "par_shapes.h"
 
 
 typedef unsigned char GLubyte;
 typedef float GLfloat;
+
 
 class GuiManager: public Module
 {
@@ -33,14 +34,16 @@ public:
 	void AboutWindow(bool show_about_window);
 	void ConfigurationWindow(bool show_config_window);
 	void ShowAppConsole(bool show_console);
+	void PrimitivesWindow();
 	void GetLog(const char* log);
 	void DrawGeometry();
-	void CreatePrimitives(Primitives prim);
+	void CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, float color[4]);
 private:
 
 	bool show_config_window = false;
 	bool show_about_window = false;
 	bool show_console_window = false;
+	bool show_primitives_window = false;
 	bool fullscreen = false;
 	bool resizable = false;
 	bool borderless = false;

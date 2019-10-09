@@ -36,7 +36,8 @@ Geometry::Geometry(Geometry* geo)
 		}
 	}*/
 }
-Geometry::Geometry(float* ver, uint* ind, float* normals, int num_vert, int num_ind) : vertices(ver), indices(ind), normals(normals), num_vertices(num_vert), par_num_indices(num_ind)
+Geometry::Geometry(float* ver, uint* ind, float* normals, int num_vert, int num_ind, float r, float g, float b, float a) : vertices(ver), indices(ind), normals(normals), 
+num_vertices(num_vert), par_num_indices(num_ind), r(r), g(g), b(b), a(a)
 {
 	glGenBuffers(1, &id_vertices);
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
@@ -67,18 +68,17 @@ void Geometry::Draw()
 
 }
 
-void Geometry::DrawPrimtives()
+void Geometry::DrawPrimitives()
 {
-	// activate and specify pointer to vertex array
+	/*glBegin(GL_TRIANGLES);*/
+	glColor4f(r, g, b, a);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	// draw a cube
 	glDrawElements(GL_TRIANGLES, par_num_indices * 3, GL_UNSIGNED_INT, NULL);
-
-	// deactivate vertex arrays after drawing
 	glDisableClientState(GL_VERTEX_ARRAY);
+	/*glEnd();*/
 }
 
 void Geometry::DebugDraw()
