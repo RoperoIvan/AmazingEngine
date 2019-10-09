@@ -733,40 +733,44 @@ void GuiManager::PrimitivesWindow()
 		par_shapes_mesh* m = nullptr;
 		if (ImGui::Begin("Create Primitives", &show_primitives_window), window_flags)
 		{
+			static float col[4] = { 0.4f,0.7f,0.0f,0.5f };
+			static int scale[3] = { 1,1,1 };
+			static int translation[3] = { 1,1,1 };
 			if(ImGui::CollapsingHeader("Cube"))
 			{
-				static float col[4] = { 0.4f,0.7f,0.0f,0.5f };
-				ImGui::ColorEdit4("color 2", col);
+				ImGui::SliderInt3("Size", scale, 1, 10);
+				ImGui::SliderInt3("Translation", translation, 0, 100);
+				ImGui::ColorEdit4("Color", col);
 				if(ImGui::Button("Create"))
-					CreatePrimitives(m, Primitives::CUBE, col);				
+					CreatePrimitives(m, Primitives::CUBE, col, scale, translation);				
 			}
 			if (ImGui::CollapsingHeader("Sphere"))
 			{
 				static float col[4] = { 0.4f,0.7f,0.0f,0.5f };
-				ImGui::ColorEdit4("color 2", col);
+				ImGui::ColorEdit4("Color", col);
 				if (ImGui::Button("Create"))
-					CreatePrimitives(m, Primitives::SPHERE, col);
+					CreatePrimitives(m, Primitives::SPHERE, col, scale, translation);
 			}
 			if (ImGui::CollapsingHeader("Cone"))
 			{
 				static float col[4] = { 0.4f,0.7f,0.0f,0.5f };
-				ImGui::ColorEdit4("color 2", col);
+				ImGui::ColorEdit4("Color", col);
 				if (ImGui::Button("Create"))
-					CreatePrimitives(m, Primitives::CONE, col);
+					CreatePrimitives(m, Primitives::CONE, col, scale, translation);
 			}
 			if (ImGui::CollapsingHeader("Cylinder"))
 			{
 				static float col[4] = { 0.4f,0.7f,0.0f,0.5f };
-				ImGui::ColorEdit4("color 2", col);
+				ImGui::ColorEdit4("Color", col);
 				if (ImGui::Button("Create"))
-					CreatePrimitives(m, Primitives::CYILINDER, col);
+					CreatePrimitives(m, Primitives::CYILINDER, col, scale, translation);
 			}
 			if (ImGui::CollapsingHeader("Plane"))
 			{
 				static float col[4] = { 0.4f,0.7f,0.0f,0.5f };
-				ImGui::ColorEdit4("color 2", col);
+				ImGui::ColorEdit4("Color", col);
 				if (ImGui::Button("Create"))
-					CreatePrimitives(m, Primitives::PLANE, col);
+					CreatePrimitives(m, Primitives::PLANE, col, scale, translation);
 			}
 			ImGui::End();
 		}
@@ -794,7 +798,7 @@ void GuiManager::DrawGeometry()
 	}
 }
 
-void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, float col[4])
+void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, float col[4], int scale[3], int translation[3])
 {
 	switch (prim)
 	{
@@ -817,6 +821,8 @@ void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, floa
 		LOG("Uknown primtive selected");
 		break;
 	}
+	par_shapes_scale(p_mesh, scale[0], scale[1], scale[2]);
+	par_shapes_translate(p_mesh, translation[0], translation[1], translation[2]);
 	Geometry* geo = new Geometry(p_mesh->points, p_mesh->triangles, p_mesh->normals, p_mesh->npoints, p_mesh->ntriangles,col[0], col[1], col[2], col[3]);
 	geoms.push_back(geo);
 }
