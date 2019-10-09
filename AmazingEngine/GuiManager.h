@@ -10,6 +10,8 @@
 #include "ConsoleManager.h"
 #include "Geometry.h"
 
+
+
 typedef unsigned char GLubyte;
 typedef float GLfloat;
 
@@ -33,7 +35,7 @@ public:
 	void ShowAppConsole(bool show_console);
 	void GetLog(const char* log);
 	void DrawGeometry();
-	void CreatePrimitives();
+	void CreatePrimitives(Primitives prim);
 private:
 
 	bool show_config_window = false;
@@ -58,27 +60,7 @@ private:
 	uint plane_id = 1;
 	AppConsole console;
 	ImGuiTextBuffer text;
-	//Indeces
-	GLfloat vertices[24] = 
-	{ 
-		10,0,0,		12,0,0,
-		12,2,0,		10,2,0,
-		10,2,-2,	10,0,-2,
-		12,0,-2,	12,2,-2 
-	};
-
-	GLubyte indices[36] = 
-	  { 0,1,2, 2,3,0,   // 36 of indices
-		0,3,4, 4,5,0,
-		0,5,6, 6,1,0,
-		1,6,7, 7,2,1,
-		7,4,3, 3,2,7,
-		4,7,6, 6,5,4 };
-
-	uint my_id = 2;
-	uint my_indices = 1;
-	uint number_of_indices = 36;
-	uint id_vertex = 0;
-	uint id_index = 0;
+	Primitives prim = Primitives::UKNOWN;
+	std::vector<Geometry*> geoms;
 };
 #endif
