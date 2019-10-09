@@ -158,6 +158,9 @@
     <ClCompile Include="par_shapes.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GuiManager.h">
@@ -426,6 +429,9 @@
     </ClInclude>
     <ClInclude Include="par_shapes.h">
       <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
