@@ -69,48 +69,37 @@ ImageDDS::ImageDDS(const char* file_name)
 	fp = fopen(file_name, "rb");
 
 	if (fp == NULL)
-		LOG("Not a correct BMP file\n");
-
-	/* verify the type of file */
-
-	fread(filecode, 1, 4, fp);
-	if (strncmp(filecode, "DDS ", 4) != 0)
-		fclose(fp);
-
-
-	/* get the surface desc */
-	if (fread(&header, 124, 1, fp))
-		LOG("Not a correct BMP file\n");
-
-	height = *(unsigned int*) & (header[8]);
-	width = *(unsigned int*) & (header[12]);
-	linear_size = *(unsigned int*) & (header[16]);
-	mip_map_count = *(unsigned int*) & (header[24]);
-	fourCC = *(unsigned int*) & (header[80]);
-
-
-	bufsize = mip_map_count > 1 ? linear_size * 2 : linear_size;
-	buffer = (unsigned char*)malloc(bufsize * sizeof(unsigned char));
-	fread(buffer, 1, bufsize, fp);
-	uint components = (fourCC == 1) ? 3 : 4;
-	
-	switch (fourCC)
 	{
-	case 1:
-		format = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-		break;
-	case 2:
-		format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-		break;
-	case 3:
-		format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-		break;
-	default:
-		free(buffer);
+		LOG("Not a correct BMP file\n");
 	}
-	LoadTexture();
+	else
+	{
+		/* verify the type of file */
 
-	fclose(fp);
+		fread(filecode, 1, 4, fp);
+		if (strncmp(filecode, "DDS ", 4) != 0)
+			fclose(fp);
+
+
+		/* get the surface desc */
+		if (fread(&header, 124, 1, fp))
+			LOG("Not a correct BMP file\n");
+
+		height = *(unsigned int*) & (header[8]);
+		width = *(unsigned int*) & (header[12]);
+		linear_size = *(unsigned int*) & (header[16]);
+		mip_map_count = *(unsigned int*) & (header[24]);
+		fourCC = *(unsigned int*) & (header[80]);
+
+
+		bufsize = mip_map_count > 1 ? linear_size * 2 : linear_size;
+		buffer = (unsigned char*)malloc(bufsize * sizeof(unsigned char));
+		fread(buffer, 1, bufsize, fp);
+		format = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+		LoadTexture();
+
+		fclose(fp);
+	}
 }
 
 void ImageDDS::LoadTexture()
@@ -138,4 +127,7 @@ void ImageDDS::LoadTexture()
 
 void ImageDDS::DrawTexture()
 {
+	glEnable(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, texture_id);
 }

@@ -26,7 +26,6 @@ Geometry::Geometry(Geometry* geo)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, indices, GL_STATIC_DRAW);
 
-
 }
 //Primitives constructor
 Geometry::Geometry(float* ver, uint* ind, float* normals, int num_vert, int num_ind, float r, float g, float b, float a) : vertices(ver), indices(ind), normals(normals), 
@@ -39,6 +38,8 @@ num_vertices(num_vert), par_num_indices(num_ind), r(r), g(g), b(b), a(a)
 	glGenBuffers(1, &id_indices);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(PAR_SHAPES_T) * par_num_indices * 3, ind, GL_STATIC_DRAW);
+
+	tex = new ImageDDS("../Assets/image.dds");
 }
 Geometry::Geometry()
 {
@@ -65,6 +66,8 @@ void Geometry::DrawPrimitives()
 {
 	glColor4f(r, g, b, a);
 	glEnableClientState(GL_VERTEX_ARRAY);
+	if (tex != nullptr)
+		tex->DrawTexture();
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
