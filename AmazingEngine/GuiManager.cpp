@@ -386,10 +386,9 @@ bool GuiManager::Load(nlohmann::json & j)
 	return true;
 }
 
+// Settings of the engine tab
 void GuiManager::ConfigurationWindow(bool show_conf_window)
 {
-	// Settings of the engine tab
-
 	if (show_config_window)
 	{
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
@@ -667,7 +666,7 @@ void GuiManager::ConfigurationWindow(bool show_conf_window)
 
 	}
 }
-
+//Window about info of the creators
 void GuiManager::AboutWindow(bool show_about_win)
 {
 	ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
@@ -723,7 +722,7 @@ void GuiManager::ShowAppConsole(bool show_console)
 {
 	console.Draw("Amazing Engine", &show_console_window);
 }
-
+//Window that allows to create primitives based in the specs that the user passes to the CreatePrimitives function
 void GuiManager::PrimitivesWindow()
 {
 	if (show_primitives_window)
@@ -747,7 +746,7 @@ void GuiManager::PrimitivesWindow()
 				ImGui::SliderInt("Radiant", &rad, 0, 360);
 				const char* items[] = { "X", "Y", "Z"};
 				static int item_current = 0;
-				ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
+				ImGui::Combo("Axis", &item_current, items, IM_ARRAYSIZE(items));
 				switch (item_current)
 				{
 				case 0:
@@ -780,7 +779,7 @@ void GuiManager::PrimitivesWindow()
 				ImGui::SliderInt("Radiant", &rad, 0, 360);
 				const char* items[] = { "X", "Y", "Z" };
 				static int item_current = 0;
-				ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
+				ImGui::Combo("Axis", &item_current, items, IM_ARRAYSIZE(items));
 				switch (item_current)
 				{
 				case 0:
@@ -813,7 +812,7 @@ void GuiManager::PrimitivesWindow()
 				ImGui::SliderInt("Radiant", &rad, 0, 360);
 				const char* items[] = { "X", "Y", "Z" };
 				static int item_current = 0;
-				ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
+				ImGui::Combo("Axis", &item_current, items, IM_ARRAYSIZE(items));
 				switch (item_current)
 				{
 				case 0:
@@ -846,7 +845,7 @@ void GuiManager::PrimitivesWindow()
 				ImGui::SliderInt("Radiant", &rad, 0, 360);
 				const char* items[] = { "X", "Y", "Z" };
 				static int item_current = 0;
-				ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
+				ImGui::Combo("Axis", &item_current, items, IM_ARRAYSIZE(items));
 				switch (item_current)
 				{
 				case 0:
@@ -879,7 +878,7 @@ void GuiManager::PrimitivesWindow()
 				ImGui::SliderInt("Radiant", &rad, 0, 360);
 				const char* items[] = { "X", "Y", "Z" };
 				static int item_current = 0;
-				ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
+				ImGui::Combo("Axis", &item_current, items, IM_ARRAYSIZE(items));
 				switch (item_current)
 				{
 				case 0:

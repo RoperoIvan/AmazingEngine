@@ -1,6 +1,7 @@
 #include "Geometry.h"
 #include "par_shapes.h"
 
+//Constructor based in its variables
 Geometry::Geometry(float* ver, uint* ind, float* norm, uint num_vert, uint num_ind, uint num_nor)
 	: vertices(ver), indices(ind),normals(norm), num_vertices(num_vert), num_indices(num_ind), num_normals(num_nor)
 {
@@ -12,7 +13,7 @@ Geometry::Geometry(float* ver, uint* ind, float* norm, uint num_vert, uint num_i
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, indices, GL_STATIC_DRAW);
 }
-
+//Constructor based on a geometry
 Geometry::Geometry(Geometry* geo)
 	: vertices(geo->vertices), indices(geo->indices), normals(geo->normals), num_vertices(geo->num_vertices),
 	num_indices(geo->num_indices), num_normals(geo->num_normals), uv_coord(geo->uv_coord), num_coords(geo->num_coords)
@@ -27,6 +28,7 @@ Geometry::Geometry(Geometry* geo)
 
 
 }
+//Primitives constructor
 Geometry::Geometry(float* ver, uint* ind, float* normals, int num_vert, int num_ind, float r, float g, float b, float a) : vertices(ver), indices(ind), normals(normals), 
 num_vertices(num_vert), par_num_indices(num_ind), r(r), g(g), b(b), a(a)
 {
@@ -44,7 +46,7 @@ Geometry::Geometry()
 Geometry::~Geometry()
 {
 }
-
+//Draw geometry based in meshes
 void Geometry::Draw()
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -58,10 +60,9 @@ void Geometry::Draw()
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 }
-
+//Draw primitives geometries
 void Geometry::DrawPrimitives()
 {
-	/*glBegin(GL_TRIANGLES);*/
 	glColor4f(r, g, b, a);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
@@ -69,9 +70,8 @@ void Geometry::DrawPrimitives()
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 	glDrawElements(GL_TRIANGLES, par_num_indices * 3, GL_UNSIGNED_INT, NULL);
 	glDisableClientState(GL_VERTEX_ARRAY);
-	/*glEnd();*/
 }
-
+//DebugDraw for all geometries
 void Geometry::DebugDraw()
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
