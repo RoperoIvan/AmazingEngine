@@ -38,7 +38,7 @@ bool GuiManager::Init()
 
 bool GuiManager::Start()
 {
-	/*App->mesh->LoadFile("../Assets/warrior/warrior.fbx");*/
+	App->mesh->LoadFile("../Assets/BakerHouse.fbx");
 	//---1
 	//vertex[0] = 20.f;
 	//vertex[1] = 20.f;

@@ -127,7 +127,5 @@ void ImageDDS::LoadTexture()
 
 void ImageDDS::DrawTexture()
 {
-	glEnable(GL_TEXTURE_2D);
-
 	glBindTexture(GL_TEXTURE_2D, texture_id);
 }
