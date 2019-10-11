@@ -1,7 +1,16 @@
 #include "Image.h"
 
+#include "DevIL/include/IL/ilu.h"
+
+#pragma comment(lib, "DevIL/lib/x86/Release/ILU.lib")
+#pragma comment(lib, "DevIL/lib/x86/Release/DevIL.lib")
+#pragma comment(lib, "DevIL/lib/x86/Release/ILUT.lib")
+
+
 Image::Image(const char* image_name)
 {
+	//init devil
+	ilInit();
 	//open image
 	FILE* file = fopen(image_name, "rb");
 	if (!file)
@@ -28,6 +37,8 @@ Image::Image(const char* image_name)
 			if (data_pos == 0)
 				data_pos = 54;
 		}
+		iluFlipImage();
+
 		//copy image data and close the file
 		data = new unsigned char[image_size];
 		fread(data, 1, image_size, file);
@@ -35,6 +46,7 @@ Image::Image(const char* image_name)
 
 		//create openGL texture
 		LoadTexture();
+
 	}
 }
 

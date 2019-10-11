@@ -25,7 +25,12 @@ Geometry::Geometry(Geometry* geo)
 	glGenBuffers(1, (uint*) & (id_indices));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, indices, GL_STATIC_DRAW);
+
 	tex = new ImageDDS("../Assets/image.dds");
+
+	glGenBuffers(1, &id_coords);
+	glBindBuffer(GL_ARRAY_BUFFER, id_coords);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_coords * 3, uv_coord, GL_STATIC_DRAW);
 }
 //Primitives constructor
 Geometry::Geometry(float* ver, uint* ind, float* normals, int num_vert, int num_ind, float r, float g, float b, float a) : vertices(ver), indices(ind), normals(normals),
@@ -58,7 +63,8 @@ void Geometry::Draw()
 	if (tex != nullptr)
 	{
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindBuffer(GL_TEXTURE_2D, 0);
+		glBindBuffer(GL_TEXTURE_2D, tex->texture_id);
+		glBindBuffer(GL_ARRAY_BUFFER, id_coords);
 		tex->DrawTexture();
 		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	}

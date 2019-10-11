@@ -86,10 +86,13 @@ bool ModuleMesh::LoadFile(const char * file_name)
 			{
 				data->num_coords = scene->mMeshes[i]->mNumVertices * 2;
 				data->uv_coord = new float[data->num_coords];
-				for (int k = 0; k < scene->mMeshes[i]->mNumVertices; ++k) {
-					data->uv_coord[k * 2] = scene->mMeshes[i]->mTextureCoords[0][k].x;
-					data->uv_coord[k * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][k].y;
-					/*LOG("Texture coords: %f", texture_coords[k]);*/
+				for (uint j = 0; j < scene->mMeshes[i]->GetNumUVChannels(); ++j)
+				{
+					for (int k = 0; k < scene->mMeshes[i]->mNumVertices; ++k) {
+						data->uv_coord[k * 2] = scene->mMeshes[i]->mTextureCoords[j][k].x;
+						data->uv_coord[k * 2 + 1] = scene->mMeshes[i]->mTextureCoords[j][k].y;
+						/*LOG("Texture coords: %f", texture_coords[k]);*/
+					}
 				}
 			}
 			Geometry* geo = new Geometry(data);

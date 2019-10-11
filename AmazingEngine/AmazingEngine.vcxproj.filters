@@ -159,7 +159,7 @@
       <Filter>Tools</Filter>
     </ClCompile>
     <ClCompile Include="Image.cpp">
-      <Filter>Modules</Filter>
+      <Filter>Tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -431,7 +431,13 @@
       <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="Image.h">
-      <Filter>Modules</Filter>
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="DevIL\include\IL\ilu.h">
+      <Filter>DevIL</Filter>
+    </ClInclude>
+    <ClInclude Include="DevIL\include\IL\il.h">
+      <Filter>DevIL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -478,6 +484,9 @@
     </Filter>
     <Filter Include="Physfs">
       <UniqueIdentifier>{5202d10a-90b4-44c0-b219-38b939f7935b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DevIL">
+      <UniqueIdentifier>{a1b89247-482f-49ed-917b-28f332921518}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

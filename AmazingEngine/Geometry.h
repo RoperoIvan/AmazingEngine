@@ -37,6 +37,7 @@ struct Geometry
 	uint num_normals = 0;
 	float* normals = nullptr;
 	int par_num_indices = 0;
+	uint id_coords = 0;
 	uint num_coords = 0;
 	float* uv_coord = nullptr;
 	float r, g, b, a;
