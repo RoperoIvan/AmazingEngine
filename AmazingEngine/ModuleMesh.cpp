@@ -83,7 +83,7 @@ bool ModuleMesh::LoadFile(const char * file_name)
 			std::string  tex = text_path.C_Str();
 			std::string  p_geo = file_name;
 
-			//Construc the general path for the texture
+			//We change the name of the fbx for the texture name, with this made we have the general path
 			while (p_geo.back() != '\\')
 			{
 				p_geo.pop_back();
