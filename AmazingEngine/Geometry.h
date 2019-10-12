@@ -5,7 +5,7 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include "Globals.h"
-#include "Image.h";
+
 
 enum  class Primitives
 {
@@ -41,8 +41,7 @@ struct Geometry
 	uint num_coords = 0;
 	float* uv_coord = nullptr;
 	float r, g, b, a;
-
-	ImageDDS* tex = nullptr;
+	int texture_id = 0;
 
 };
 

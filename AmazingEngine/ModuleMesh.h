@@ -17,8 +17,8 @@ public:
 	bool Init();
 	update_status PostUpdate(float dt)override;
 	bool CleanUp();
-
 	bool LoadFile(const char* file_name);
+	GLuint LoadTexture(const char* p_tex);
 
 private:
 	float TriangleCenterAxis(const float &p1, const float &p2, const float &p3);

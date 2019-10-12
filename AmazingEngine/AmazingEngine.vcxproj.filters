@@ -158,9 +158,6 @@
     <ClCompile Include="par_shapes.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
-    <ClCompile Include="Image.cpp">
-      <Filter>Tools</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GuiManager.h">
@@ -428,9 +425,6 @@
       <Filter>Modules</Filter>
     </ClInclude>
     <ClInclude Include="par_shapes.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="Image.h">
       <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="DevIL\include\IL\ilu.h">
