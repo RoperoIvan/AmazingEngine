@@ -151,7 +151,7 @@ GLuint ModuleMesh::LoadTexture(const char * p_tex)
 	std::string text = "../Assets/";
 	std::string tex = p_tex;
 	std::string res = text + tex;
-	ilLoadImage(p_tex);
+	ilLoadImage("../Assets/Lenna.png");
 
 
 

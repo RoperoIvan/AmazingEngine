@@ -38,6 +38,7 @@ public:
 	void GetLog(const char* log);
 	void DrawGeometry();
 	void CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, float color[4], int scale[3], int translation[3], float rad, const float* axis);
+	void UIStyle();
 private:
 
 	bool show_config_window = false;

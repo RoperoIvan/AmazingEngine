@@ -28,10 +28,11 @@ GuiManager::~GuiManager()
 bool GuiManager::Init()
 {
 	bool ret = true;
+	
 	ImGui::CreateContext();
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
+	UIStyle();
 	ImGui_ImplOpenGL3_Init();
-
 	show_config_window = false;
 	return true;
 }
@@ -39,168 +40,6 @@ bool GuiManager::Init()
 bool GuiManager::Start()
 {
 	//App->mesh->LoadFile("../Assets/BakerHouse.fbx");
-	//---1
-	//vertex[0] = 20.f;
-	//vertex[1] = 20.f;
-	//vertex[2] = 30.f;
-
-	//vertex[3] = 20.f;
-	//vertex[4] = 20.f;
-	//vertex[5] = 20.f;
-
-	//vertex[6] = 30.f;
-	//vertex[7] = 20.f;
-	//vertex[8] = 20.f;
-
-	////-----2
-	//vertex[9] = 30.f;
-	//vertex[10] = 20.f;
-	//vertex[11] = 30.f;
-
-	//vertex[12] = 20.f;
-	//vertex[13] = 20.f;
-	//vertex[14] = 30.f;
-
-	//vertex[15] = 30.f;
-	//vertex[16] = 20.f;
-	//vertex[17] = 20.f;
-
-	////------3
-	//vertex[18] = 30.f;
-	//vertex[19] = 20.f;
-	//vertex[20] = 30.f;
-
-	//vertex[21] = 30.f;
-	//vertex[22] = 20.f;
-	//vertex[23] = 20.f;
-
-	//vertex[24] = 30.f;
-	//vertex[25] = 30.f;
-	//vertex[26] = 20.f;
-
-	////-----4
-	//vertex[27] = 30.f;
-	//vertex[28] = 30.f;
-	//vertex[29] = 30.f;
-
-	//vertex[30] = 30.f;
-	//vertex[31] = 20.f;
-	//vertex[32] = 30.f;
-
-	//vertex[33] = 30.f;
-	//vertex[34] = 30.f;
-	//vertex[35] = 20.f;
-
-	////---------------5
-	//vertex[36] = 30.f;
-	//vertex[37] = 20.f;
-	//vertex[38] = 30.f;
-
-	//vertex[39] = 30.f;
-	//vertex[40] = 30.f;
-	//vertex[41] = 30.f;
-
-	//vertex[42] = 20.f;
-	//vertex[43] = 30.f;
-	//vertex[44] = 30.f;
-
-
-	////--------------6
-	//vertex[45] = 20.f;
-	//vertex[46] = 20.f;
-	//vertex[47] = 30.f;
-
-	//vertex[48] = 30.f;
-	//vertex[49] = 20.f;
-	//vertex[50] = 30.f;
-
-	//vertex[51] = 20.f;
-	//vertex[52] = 30.f;
-	//vertex[53] = 30.f;
-
-	////---------------7
-	//vertex[54] = 30.f;
-	//vertex[55] = 30.f;
-	//vertex[56] = 30.f;
-
-	//vertex[57] = 30.f;
-	//vertex[58] = 30.f;
-	//vertex[59] = 20.f;
-
-	//vertex[60] = 20.f;
-	//vertex[61] = 30.f;
-	//vertex[62] = 20.f;
-
-	////---------------8
-	//vertex[63] = 20.f;
-	//vertex[64] = 30.f;
-	//vertex[65] = 30.f;
-
-	//vertex[66] = 30.f;
-	//vertex[67] = 30.f;
-	//vertex[68] = 30.f;
-
-	//vertex[69] = 20.f;
-	//vertex[70] = 30.f;
-	//vertex[71] = 20.f;
-
-	////---------------9
-	//vertex[72] = 20.f;
-	//vertex[73] = 30.f;
-	//vertex[74] = 30.f;
-
-	//vertex[75] = 20.f;
-	//vertex[76] = 30.f;
-	//vertex[77] = 20.f;
-
-	//vertex[78] = 20.f;
-	//vertex[79] = 20.f;
-	//vertex[80] = 20.f;
-
-
-	////-----------10
-	//vertex[81] = 20.f;
-	//vertex[82] = 20.f;
-	//vertex[83] = 30.f;
-
-	//vertex[84] = 20.f;
-	//vertex[85] = 30.f;
-	//vertex[86] = 30.f;
-
-	//vertex[87] = 20.f;
-	//vertex[88] = 20.f;
-	//vertex[89] = 20.f;
-
-	////-----------11	
-	//vertex[90] = 20.f;
-	//vertex[91] = 20.f;
-	//vertex[92] = 20.f;
-
-	//vertex[93] = 20.f;
-	//vertex[94] = 30.f;
-	//vertex[95] = 20.f;
-
-	//vertex[96] = 30.f;
-	//vertex[97] = 30.f;
-	//vertex[98] = 20.f;
-
-	////-----------12
-	//vertex[99] = 30.f;
-	//vertex[100] = 20.f;
-	//vertex[101] = 20.f;
-
-	//vertex[102] = 20.f;
-	//vertex[103] = 20.f;
-	//vertex[104] = 20.f;
-
-	//vertex[105] = 30.f;
-	//vertex[106] = 30.f;
-	//vertex[107] = 20.f;
-
-	////alloc vertex
-	//glGenBuffers(3, (GLuint*) & (array_id));
-	//glBindBuffer(GL_ARRAY_BUFFER, array_id);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_of_vertex * 3, vertex, GL_STATIC_DRAW);
 
 	return true;
 }
@@ -212,7 +51,7 @@ update_status GuiManager::PreUpdate(float dt)
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
-	//example menu
+	//Menu top bar
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
@@ -281,69 +120,7 @@ update_status GuiManager::Update(float dt)
 		debug_draw = !debug_draw;
 	}
 	ImGui::ShowDemoWindow();
-	//glLineWidth(2.0f);
-
-	////Direct mode cube
-	//glBegin(GL_TRIANGLES);
-
-	//glColor3f(255, 0, 0);
-	//// DOWN FACE
-	////1
-	//glVertex3f(0.f, 0.f, 2.f);
-	//glVertex3f(0.f, 0.f, 0.f);
-	//glVertex3f(2.f, 0.f, 0.f);
-	////2
-	//glVertex3f(2.f, 0.f, 2.f);
-	//glVertex3f(0.f, 0.f, 2.f);
-	//glVertex3f(2.f, 0.f, 0.f);
-	////RIGHT FACE
-	////3
-	//glVertex3f(2.f, 0.f, 2.f);
-	//glVertex3f(2.f, 0.f, 0.f);
-	//glVertex3f(2.f, 2.f, 0.f);
-	////4
-	//glVertex3f(2.f, 2.f, 2.f);
-	//glVertex3f(2.f, 0.f, 2.f);
-	//glVertex3f(2.f, 2.f, 0.f);
-	////BACK FACE
-	////5
-	//glVertex3f(2.f, 0.f, 2.f);
-	//glVertex3f(2.f, 2.f, 2.f);
-	//glVertex3f(0.f, 2.f, 2.f);
-	////6
-	//glVertex3f(0.f, 0.f, 2.f);
-	//glVertex3f(2.f, 0.f, 2.f);
-	//glVertex3f(0.f, 2.f, 2.f);
-	////UP FACE
-	////7
-	//glVertex3f(2.f, 2.f, 2.f);
-	//glVertex3f(2.f, 2.f, 0.f);
-	//glVertex3f(0.f, 2.f, 0.f);
-	////8
-	//glVertex3f(0.f, 2.f, 2.f);
-	//glVertex3f(2.f, 2.f, 2.f);
-	//glVertex3f(0.f, 2.f, 0.f);
-	////LEFT FACE
-	////9
-	//glVertex3f(0.f, 2.f, 2.f);
-	//glVertex3f(0.f, 2.f, 0.f);
-	//glVertex3f(0.f, 0.f, 0.f);
-	////10
-	//glVertex3f(0.f, 0.f, 2.f);
-	//glVertex3f(0.f, 2.f, 2.f);
-	//glVertex3f(0.f, 0.f, 0.f);
-	////FRONT FACE
-	////11
-	//glVertex3f(0.f, 0.f, 0.f);
-	//glVertex3f(0.f, 2.f, 0.f);
-	//glVertex3f(2.f, 2.f, 0.f);
-	////12
-	//glVertex3f(2.f, 0.f, 0.f);
-	//glVertex3f(0.f, 0.f, 0.f);
-	//glVertex3f(2.f, 2.f, 0.f);
-	//glEnd();
-	////------------------------------\\
-
+	
 	return UPDATE_CONTINUE;
 }
 
@@ -956,4 +733,77 @@ void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, floa
 	par_shapes_rotate(p_mesh, rad, axis);
 	Geometry* geo = new Geometry(p_mesh->points, p_mesh->triangles, p_mesh->normals, p_mesh->npoints, p_mesh->ntriangles,col[0], col[1], col[2], col[3]);
 	geoms.push_back(geo);
+}
+
+void GuiManager::UIStyle()
+{
+	// cherry colors, 3 intensities
+#define HI(v)   ImVec4(0.502f, 0.075f, 0.256f, v)
+#define MED(v)  ImVec4(0.455f, 0.198f, 0.301f, v)
+#define LOW(v)  ImVec4(0.232f, 0.201f, 0.271f, v)
+	// backgrounds (@todo: complete with BG_MED, BG_LOW)
+#define BG(v)   ImVec4(0.200f, 0.220f, 0.270f, v)
+	// text
+#define TEXT(v) ImVec4(0.860f, 0.930f, 0.890f, v)
+
+	auto &style = ImGui::GetStyle();
+	style.Colors[ImGuiCol_Text] = TEXT(0.78f);
+	style.Colors[ImGuiCol_TextDisabled] = TEXT(0.28f);
+	style.Colors[ImGuiCol_WindowBg] = ImVec4(0.13f, 0.14f, 0.17f, 1.00f);
+	style.Colors[ImGuiCol_ChildWindowBg] = BG(0.58f);
+	style.Colors[ImGuiCol_PopupBg] = BG(0.9f);
+	style.Colors[ImGuiCol_Border] = ImVec4(0.31f, 0.31f, 1.00f, 0.00f);
+	style.Colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+	style.Colors[ImGuiCol_FrameBg] = BG(1.00f);
+	style.Colors[ImGuiCol_FrameBgHovered] = MED(0.78f);
+	style.Colors[ImGuiCol_FrameBgActive] = MED(1.00f);
+	style.Colors[ImGuiCol_TitleBg] = LOW(1.00f);
+	style.Colors[ImGuiCol_TitleBgActive] = HI(1.00f);
+	style.Colors[ImGuiCol_TitleBgCollapsed] = BG(0.75f);
+	style.Colors[ImGuiCol_MenuBarBg] = BG(0.47f);
+	style.Colors[ImGuiCol_ScrollbarBg] = BG(1.00f);
+	style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.09f, 0.15f, 0.16f, 1.00f);
+	style.Colors[ImGuiCol_ScrollbarGrabHovered] = MED(0.78f);
+	style.Colors[ImGuiCol_ScrollbarGrabActive] = MED(1.00f);
+	style.Colors[ImGuiCol_CheckMark] = ImVec4(0.71f, 0.22f, 0.27f, 1.00f);
+	style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.47f, 0.77f, 0.83f, 0.14f);
+	style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.71f, 0.22f, 0.27f, 1.00f);
+	style.Colors[ImGuiCol_Button] = ImVec4(0.47f, 0.77f, 0.83f, 0.14f);
+	style.Colors[ImGuiCol_ButtonHovered] = MED(0.86f);
+	style.Colors[ImGuiCol_ButtonActive] = MED(1.00f);
+	style.Colors[ImGuiCol_Header] = MED(0.76f);
+	style.Colors[ImGuiCol_HeaderHovered] = MED(0.86f);
+	style.Colors[ImGuiCol_HeaderActive] = HI(1.00f);
+	style.Colors[ImGuiCol_Column] = ImVec4(0.14f, 0.16f, 0.19f, 1.00f);
+	style.Colors[ImGuiCol_ColumnHovered] = MED(0.78f);
+	style.Colors[ImGuiCol_ColumnActive] = MED(1.00f);
+	style.Colors[ImGuiCol_ResizeGrip] = ImVec4(0.47f, 0.77f, 0.83f, 0.04f);
+	style.Colors[ImGuiCol_ResizeGripHovered] = MED(0.78f);
+	style.Colors[ImGuiCol_ResizeGripActive] = MED(1.00f);
+	style.Colors[ImGuiCol_PlotLines] = TEXT(0.63f);
+	style.Colors[ImGuiCol_PlotLinesHovered] = MED(1.00f);
+	style.Colors[ImGuiCol_PlotHistogram] = TEXT(0.63f);
+	style.Colors[ImGuiCol_PlotHistogramHovered] = MED(1.00f);
+	style.Colors[ImGuiCol_TextSelectedBg] = MED(0.43f);
+	// [...]
+	style.Colors[ImGuiCol_ModalWindowDarkening] = BG(0.73f);
+
+	style.WindowPadding = ImVec2(6, 4);
+	style.WindowRounding = 0.0f;
+	style.FramePadding = ImVec2(5, 2);
+	style.FrameRounding = 3.0f;
+	style.ItemSpacing = ImVec2(7, 1);
+	style.ItemInnerSpacing = ImVec2(1, 1);
+	style.TouchExtraPadding = ImVec2(0, 0);
+	style.IndentSpacing = 6.0f;
+	style.ScrollbarSize = 12.0f;
+	style.ScrollbarRounding = 16.0f;
+	style.GrabMinSize = 20.0f;
+	style.GrabRounding = 2.0f;
+
+	style.WindowTitleAlign.x = 0.50f;
+
+	style.Colors[ImGuiCol_Border] = ImVec4(0.539f, 0.479f, 0.255f, 0.162f);
+	style.FrameBorderSize = 0.0f;
+	style.WindowBorderSize = 1.0f;
 }
