@@ -54,7 +54,7 @@ bool Application::Init()
 	}
 
 	// After all Init calls we call Start() in all modules
-	LOG("Application Start --------------");
+	LOG("-------------- Application Start --------------");
 
 	for (std::list<Module*>::iterator item = list_modules.begin(); item != list_modules.end() && ret == true; ++item)
 	{
@@ -202,7 +202,7 @@ bool Application::Load()
 	return ret;
 }
 
-void Application::RerquestBrowser(const char *url)
+void Application::RequestBrowser(const char *url)
 {
 	ShellExecuteA(GetActiveWindow(),"open",url,NULL,NULL, SW_SHOWNORMAL);
 }

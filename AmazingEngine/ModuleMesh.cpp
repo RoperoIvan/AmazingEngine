@@ -78,10 +78,18 @@ bool ModuleMesh::LoadFile(const char * file_name)
 	if (scene->HasMaterials())
 		if (scene->mMaterials[0]->GetTextureCount(aiTextureType_DIFFUSE) > 0)
 		{
-			
 			aiString text_path;
 			scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &text_path);
-			text_id = LoadTexture(text_path.C_Str());
+			std::string  tex = text_path.C_Str();
+			std::string  p_geo = file_name;
+
+			//Construc the general path for the texture
+			while (p_geo.back() != '\\')
+			{
+				p_geo.pop_back();
+			}
+			p_geo += tex;
+			text_id = LoadTexture(p_geo.c_str());
 		}
 	if (scene != nullptr && scene->HasMeshes())
 	{
@@ -148,10 +156,7 @@ GLuint ModuleMesh::LoadTexture(const char * p_tex)
 	ilBindImage(img_id);
 
 	//load from path
-	std::string text = "../Assets/";
-	std::string tex = p_tex;
-	std::string res = text + tex;
-	ilLoadImage("../Assets/Lenna.png");
+	ilLoadImage(p_tex);
 
 
 

@@ -80,7 +80,7 @@ public:
 
 	void GetFrames(int& frames, float& miliseconds);
 
-	void RerquestBrowser(const char*);
+	void RequestBrowser(const char*);
 	HardwareSpecs system_specs;
 private:
 
