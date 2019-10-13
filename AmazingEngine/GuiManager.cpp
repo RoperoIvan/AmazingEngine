@@ -96,7 +96,7 @@ update_status GuiManager::PreUpdate(float dt)
 
 	//Console window
 	if(show_console_window)
-		ShowAppConsole(show_console_window);
+		AppConsoleWindow(show_console_window);
 
 	//Primitives window
 	if (show_primitives_window)
@@ -171,7 +171,7 @@ void GuiManager::ConfigurationWindow(bool show_conf_window)
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
 
-		if (ImGui::Begin("Settings", &show_config_window), window_flags)
+		if (ImGui::Begin("Settings", &show_config_window))
 		{
 			// Application options tab
 			if (ImGui::CollapsingHeader("Application"))
@@ -495,7 +495,7 @@ void GuiManager::AboutWindow(bool show_about_win)
 	ImGui::End();
 }
 
-void GuiManager::ShowAppConsole(bool show_console)
+void GuiManager::AppConsoleWindow(bool show_console)
 {
 	console.Draw("Amazing Engine", &show_console_window);
 }
@@ -507,7 +507,7 @@ void GuiManager::PrimitivesWindow()
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
 		par_shapes_mesh* m = nullptr;
-		if (ImGui::Begin("Create Primitives", &show_primitives_window), window_flags)
+		if (ImGui::Begin("Create Primitives", &show_primitives_window))
 		{
 			static float col[4] = { 0.4f,0.7f,0.0f,0.5f };
 			static int scale[3] = { 1,1,1 };
@@ -725,7 +725,7 @@ void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, floa
 		p_mesh = par_shapes_create_plane(30, 3);
 		break;
 	default:
-		LOG("Uknown primtive selected");
+		LOG("Unknown primtive selected");
 		break;
 	}
 	par_shapes_scale(p_mesh, scale[0], scale[1], scale[2]);

@@ -2,8 +2,8 @@
 #include "par_shapes.h"
 
 //Constructor based in its variables
-Geometry::Geometry(float* ver, uint* ind, float* norm, uint num_vert, uint num_ind, uint num_nor)
-	: vertices(ver), indices(ind),normals(norm), num_vertices(num_vert), num_indices(num_ind), num_normals(num_nor)
+Geometry::Geometry(float* ver, uint* ind, float* norm, uint num_vert, uint num_ind, uint num_nor, float* uv_cord)
+	: vertices(ver), indices(ind),normals(norm), num_vertices(num_vert), num_indices(num_ind), num_normals(num_nor), uv_coord(uv_cord)
 {
 	glGenBuffers(1, (uint*)&(id_vertices));
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
@@ -12,6 +12,21 @@ Geometry::Geometry(float* ver, uint* ind, float* norm, uint num_vert, uint num_i
 	glGenBuffers(1, (uint*)&(id_indices));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, indices, GL_STATIC_DRAW);
+
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR)
+		LOG("Error Storing Indices! %s\n", gluErrorString(error));
+
+	//Alloc the textures for future use
+	if (texture_id != 0)
+	{
+		glGenBuffers(1, (uint*)&(id_coords));
+		glBindBuffer(GL_ARRAY_BUFFER, id_coords);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices * 2, uv_coord, GL_STATIC_DRAW);
+		error = glGetError();
+		if (error != GL_NO_ERROR)
+			LOG("Error Storing textures! %s\n", gluErrorString(error));
+	}
 }
 //Constructor based on a geometry
 Geometry::Geometry(Geometry* geo)
@@ -26,27 +41,20 @@ Geometry::Geometry(Geometry* geo)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, indices, GL_STATIC_DRAW);
 
-	/*tex = new ImageDDS("../Assets/BakerHouse.dds");*/
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)
 		LOG("Error Storing Indices! %s\n", gluErrorString(error));
 
-
+	//Alloc the textures for future use
 	if (texture_id != 0)
 	{
-		//alloc texture coords
 		glGenBuffers(1, (uint*)&(id_coords));
 		glBindBuffer(GL_ARRAY_BUFFER, id_coords);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices * 2, uv_coord, GL_STATIC_DRAW);
-
 		error = glGetError();
 		if (error != GL_NO_ERROR)
 			LOG("Error Storing textures! %s\n", gluErrorString(error));
-
 	}
-	//glGenBuffers(1, &id_coords);
-	//glBindBuffer(GL_ARRAY_BUFFER, id_coords);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_coords, uv_coord, GL_STATIC_DRAW);
 }
 //Primitives constructor
 Geometry::Geometry(float* ver, uint* ind, float* normals, int num_vert, int num_ind, float r, float g, float b, float a) : vertices(ver), indices(ind), normals(normals),
@@ -88,15 +96,13 @@ void Geometry::Draw()
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, NULL);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	/*glDisableClientState(GL_TEXTURE_COORD_ARRAY);*/
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 //Draw primitives geometries
 void Geometry::DrawPrimitives()
 {
 	glColor4f(r, g, b, a);
 	glEnableClientState(GL_VERTEX_ARRAY);
-	/*if (tex != nullptr)
-		tex->DrawTexture();*/
 
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
@@ -106,7 +112,7 @@ void Geometry::DrawPrimitives()
 }
 //DebugDraw for all geometries
 void Geometry::DebugDraw()
-{
+{//TODO: Fix normals in the primitive geometries
 	glEnableClientState(GL_VERTEX_ARRAY);
 
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);

@@ -19,7 +19,7 @@ enum  class Primitives
 
 struct Geometry
 {
-	Geometry(float* ver, uint* ind,float* norm, uint num_vert, uint num_ind, uint num_norm);
+	Geometry(float* ver, uint* ind,float* norm, uint num_vert, uint num_ind, uint num_norm, float* uv_coord);
 	Geometry(Geometry* geo);
 	Geometry(float* ver, uint* ind, float* normals, int num_vert, int num_ind, float r, float g, float b,float a); // Creation of primitives with par_shapes library
 	Geometry();

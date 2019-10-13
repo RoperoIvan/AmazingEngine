@@ -33,7 +33,7 @@ public:
 	bool Load(nlohmann::json &j) override;
 	void AboutWindow(bool show_about_window);
 	void ConfigurationWindow(bool show_config_window);
-	void ShowAppConsole(bool show_console);
+	void AppConsoleWindow(bool show_console);
 	void PrimitivesWindow();
 	void GetLog(const char* log);
 	void DrawGeometry();
@@ -45,6 +45,7 @@ private:
 	bool show_about_window = false;
 	bool show_console_window = false;
 	bool show_primitives_window = false;
+	bool show_inspector_window = false;
 	bool fullscreen = false;
 	bool resizable = false;
 	bool borderless = false;
@@ -52,18 +53,7 @@ private:
 	bool debug_draw = false;
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;
-	SDL_WindowFlags window_flags;
-	SDL_GLContext gl_context;
-
-	//Geometry
-	float vertex[120];
-	float plane[480];
-	//------------------
-	int num_of_vertex = 36;
-	uint array_id = 0;
-	uint plane_id = 1;
 	AppConsole console;
-	ImGuiTextBuffer text;
 	Primitives prim = Primitives::UKNOWN;
 	std::vector<Geometry*> geoms;
 };
