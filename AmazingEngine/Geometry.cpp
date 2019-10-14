@@ -2,8 +2,8 @@
 #include "par_shapes.h"
 
 //Constructor based in its variables
-Geometry::Geometry(float* ver, uint* ind, float* norm, uint num_vert, uint num_ind, uint num_nor, float* uv_cord)
-	: vertices(ver), indices(ind),normals(norm), num_vertices(num_vert), num_indices(num_ind), num_normals(num_nor), uv_coord(uv_cord)
+Geometry::Geometry(float* ver, uint* ind, float* norm, uint num_vert, uint num_ind, uint num_norm, GameObject* parent): Component(parent,COMPONENT_TYPE::COMPONENT_MESH),
+	vertices(ver), indices(ind),normals(norm), num_vertices(num_vert), num_indices(num_ind), num_normals(num_norm)
 {
 	glGenBuffers(1, (uint*)&(id_vertices));
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
@@ -17,21 +17,11 @@ Geometry::Geometry(float* ver, uint* ind, float* norm, uint num_vert, uint num_i
 	if (error != GL_NO_ERROR)
 		LOG("Error Storing Indices! %s\n", gluErrorString(error));
 
-	//Alloc the textures for future use
-	if (texture_id != 0)
-	{
-		glGenBuffers(1, (uint*)&(id_coords));
-		glBindBuffer(GL_ARRAY_BUFFER, id_coords);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices * 2, uv_coord, GL_STATIC_DRAW);
-		error = glGetError();
-		if (error != GL_NO_ERROR)
-			LOG("Error Storing textures! %s\n", gluErrorString(error));
-	}
+
 }
 //Constructor based on a geometry
-Geometry::Geometry(Geometry* geo)
-	: vertices(geo->vertices), indices(geo->indices), normals(geo->normals), num_vertices(geo->num_vertices),
-	num_indices(geo->num_indices), num_normals(geo->num_normals), uv_coord(geo->uv_coord), num_coords(geo->num_coords), texture_id(geo->texture_id)
+Geometry::Geometry(Geometry* geo, GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_MESH),
+	vertices(geo->vertices), indices(geo->indices), normals(geo->normals), num_vertices(geo->num_vertices),num_indices(geo->num_indices), num_normals(geo->num_normals), texture(geo->texture)
 {
 	glGenBuffers(1, (uint*) & (id_vertices));
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
@@ -46,19 +36,22 @@ Geometry::Geometry(Geometry* geo)
 		LOG("Error Storing Indices! %s\n", gluErrorString(error));
 
 	//Alloc the textures for future use
-	if (texture_id != 0)
+	if (texture != nullptr)
 	{
-		glGenBuffers(1, (uint*)&(id_coords));
-		glBindBuffer(GL_ARRAY_BUFFER, id_coords);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices * 2, uv_coord, GL_STATIC_DRAW);
-		error = glGetError();
-		if (error != GL_NO_ERROR)
-			LOG("Error Storing textures! %s\n", gluErrorString(error));
+		if (texture->texture_id != 0) 
+		{
+			glGenBuffers(1, (uint*) & (texture->id_coords));
+			glBindBuffer(GL_ARRAY_BUFFER, texture->id_coords);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices * 2, texture->uv_coord, GL_STATIC_DRAW);
+			error = glGetError();
+			if (error != GL_NO_ERROR)
+				LOG("Error Storing textures! %s\n", gluErrorString(error));
+		}
 	}
 }
 //Primitives constructor
-Geometry::Geometry(float* ver, uint* ind, float* normals, int num_vert, int num_ind, float r, float g, float b, float a) : vertices(ver), indices(ind), normals(normals),
-num_vertices(num_vert), par_num_indices(num_ind), r(r), g(g), b(b), a(a)
+Geometry::Geometry(float* ver, uint* ind, float* normals, int num_vert, int num_ind, float r, float g, float b, float a, GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_MESH),
+vertices(ver), indices(ind), normals(normals),num_vertices(num_vert), par_num_indices(num_ind), r(r), g(g), b(b), a(a)
 {
 	glGenBuffers(1, &id_vertices);
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
@@ -70,7 +63,7 @@ num_vertices(num_vert), par_num_indices(num_ind), r(r), g(g), b(b), a(a)
 
 }
 
-Geometry::Geometry()
+Geometry::Geometry(GameObject* parent):Component(parent, COMPONENT_TYPE::COMPONENT_MESH)
 {
 }
 Geometry::~Geometry()
@@ -84,14 +77,17 @@ void Geometry::Draw()
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	if (texture_id != 0)
+	if (texture != nullptr)
 	{
-		//Bind textures
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glBindTexture(GL_TEXTURE_2D, texture_id);
-		glBindBuffer(GL_ARRAY_BUFFER, id_coords);
-		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+		if (texture->texture_id != 0)
+		{
+			//Bind textures
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glBindTexture(GL_TEXTURE_2D, 0);
+			glBindTexture(GL_TEXTURE_2D, texture->texture_id);
+			glBindBuffer(GL_ARRAY_BUFFER, texture->id_coords);
+			glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+		}
 	}
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, NULL);
 
@@ -130,4 +126,16 @@ void Geometry::DebugDraw()
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, NULL);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void Geometry::Enable()
+{
+}
+
+void Geometry::Update()
+{
+}
+
+void Geometry::Disable()
+{
 }

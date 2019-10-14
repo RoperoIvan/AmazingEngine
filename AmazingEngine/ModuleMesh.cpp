@@ -8,7 +8,7 @@
 #include "DevIL/include/IL/il.h"
 #include "DevIL/include/IL/ilu.h"
 #include "DevIL/include/IL/ilut.h"
-
+#include "Image.h"
 
 #pragma comment(lib, "DevIL/lib/x86/Release/ILU.lib")
 #pragma comment(lib, "DevIL/lib/x86/Release/DevIL.lib")
@@ -74,40 +74,24 @@ bool ModuleMesh::LoadFile(const char * file_name)
 	int text_id = 0;
 	const aiScene* scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_Quality);
 
-	//Search for textures
-	if (scene->HasMaterials())
-		if (scene->mMaterials[0]->GetTextureCount(aiTextureType_DIFFUSE) > 0)
-		{
-			aiString text_path;
-			scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &text_path);
-			std::string  tex = text_path.C_Str();
-			std::string  p_geo = file_name;
 
-			//We change the name of the fbx for the texture name, with this made we have the general path
-			while (p_geo.back() != '\\')
-			{
-				p_geo.pop_back();
-			}
-			p_geo += tex;
-			text_id = LoadTexture(p_geo.c_str());
-		}
+		
 	if (scene != nullptr && scene->HasMeshes())
 	{
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		for (int i = 0; i < scene->mNumMeshes; ++i)
 		{
-			Geometry* data = new Geometry();
+			Geometry* data = new Geometry(nullptr);
 			//Load vertex
 			data->num_vertices = scene->mMeshes[i]->mNumVertices;
 			data->vertices = new float[data->num_vertices * 3];
-			data->texture_id = text_id;
 			memcpy(data->vertices, scene->mMeshes[i]->mVertices, sizeof(float) * data->num_vertices * 3);
 			LOG("New mesh with %d vertices", data->vertices);
 
 			//load index
 			if (scene->mMeshes[i]->HasFaces())
-			{	
-				data->num_indices = scene->mMeshes[i]->mNumFaces*3;
+			{
+				data->num_indices = scene->mMeshes[i]->mNumFaces * 3;
 				data->indices = new uint[data->num_indices * 3];
 				for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; ++j)
 				{
@@ -126,21 +110,20 @@ bool ModuleMesh::LoadFile(const char * file_name)
 				}
 
 			}
-			if (scene->mMeshes[i]->HasTextureCoords(0))
+			//Search for textures
+			if (scene->HasMaterials())
 			{
-				data->num_coords = scene->mMeshes[i]->mNumVertices * 2;
-				data->uv_coord = new float[data->num_coords];
-					for (int k = 0; k < scene->mMeshes[i]->mNumVertices; ++k) {
-						data->uv_coord[k * 2] = scene->mMeshes[i]->mTextureCoords[0][k].x;
-						data->uv_coord[k * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][k].y;
-						/*LOG("Texture coords: %f", texture_coords[k]);*/
-					}
+				data->texture = new Image(nullptr);
+				data->texture->LoadCoords(scene->mMeshes[i]);
+				data->texture->LoadMatirials(scene, file_name);
 			}
-			Geometry* geo = new Geometry(data);
+			Geometry* geo = new Geometry(data, nullptr);
 			geometry.push_back(geo);
 			LOG("New mesh created from %s", file_name);
+
 		}
 		aiReleaseImport(scene);
+
 	}
 	else
 		LOG("Error loading scene %s", file_name);

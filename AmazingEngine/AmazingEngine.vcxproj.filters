@@ -149,14 +149,23 @@
     <ClCompile Include="Application.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Geometry.cpp">
-      <Filter>Tools</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleMesh.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="par_shapes.cpp">
       <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -418,9 +427,6 @@
     <ClInclude Include="PhysFS\include\physfs.h">
       <Filter>Physfs</Filter>
     </ClInclude>
-    <ClInclude Include="Geometry.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleMesh.h">
       <Filter>Modules</Filter>
     </ClInclude>
@@ -432,6 +438,18 @@
     </ClInclude>
     <ClInclude Include="DevIL\include\IL\il.h">
       <Filter>DevIL</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -481,6 +499,9 @@
     </Filter>
     <Filter Include="DevIL">
       <UniqueIdentifier>{a1b89247-482f-49ed-917b-28f332921518}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject">
+      <UniqueIdentifier>{86eb3767-35d2-4d55-8497-f8559717624c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
