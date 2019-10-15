@@ -4,6 +4,8 @@
 #include "glmath.h"
 #include "json.hpp"
 
+struct Geometry;
+
 class ModuleCamera3D : public Module
 {
 public:
@@ -21,7 +23,7 @@ public:
 	void LookAt(const vec3 &Spot);
 	void Move(const vec3 &Movement);
 	float* GetViewMatrix();
-
+	void GoAroundGeometry(const Geometry* geom);
 private:
 
 	void CalculateViewMatrix();

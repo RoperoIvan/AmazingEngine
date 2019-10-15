@@ -63,8 +63,8 @@ struct AppConsole
 		bool clear = ImGui::Button("Clear");
 		ImGui::SameLine();
 		bool copy = ImGui::Button("Copy");
-		ImGui::SameLine();
-		Filter.Draw("Filter", -100.0f);
+		/*ImGui::SameLine();
+		Filter.Draw("Filter", -100.0f);*/
 
 		ImGui::Separator();
 		ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
@@ -77,22 +77,21 @@ struct AppConsole
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 		const char* buf = Buf.begin();
 		const char* buf_end = Buf.end();
-		if (Filter.IsActive())
-		{
-			// In this example we don't use the clipper when Filter is enabled.
-			// This is because we don't have a random access on the result on our filter.
-			// A real application processing logs with ten of thousands of entries may want to store the result of search/filter.
-			// especially if the filtering function is not trivial (e.g. reg-exp).
-			for (int line_no = 0; line_no < LineOffsets.Size; line_no++)
-			{
-				const char* line_start = buf + LineOffsets[line_no];
-				const char* line_end = (line_no + 1 < LineOffsets.Size) ? (buf + LineOffsets[line_no + 1] - 1) : buf_end;
-				if (Filter.PassFilter(line_start, line_end))
-					ImGui::TextUnformatted(line_start, line_end);
-			}
-		}
-		else
-		{
+		//if (Filter.IsActive())
+		//{
+		//	// In this example we don't use the clipper when Filter is enabled.
+		//	// This is because we don't have a random access on the result on our filter.
+		//	// A real application processing logs with ten of thousands of entries may want to store the result of search/filter.
+		//	// especially if the filtering function is not trivial (e.g. reg-exp).
+		//	for (int line_no = 0; line_no < LineOffsets.Size; line_no++)
+		//	{
+		//		const char* line_start = buf + LineOffsets[line_no];
+		//		const char* line_end = (line_no + 1 < LineOffsets.Size) ? (buf + LineOffsets[line_no + 1] - 1) : buf_end;
+		//		if (Filter.PassFilter(line_start, line_end))
+		//			ImGui::TextUnformatted(line_start, line_end);
+		//	}
+		//}
+
 			// The simplest and easy way to display the entire buffer:
 			//   ImGui::TextUnformatted(buf_begin, buf_end);
 			// And it'll just work. TextUnformatted() has specialization for large blob of text and will fast-forward to skip non-visible lines.
@@ -114,7 +113,7 @@ struct AppConsole
 				}
 			}
 			clipper.End();
-		}
+		
 		ImGui::PopStyleVar();
 
 		if (ScrollToBottom)

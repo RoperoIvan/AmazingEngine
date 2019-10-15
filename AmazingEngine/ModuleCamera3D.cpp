@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleCamera3D.h"
+#include "Geometry.h"
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -41,7 +42,7 @@ update_status ModuleCamera3D::Update(float dt)
 	// Now we can make this movememnt frame rate independant!
 
 	vec3 newPos(0, 0, 0);
-	float speed = 1.0f;
+	float speed = 0.3f;
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 		speed = 8.0f;
 
@@ -91,7 +92,7 @@ update_status ModuleCamera3D::Update(float dt)
 				Y = cross(Z, X);
 			}
 		}
-
+		
 		Position = Reference + Z * length(Position);
 	}
 
@@ -146,6 +147,31 @@ void ModuleCamera3D::Move(const vec3& Movement)
 float* ModuleCamera3D::GetViewMatrix()
 {
 	return &ViewMatrix;
+}
+
+void ModuleCamera3D::GoAroundGeometry(const Geometry* geom)
+{
+	math::AABB box(float3(0, 0, 0), float3(0, 0, 0));
+	std::vector <float3> vertex;
+
+	for (int i = 0; i < geom->num_vertices * 3; i += 3)
+	{
+		vertex.push_back(float3(geom->vertices[i], geom->vertices[i + 1], geom->vertices[i + 2]));
+	}
+
+	box.Enclose(&vertex[0], geom->num_vertices);
+
+
+	Position.x = box.maxPoint.x*2;
+	Position.y = box.maxPoint.y*2;
+	Position.z = box.maxPoint.z*2;
+
+	Reference.x = box.CenterPoint().x;
+	Reference.y = box.CenterPoint().y;
+	Reference.z = box.CenterPoint().z;
+
+
+	LookAt(Reference);
 }
 
 // -----------------------------------------------------------------

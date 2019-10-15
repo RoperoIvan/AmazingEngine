@@ -51,6 +51,7 @@ Geometry::~Geometry()
 //Draw primitives geometries
 void Geometry::DrawPrimitives()
 {
+	glPushAttrib(GL_CURRENT_BIT);
 	glColor4f(r, g, b, a);
 	glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -59,6 +60,7 @@ void Geometry::DrawPrimitives()
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 	glDrawElements(GL_TRIANGLES, par_num_indices * 3, GL_UNSIGNED_INT, NULL);
 	glDisableClientState(GL_VERTEX_ARRAY);
+	glPopAttrib();
 }
 //DebugDraw for all geometries
 void Geometry::DebugDraw()

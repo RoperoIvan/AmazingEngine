@@ -88,7 +88,7 @@ bool ModuleMesh::LoadFile(const char * file_name)
 				
 			}
 			LOG("New mesh created from %s", file_name);
-
+			App->camera->GoAroundGeometry(geo);
 		}
 		App->scene->game_objects.push_back(game_object);
 		aiReleaseImport(scene);

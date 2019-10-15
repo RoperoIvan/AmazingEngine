@@ -48,66 +48,75 @@ update_status GuiManager::PreUpdate(float dt)
 {
 	bool ret = true;
 
-	//Menu top bar
-	if (ImGui::BeginMainMenuBar())
+//Menu top bar
+if (ImGui::BeginMainMenuBar())
+{
+	if (ImGui::BeginMenu("File"))
 	{
-		if (ImGui::BeginMenu("File"))
-		{
-			if (ImGui::MenuItem("Console")) show_console_window = true;
-			if (ImGui::MenuItem("Settings")) show_config_window = true;
-			if (ImGui::MenuItem("Exit")) ret = false;
+		if (ImGui::MenuItem("Console")) show_console_window = true;
+		if (ImGui::MenuItem("Settings")) show_config_window = true;
+		if (ImGui::MenuItem("Exit")) ret = false;
 
-			ImGui::EndMenu();
-		}	
-		if (ImGui::BeginMenu("Create"))
-		{
-			if (ImGui::MenuItem("Primitives")) show_primitives_window = true;
-
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Help"))
-		{
-			if (ImGui::MenuItem("Documentation")) 
-				App->RequestBrowser("https://github.com/RoperoIvan/AmazingEngine/wiki");
-
-			if (ImGui::MenuItem("Last version")) 
-				App->RequestBrowser("https://github.com/RoperoIvan/AmazingEngine/releases");
-
-			if (ImGui::MenuItem("Report bug")) 
-				App->RequestBrowser("https://github.com/RoperoIvan/AmazingEngine/issues");
-
-			if (ImGui::MenuItem("About", NULL, show_about_window)) show_about_window = !show_about_window;
-
-			ImGui::EndMenu();
-
-		}
-		ImGui::EndMainMenuBar();
+		ImGui::EndMenu();
 	}
-	//Configuration window
-	if (show_config_window)
-		ConfigurationWindow(show_config_window);
-	
-	//About window
-	if (show_about_window)
-		AboutWindow(show_about_window);
-
-	//Console window
-	if(show_console_window)
-		AppConsoleWindow(show_console_window);
-
-	//Primitives window
-	if (show_primitives_window)
-		PrimitivesWindow();
-
-	//TODO: Move this somewhere where it has more sense to be written
-	const char* p_file = App->input->DragAndDropped();
-	if (p_file != nullptr)
+	if (ImGui::BeginMenu("View"))
 	{
-		App->mesh->LoadFile(p_file);
-		LOG("%s", p_file);
-	}
+		if (ImGui::MenuItem("Inspector")) show_inspector_window = true;
 
-	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
+		ImGui::EndMenu();
+	}
+	if (ImGui::BeginMenu("Create"))
+	{
+		if (ImGui::MenuItem("Primitives")) show_primitives_window = true;
+
+		ImGui::EndMenu();
+	}
+	if (ImGui::BeginMenu("Help"))
+	{
+		if (ImGui::MenuItem("Documentation"))
+			App->RequestBrowser("https://github.com/RoperoIvan/AmazingEngine/wiki");
+
+		if (ImGui::MenuItem("Last version"))
+			App->RequestBrowser("https://github.com/RoperoIvan/AmazingEngine/releases");
+
+		if (ImGui::MenuItem("Report bug"))
+			App->RequestBrowser("https://github.com/RoperoIvan/AmazingEngine/issues");
+
+		if (ImGui::MenuItem("About", NULL, show_about_window)) show_about_window = !show_about_window;
+
+		ImGui::EndMenu();
+
+	}
+	ImGui::EndMainMenuBar();
+}
+//Configuration window
+if (show_config_window)
+ConfigurationWindow();
+
+//About window
+if (show_about_window)
+AboutWindow();
+
+//Console window
+if (show_console_window)
+AppConsoleWindow();
+
+//Primitives window
+if (show_primitives_window)
+PrimitivesWindow();
+
+if (show_inspector_window)
+InspectorWindow();
+
+//TODO: Move this somewhere where it has more sense to be written
+const char* p_file = App->input->DragAndDropped();
+if (p_file != nullptr)
+{
+	App->mesh->LoadFile(p_file);
+	LOG("%s", p_file);
+}
+
+return ret ? UPDATE_CONTINUE : UPDATE_STOP;
 }
 
 update_status GuiManager::Update(float dt)
@@ -116,8 +125,9 @@ update_status GuiManager::Update(float dt)
 	{
 		debug_draw = !debug_draw;
 	}
-	//ImGui::ShowDemoWindow();
-	
+	ImGui::ShowDemoWindow();
+
+
 	return UPDATE_CONTINUE;
 }
 
@@ -136,6 +146,8 @@ bool GuiManager::CleanUp()
 			delete (*it);
 		(*it) = nullptr;
 	}
+	fps_log.clear();
+	ms_log.clear();
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
@@ -159,7 +171,7 @@ bool GuiManager::Load(nlohmann::json & j)
 }
 
 // Settings of the engine tab
-void GuiManager::ConfigurationWindow(bool show_conf_window)
+void GuiManager::ConfigurationWindow()
 {
 	if (show_config_window)
 	{
@@ -439,7 +451,7 @@ void GuiManager::ConfigurationWindow(bool show_conf_window)
 	}
 }
 //Window about info of the creators
-void GuiManager::AboutWindow(bool show_about_win)
+void GuiManager::AboutWindow()
 {
 	ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
@@ -490,7 +502,7 @@ void GuiManager::AboutWindow(bool show_about_win)
 	ImGui::End();
 }
 
-void GuiManager::AppConsoleWindow(bool show_console)
+void GuiManager::AppConsoleWindow()
 {
 	console.Draw("Amazing Engine", &show_console_window);
 }
@@ -678,6 +690,46 @@ void GuiManager::PrimitivesWindow()
 		}
 	}
 }
+//Inspector window management
+void GuiManager::InspectorWindow()
+{
+	if (show_inspector_window)
+	{
+		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
+		if (ImGui::Begin("Inspector", &show_inspector_window))
+		{
+			if (ImGui::CollapsingHeader("Geometry"))
+			{
+				for (int i = 0; i < geoms.size(); ++i)
+				{
+					Geometry* g = geoms[i];
+					std::string node_name = "Primitive " + std::to_string(i+1);
+
+					if (ImGui::TreeNodeEx(node_name.c_str()))
+					{
+						ImGui::TextColored(ImVec4(1, 0.5, 0.2, 1), "Triangle Count: %i", g->par_num_indices);
+
+						ImGui::TreePop();
+					}
+				}
+				for (int i = 0; i < App->mesh->geometry.size(); ++i)
+				{
+					Geometry* h = App->mesh->geometry[i];
+					std::string node_name = "Geometry " + std::to_string(i + 1);
+
+					if (ImGui::TreeNodeEx(node_name.c_str()))
+					{
+						ImGui::TextColored(ImVec4(1, 0.5, 0.2, 1), "Triangle Count: %i", h->num_indices / 3);
+
+						ImGui::TreePop();
+					}
+				}
+			}
+			ImGui::End();
+		}
+	}
+}
 
 void GuiManager::GetLog(const char* log)
 {
@@ -728,6 +780,7 @@ void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, floa
 	par_shapes_rotate(p_mesh, rad, axis);
 	Geometry* geo = new Geometry(p_mesh->points, p_mesh->triangles, p_mesh->normals, p_mesh->npoints, p_mesh->ntriangles,col[0], col[1], col[2], col[3]);
 	geoms.push_back(geo);
+	App->camera->GoAroundGeometry(geo);
 }
 
 void GuiManager::UIStyle()
