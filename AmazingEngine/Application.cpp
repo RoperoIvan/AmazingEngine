@@ -11,6 +11,7 @@ Application::Application()
 	camera = new ModuleCamera3D(this);
 	mesh = new ModuleMesh(this);
 	guiManager = new GuiManager(this);
+	scene = new ModuleScene(this);
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
 	// They will CleanUp() in reverse order
@@ -20,6 +21,7 @@ Application::Application()
 	AddModule(camera);
 	AddModule(input);
 	AddModule(mesh);
+	AddModule(scene);
 	AddModule(guiManager);
 	// Renderer last!
 	AddModule(renderer3D);

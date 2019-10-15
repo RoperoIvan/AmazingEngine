@@ -17,9 +17,9 @@ public:
 	Component(GameObject* parent, COMPONENT_TYPE type);
 	~Component();
 
-	virtual void Enable() = 0;
+	virtual void Enable();
 	virtual void Update() = 0;
-	virtual void Disable() = 0;
+	virtual void Disable();
 
 public:
 

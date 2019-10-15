@@ -48,9 +48,6 @@ update_status GuiManager::PreUpdate(float dt)
 {
 	bool ret = true;
 
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplSDL2_NewFrame(App->window->window);
-	ImGui::NewFrame();
 	//Menu top bar
 	if (ImGui::BeginMainMenuBar())
 	{
@@ -119,7 +116,7 @@ update_status GuiManager::Update(float dt)
 	{
 		debug_draw = !debug_draw;
 	}
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 	
 	return UPDATE_CONTINUE;
 }
@@ -127,8 +124,6 @@ update_status GuiManager::Update(float dt)
 update_status GuiManager::PostUpdate(float dt)
 {
 	DrawGeometry();
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	return UPDATE_CONTINUE;
 }
@@ -691,12 +686,12 @@ void GuiManager::GetLog(const char* log)
 
 void GuiManager::DrawGeometry()
 {
-	for (std::vector<Geometry*>::iterator it = App->mesh->geometry.begin(); it != App->mesh->geometry.end(); it++)
-	{
-		(*it)->Draw();
-		if (debug_draw)
-			(*it)->DebugDraw();
-	}
+	//for (std::vector<Geometry*>::iterator it = App->mesh->geometry.begin(); it != App->mesh->geometry.end(); it++)
+	//{
+	//	/*(*it)->Draw();
+	//	if (debug_draw)
+	//		(*it)->DebugDraw();*/
+	//}
 	for (std::vector<Geometry*>::iterator it = geoms.begin(); it != geoms.end(); it++)
 	{
 		(*it)->DrawPrimitives();

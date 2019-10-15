@@ -22,8 +22,6 @@ public:
 
 private:
 	float TriangleCenterAxis(const float &p1, const float &p2, const float &p3);
-public:
-	std::vector<Geometry*> geometry;
 };
 
 

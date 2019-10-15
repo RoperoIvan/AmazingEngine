@@ -8,7 +8,8 @@
 #include "DevIL/include/IL/il.h"
 #include "DevIL/include/IL/ilu.h"
 #include "DevIL/include/IL/ilut.h"
-#include "Image.h"
+#include "GameObject.h"
+#include "ModuleScene.h"
 
 #pragma comment(lib, "DevIL/lib/x86/Release/ILU.lib")
 #pragma comment(lib, "DevIL/lib/x86/Release/DevIL.lib")
@@ -57,12 +58,6 @@ update_status ModuleMesh::PostUpdate(float dt)
 
 bool ModuleMesh::CleanUp()
 {
-	for (std::vector<Geometry*>::iterator it = geometry.begin(); it != geometry.end(); it++)
-	{
-		if ((*it) != nullptr)
-			delete (*it);
-		(*it) = nullptr;
-	}
 	aiDetachAllLogStreams();
 	return true;
 }
@@ -73,55 +68,29 @@ bool ModuleMesh::LoadFile(const char * file_name)
 	float* texture_coords = nullptr;
 	int text_id = 0;
 	const aiScene* scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_Quality);
-
-
 		
 	if (scene != nullptr && scene->HasMeshes())
 	{
+		GameObject* game_object = new GameObject();
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		for (int i = 0; i < scene->mNumMeshes; ++i)
 		{
-			Geometry* data = new Geometry(nullptr);
-			//Load vertex
-			data->num_vertices = scene->mMeshes[i]->mNumVertices;
-			data->vertices = new float[data->num_vertices * 3];
-			memcpy(data->vertices, scene->mMeshes[i]->mVertices, sizeof(float) * data->num_vertices * 3);
-			LOG("New mesh with %d vertices", data->vertices);
-
-			//load index
-			if (scene->mMeshes[i]->HasFaces())
-			{
-				data->num_indices = scene->mMeshes[i]->mNumFaces * 3;
-				data->indices = new uint[data->num_indices * 3];
-				for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; ++j)
-				{
-					if (scene->mMeshes[i]->mFaces[j].mNumIndices != 3)
-					{
-						LOG("WARNING, geometry face with != 3 indices!");
-					}
-					else
-						memcpy(&data->indices[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, 3 * sizeof(uint));
-				}
-				//load normals
-				if (scene->mMeshes[i]->HasNormals())
-				{
-					data->normals = new float[scene->mMeshes[i]->mNumVertices * 3];
-					memcpy(data->normals, scene->mMeshes[i]->mNormals, sizeof(float) * scene->mMeshes[i]->mNumVertices * 3);
-				}
-
-			}
-			//Search for textures
+			Component* data = game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH);
+			
+			dynamic_cast<Geometry*>(data)->LoadData(scene->mMeshes[i]);
+			
 			if (scene->HasMaterials())
 			{
-				data->texture = new Image(nullptr);
-				data->texture->LoadCoords(scene->mMeshes[i]);
-				data->texture->LoadMatirials(scene, file_name);
+				Component* tex = game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL);
+				dynamic_cast<Image*>(tex)->LoadCoords(scene->mMeshes[i]);
+				dynamic_cast<Image*>(tex)->LoadMatirials(scene, file_name);
+				dynamic_cast<Geometry*>(data)->texture = dynamic_cast<Image*>(tex);
+				
 			}
-			Geometry* geo = new Geometry(data, nullptr);
-			geometry.push_back(geo);
 			LOG("New mesh created from %s", file_name);
 
 		}
+		App->scene->game_objects.push_back(game_object);
 		aiReleaseImport(scene);
 
 	}

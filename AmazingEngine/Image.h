@@ -16,9 +16,8 @@ public:
 	Image(GameObject* parent);
 	~Image();
 
-	void Enable() override;
 	void Update() override;
-	void Disable() override;
+
 
 	GLuint LoadImage(const char* p_tex);
 	void LoadCoords(aiMesh* scene);

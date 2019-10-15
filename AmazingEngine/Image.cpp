@@ -16,14 +16,15 @@
 
 Image::Image(GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_MATERIAL)
 {
-	
+	glGenBuffers(1, (uint*) & (id_coords));
+	glBindBuffer(GL_ARRAY_BUFFER, id_coords);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_coords, uv_coord, GL_STATIC_DRAW);
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR)
+		LOG("Error Storing textures! %s\n", gluErrorString(error));
 }
 
 Image::~Image()
-{
-}
-
-void Image::Enable()
 {
 }
 
@@ -31,9 +32,6 @@ void Image::Update()
 {
 }
 
-void Image::Disable()
-{
-}
 
 GLuint Image::LoadImage(const char* p_tex)
 {

@@ -25,14 +25,16 @@ public:
 	Geometry(float* ver, uint* ind, float* normals, int num_vert, int num_ind, float r, float g, float b,float a, GameObject* parent = nullptr); // Creation of primitives with par_shapes library
 	Geometry(GameObject* parent);
 	~Geometry();
-	void Draw();
 	void DrawPrimitives();
 	void DebugDraw();
 
-	void Enable() override;
 	void Update() override;
-	void Disable() override;
 
+	void LoadData(aiMesh* mesh);
+
+private:
+
+	void Init();
 public:
 	uint id_vertices = 0;  
 	uint num_vertices = 0;

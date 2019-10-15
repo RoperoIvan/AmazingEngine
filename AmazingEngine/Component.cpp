@@ -10,3 +10,13 @@ Component::~Component()
 {
 }
 
+void Component::Enable()
+{
+	is_enable = true;
+}
+
+void Component::Disable()
+{
+	is_enable = false;
+}
+
