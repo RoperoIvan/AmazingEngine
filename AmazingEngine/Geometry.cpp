@@ -139,7 +139,6 @@ void Geometry::LoadData(aiMesh* mesh)
 		}
 
 	}
-	//Search for textures
 }
 
 void Geometry::Init()

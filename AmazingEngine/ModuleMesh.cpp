@@ -75,20 +75,20 @@ bool ModuleMesh::LoadFile(const char * file_name)
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		for (int i = 0; i < scene->mNumMeshes; ++i)
 		{
-			Component* data = game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH);
+			Geometry* data = dynamic_cast<Geometry*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
 			
-			dynamic_cast<Geometry*>(data)->LoadData(scene->mMeshes[i]);
+			data->LoadData(scene->mMeshes[i]);
 			
 			if (scene->HasMaterials())
 			{
-				Component* tex = game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL);
-				dynamic_cast<Image*>(tex)->LoadCoords(scene->mMeshes[i]);
-				dynamic_cast<Image*>(tex)->LoadMatirials(scene, file_name);
-				dynamic_cast<Geometry*>(data)->texture = dynamic_cast<Image*>(tex);
+				Image* tex = dynamic_cast<Image*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
+				tex->LoadCoords(scene->mMeshes[i]);
+				tex->LoadMatirials(scene, file_name);
+				data->texture =tex;
 				
 			}
 			LOG("New mesh created from %s", file_name);
-			App->camera->GoAroundGeometry(dynamic_cast<Geometry*>(data));
+			App->camera->GoAroundGeometry(data);
 		}
 		App->scene->game_objects.push_back(game_object);
 		aiReleaseImport(scene);

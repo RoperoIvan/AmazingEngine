@@ -36,7 +36,7 @@ void GameObject::Update()
 
 Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 {
-	Component* component;
+	Component* component = nullptr;
 	switch (type)
 	{
 	case COMPONENT_TYPE::COMPONENT_TRANSFORM:

@@ -28,7 +28,6 @@ GuiManager::~GuiManager()
 bool GuiManager::Init()
 {
 	bool ret = true;
-	
 	ImGui::CreateContext();
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
 	UIStyle();
@@ -47,7 +46,9 @@ bool GuiManager::Start()
 update_status GuiManager::PreUpdate(float dt)
 {
 	bool ret = true;
-
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame(App->window->window);
+	ImGui::NewFrame();
 	//Menu top bar
 	if (ImGui::BeginMainMenuBar())
 	{
@@ -131,7 +132,8 @@ update_status GuiManager::Update(float dt)
 update_status GuiManager::PostUpdate(float dt)
 {
 	DrawGeometry();
-
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	return UPDATE_CONTINUE;
 }
 
