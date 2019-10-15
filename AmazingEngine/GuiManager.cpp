@@ -48,75 +48,72 @@ update_status GuiManager::PreUpdate(float dt)
 {
 	bool ret = true;
 
-//Menu top bar
-if (ImGui::BeginMainMenuBar())
-{
-	if (ImGui::BeginMenu("File"))
+	//Menu top bar
+	if (ImGui::BeginMainMenuBar())
 	{
-		if (ImGui::MenuItem("Console")) show_console_window = true;
-		if (ImGui::MenuItem("Settings")) show_config_window = true;
-		if (ImGui::MenuItem("Exit")) ret = false;
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("Console")) show_console_window = true;
+			if (ImGui::MenuItem("Settings")) show_config_window = true;
+			if (ImGui::MenuItem("Exit")) ret = false;
 
-		ImGui::EndMenu();
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("View"))
+		{
+			if (ImGui::MenuItem("Inspector")) show_inspector_window = true;
+
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Create"))
+		{
+			if (ImGui::MenuItem("Primitives")) show_primitives_window = true;
+
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Help"))
+		{
+			if (ImGui::MenuItem("Documentation"))
+				App->RequestBrowser("https://github.com/RoperoIvan/AmazingEngine/wiki");
+
+			if (ImGui::MenuItem("Last version"))
+				App->RequestBrowser("https://github.com/RoperoIvan/AmazingEngine/releases");
+
+			if (ImGui::MenuItem("Report bug"))
+				App->RequestBrowser("https://github.com/RoperoIvan/AmazingEngine/issues");
+
+			if (ImGui::MenuItem("About", NULL, show_about_window)) show_about_window = !show_about_window;
+
+			ImGui::EndMenu();
+
+		}
+		ImGui::EndMainMenuBar();
 	}
-	if (ImGui::BeginMenu("View"))
+	//Configuration window
+	if (show_config_window)
+		ConfigurationWindow();
+
+	//About window
+	if (show_about_window)
+		AboutWindow();
+
+	//Console window
+	if (show_console_window)
+		AppConsoleWindow();
+
+	//Primitives window
+	if (show_primitives_window)
+		PrimitivesWindow();
+
+	//TODO: Move this somewhere where it has more sense to be written
+	const char* p_file = App->input->DragAndDropped();
+	if (p_file != nullptr)
 	{
-		if (ImGui::MenuItem("Inspector")) show_inspector_window = true;
-
-		ImGui::EndMenu();
+		App->mesh->LoadFile(p_file);
+		LOG("%s", p_file);
 	}
-	if (ImGui::BeginMenu("Create"))
-	{
-		if (ImGui::MenuItem("Primitives")) show_primitives_window = true;
 
-		ImGui::EndMenu();
-	}
-	if (ImGui::BeginMenu("Help"))
-	{
-		if (ImGui::MenuItem("Documentation"))
-			App->RequestBrowser("https://github.com/RoperoIvan/AmazingEngine/wiki");
-
-		if (ImGui::MenuItem("Last version"))
-			App->RequestBrowser("https://github.com/RoperoIvan/AmazingEngine/releases");
-
-		if (ImGui::MenuItem("Report bug"))
-			App->RequestBrowser("https://github.com/RoperoIvan/AmazingEngine/issues");
-
-		if (ImGui::MenuItem("About", NULL, show_about_window)) show_about_window = !show_about_window;
-
-		ImGui::EndMenu();
-
-	}
-	ImGui::EndMainMenuBar();
-}
-//Configuration window
-if (show_config_window)
-ConfigurationWindow();
-
-//About window
-if (show_about_window)
-AboutWindow();
-
-//Console window
-if (show_console_window)
-AppConsoleWindow();
-
-//Primitives window
-if (show_primitives_window)
-PrimitivesWindow();
-
-if (show_inspector_window)
-InspectorWindow();
-
-//TODO: Move this somewhere where it has more sense to be written
-const char* p_file = App->input->DragAndDropped();
-if (p_file != nullptr)
-{
-	App->mesh->LoadFile(p_file);
-	LOG("%s", p_file);
-}
-
-return ret ? UPDATE_CONTINUE : UPDATE_STOP;
+	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
 }
 
 update_status GuiManager::Update(float dt)
@@ -690,46 +687,7 @@ void GuiManager::PrimitivesWindow()
 		}
 	}
 }
-//Inspector window management
-void GuiManager::InspectorWindow()
-{
-	if (show_inspector_window)
-	{
-		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
-		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
-		if (ImGui::Begin("Inspector", &show_inspector_window))
-		{
-			if (ImGui::CollapsingHeader("Geometry"))
-			{
-				for (int i = 0; i < geoms.size(); ++i)
-				{
-					Geometry* g = geoms[i];
-					std::string node_name = "Primitive " + std::to_string(i+1);
 
-					if (ImGui::TreeNodeEx(node_name.c_str()))
-					{
-						ImGui::TextColored(ImVec4(1, 0.5, 0.2, 1), "Triangle Count: %i", g->par_num_indices);
-
-						ImGui::TreePop();
-					}
-				}
-				for (int i = 0; i < App->mesh->geometry.size(); ++i)
-				{
-					Geometry* h = App->mesh->geometry[i];
-					std::string node_name = "Geometry " + std::to_string(i + 1);
-
-					if (ImGui::TreeNodeEx(node_name.c_str()))
-					{
-						ImGui::TextColored(ImVec4(1, 0.5, 0.2, 1), "Triangle Count: %i", h->num_indices / 3);
-
-						ImGui::TreePop();
-					}
-				}
-			}
-			ImGui::End();
-		}
-	}
-}
 
 void GuiManager::GetLog(const char* log)
 {
