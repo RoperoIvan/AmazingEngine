@@ -72,6 +72,7 @@ Geometry::~Geometry()
 //Draw geometry based in meshes
 void Geometry::Draw()
 {
+	glEnable(GL_TEXTURE_2D);
 	glEnableClientState(GL_VERTEX_ARRAY);
 
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
@@ -93,10 +94,12 @@ void Geometry::Draw()
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisable(GL_TEXTURE_2D);
 }
 //Draw primitives geometries
 void Geometry::DrawPrimitives()
 {
+	glPushAttrib(GL_CURRENT_BIT);
 	glColor4f(r, g, b, a);
 	glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -105,6 +108,7 @@ void Geometry::DrawPrimitives()
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 	glDrawElements(GL_TRIANGLES, par_num_indices * 3, GL_UNSIGNED_INT, NULL);
 	glDisableClientState(GL_VERTEX_ARRAY);
+	glPopAttrib();
 }
 //DebugDraw for all geometries
 void Geometry::DebugDraw()

@@ -120,7 +120,7 @@ bool ModuleMesh::LoadFile(const char * file_name)
 			Geometry* geo = new Geometry(data, nullptr);
 			geometry.push_back(geo);
 			LOG("New mesh created from %s", file_name);
-
+			App->camera->GoAroundGeometry(geo);
 		}
 		aiReleaseImport(scene);
 

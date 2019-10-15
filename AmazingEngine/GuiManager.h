@@ -31,10 +31,11 @@ public:
 
 	bool Save(nlohmann::json &j) const override;
 	bool Load(nlohmann::json &j) override;
-	void AboutWindow(bool show_about_window);
-	void ConfigurationWindow(bool show_config_window);
-	void AppConsoleWindow(bool show_console);
+	void AboutWindow();
+	void ConfigurationWindow();
+	void AppConsoleWindow();
 	void PrimitivesWindow();
+	void InspectorWindow();
 	void GetLog(const char* log);
 	void DrawGeometry();
 	void CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, float color[4], int scale[3], int translation[3], float rad, const float* axis);
