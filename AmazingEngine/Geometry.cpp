@@ -6,25 +6,13 @@
 Geometry::Geometry(float* ver, uint* ind, float* norm, uint num_vert, uint num_ind, uint num_norm, GameObject* parent): Component(parent,COMPONENT_TYPE::COMPONENT_MESH),
 	vertices(ver), indices(ind),normals(norm), num_vertices(num_vert), num_indices(num_ind), num_normals(num_norm)
 {
-	glGenBuffers(1, (uint*)&(id_vertices));
-	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices * 3, vertices, GL_STATIC_DRAW);
-
-	glGenBuffers(1, (uint*)&(id_indices));
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, indices, GL_STATIC_DRAW);
-
-	GLenum error = glGetError();
-	if (error != GL_NO_ERROR)
-		LOG("Error Storing Indices! %s\n", gluErrorString(error));
-
 
 }
 //Constructor based on a geometry
 Geometry::Geometry(Geometry* geo, GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_MESH),
 	vertices(geo->vertices), indices(geo->indices), normals(geo->normals), num_vertices(geo->num_vertices),num_indices(geo->num_indices), num_normals(geo->num_normals), texture(geo->texture)
 {
-	Init();
+
 }
 //Primitives constructor
 Geometry::Geometry(float* ver, uint* ind, float* normals, int num_vert, int num_ind, float r, float g, float b, float a, GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_MESH),
@@ -42,7 +30,6 @@ vertices(ver), indices(ind), normals(normals),num_vertices(num_vert), par_num_in
 
 Geometry::Geometry(GameObject* parent):Component(parent, COMPONENT_TYPE::COMPONENT_MESH)
 {
-	Init();
 }
 Geometry::~Geometry()
 {
@@ -137,11 +124,11 @@ void Geometry::LoadData(aiMesh* mesh)
 			normals = new float[mesh->mNumVertices * 3];
 			memcpy(normals, mesh->mNormals, sizeof(float) * mesh->mNumVertices * 3);
 		}
-
 	}
+	LoadBuffers();
 }
 
-void Geometry::Init()
+void Geometry::LoadBuffers()
 {
 	glGenBuffers(1, (uint*) & (id_vertices));
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);

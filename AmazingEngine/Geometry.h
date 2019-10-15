@@ -34,7 +34,7 @@ public:
 
 private:
 
-	void Init();
+	void LoadBuffers();
 public:
 	uint id_vertices = 0;  
 	uint num_vertices = 0;

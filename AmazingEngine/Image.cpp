@@ -16,12 +16,7 @@
 
 Image::Image(GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_MATERIAL)
 {
-	glGenBuffers(1, (uint*) & (id_coords));
-	glBindBuffer(GL_ARRAY_BUFFER, id_coords);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_coords, uv_coord, GL_STATIC_DRAW);
-	GLenum error = glGetError();
-	if (error != GL_NO_ERROR)
-		LOG("Error Storing textures! %s\n", gluErrorString(error));
+	
 }
 
 Image::~Image()
@@ -33,7 +28,7 @@ void Image::Update()
 }
 
 
-GLuint Image::LoadImage(const char* p_tex)
+GLuint Image::LoadImages(const char* p_tex)
 {
 	//Gen image
 	ILuint img_id = 0;
@@ -107,7 +102,7 @@ void Image::LoadCoords(aiMesh* scene)
 	}
 }
 
-void Image::LoadMatirials(const aiScene* scene, std::string file_name)
+void Image::LoadMaterials(const aiScene* scene, std::string file_name)
 {
 	if (scene->mMaterials[0]->GetTextureCount(aiTextureType_DIFFUSE) > 0)
 	{
@@ -122,7 +117,19 @@ void Image::LoadMatirials(const aiScene* scene, std::string file_name)
 			p_geo.pop_back();
 		}
 		p_geo += tex;
-		texture_id = LoadImage(p_geo.c_str());
+		texture_id = LoadImages(p_geo.c_str());
+
+		LoadBuffers();
 	}
+}
+
+void Image::LoadBuffers()
+{
+	glGenBuffers(1, (uint*) & (id_coords));
+	glBindBuffer(GL_ARRAY_BUFFER, id_coords);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_coords, uv_coord, GL_STATIC_DRAW);
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR)
+		LOG("Error Storing textures! %s\n", gluErrorString(error));
 }
 

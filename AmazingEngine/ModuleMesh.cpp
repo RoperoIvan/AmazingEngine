@@ -83,7 +83,7 @@ bool ModuleMesh::LoadFile(const char * file_name)
 			{
 				Image* tex = dynamic_cast<Image*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
 				tex->LoadCoords(scene->mMeshes[i]);
-				tex->LoadMatirials(scene, file_name);
+				tex->LoadMaterials(scene, file_name);
 				data->texture =tex;
 				
 			}
@@ -100,64 +100,64 @@ bool ModuleMesh::LoadFile(const char * file_name)
 	return ret;
 }
 
-GLuint ModuleMesh::LoadTexture(const char * p_tex)
-{
-	//Gen image
-	ILuint img_id = 0;
-	ilGenImages(1, &img_id);
-	ilBindImage(img_id);
-
-	//load from path
-	ilLoadImage(p_tex);
-
-
-
-	ILuint devilError1 = ilGetError();
-	if (devilError1 != IL_NO_ERROR)
-	{
-		LOG("Devil Error (ilInit: %s)", iluErrorString(devilError1));
-		return 0;
-	}
-
-	// If the image is flipped
-	ILinfo ImageInfo;
-	iluGetImageInfo(&ImageInfo);
-	if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
-	{
-		iluFlipImage();
-	}
-
-	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-
-
-
-	ILuint devilError2 = ilGetError();
-	if (devilError2 != IL_NO_ERROR)
-	{
-		LOG("Devil Error (ilInit: %s)", iluErrorString(devilError2));
-		return 0;
-	}
-
-	//Send texture to GPU
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glGenTextures(1, &img_id);
-	glBindTexture(GL_TEXTURE_2D, img_id);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT),
-		0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
-
-	ILuint devilError3 = ilGetError();
-	if (devilError3 != IL_NO_ERROR)
-	{
-		LOG("Devil Error (ilInit: %s)", iluErrorString(devilError3));
-		return 0;
-	}
-
-	return img_id;
-}
+//GLuint ModuleMesh::LoadTexture(const char * p_tex)
+//{
+//	//Gen image
+//	ILuint img_id = 0;
+//	ilGenImages(1, &img_id);
+//	ilBindImage(img_id);
+//
+//	//load from path
+//	ilLoadImage(p_tex);
+//
+//
+//
+//	ILuint devilError1 = ilGetError();
+//	if (devilError1 != IL_NO_ERROR)
+//	{
+//		LOG("Devil Error (ilInit: %s)", iluErrorString(devilError1));
+//		return 0;
+//	}
+//
+//	// If the image is flipped
+//	ILinfo ImageInfo;
+//	iluGetImageInfo(&ImageInfo);
+//	if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
+//	{
+//		iluFlipImage();
+//	}
+//
+//	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+//
+//
+//
+//	ILuint devilError2 = ilGetError();
+//	if (devilError2 != IL_NO_ERROR)
+//	{
+//		LOG("Devil Error (ilInit: %s)", iluErrorString(devilError2));
+//		return 0;
+//	}
+//
+//	//Send texture to GPU
+//	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+//	glGenTextures(1, &img_id);
+//	glBindTexture(GL_TEXTURE_2D, img_id);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT),
+//		0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
+//
+//	ILuint devilError3 = ilGetError();
+//	if (devilError3 != IL_NO_ERROR)
+//	{
+//		LOG("Devil Error (ilInit: %s)", iluErrorString(devilError3));
+//		return 0;
+//	}
+//
+//	return img_id;
+//}
 
 float ModuleMesh::TriangleCenterAxis(const float & p1, const float & p2, const float & p3)
 {
