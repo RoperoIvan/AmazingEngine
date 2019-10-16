@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "Application.h"
 #include "ModuleWindow.h"
+#include "ModuleScene.h"
 #include "GuiManager.h"
 #include "ModuleRenderer3D.h"
 #include "glew/include/GL/glew.h"
@@ -14,7 +15,6 @@
 #include <fstream>
 #include <iomanip>
 #include "PhysFS/include/physfs.h"
-
 
 #pragma comment (lib, "PhysFS/libx86/physfs.lib")
 
@@ -63,7 +63,7 @@ update_status GuiManager::PreUpdate(float dt)
 		}
 		if (ImGui::BeginMenu("View"))
 		{
-			if (ImGui::MenuItem("Inspector")) show_inspector_window = true;
+			if (ImGui::MenuItem("Inspector")) show_hierachy_window = true;
 
 			ImGui::EndMenu();
 		}
@@ -107,6 +107,10 @@ update_status GuiManager::PreUpdate(float dt)
 	if (show_primitives_window)
 		PrimitivesWindow();
 
+	if (show_hierachy_window)
+		HierarchyWindow();
+
+	ImGui::ShowDemoWindow();
 	//TODO: Move this somewhere where it has more sense to be written
 	const char* p_file = App->input->DragAndDropped();
 	if (p_file != nullptr)
@@ -124,8 +128,6 @@ update_status GuiManager::Update(float dt)
 	{
 		debug_draw = !debug_draw;
 	}
-	ImGui::ShowDemoWindow();
-
 
 	return UPDATE_CONTINUE;
 }
@@ -357,7 +359,6 @@ void GuiManager::ConfigurationWindow()
 						SDL_SetWindowFullscreen(App->window->window, 0);
 						fullscreen = false;
 					}
-						
 
 				}
 
@@ -669,4 +670,59 @@ void GuiManager::UIStyle()
 	colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
 	colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
 	colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+}
+
+void GuiManager::HierarchyWindow()
+{
+	if (show_hierachy_window)
+	{
+		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
+		if (ImGui::Begin("Objects", &show_hierachy_window))
+		{
+			if (ImGui::CollapsingHeader("Geometry"))
+			{
+				for (uint i = 0; i < App->scene->game_objects.size(); ++i)
+				{
+					GameObject* game_object = App->scene->game_objects[i];
+
+					if(game_object->parent == nullptr)
+					{
+						if (ImGui::TreeNodeEx(game_object->name.c_str()))
+						{
+							
+							game_object->GetHierarcy();
+							ImGui::TreePop();
+						}
+					}
+					
+				}
+				/*for (int i = 0; i < geoms.size(); ++i)
+				{
+					Geometry* g = geoms[i];
+					std::string node_name = "Primitive " + std::to_string(i + 1);
+
+					if (ImGui::TreeNodeEx(node_name.c_str()))
+					{
+						ImGui::TextColored(ImVec4(1, 0.5, 0.2, 1), "Triangle Count: %i", g->par_num_indices);
+
+						ImGui::TreePop();
+					}
+				}
+				for (int i = 0; i < App->mesh->geometry.size(); ++i)
+				{
+					Geometry* h = App->mesh->geometry[i];
+					std::string node_name = "Geometry " + std::to_string(i + 1);
+
+					if (ImGui::TreeNodeEx(node_name.c_str()))
+					{
+						ImGui::TextColored(ImVec4(1, 0.5, 0.2, 1), "Triangle Count: %i", h->num_indices / 3);
+
+						ImGui::TreePop();
+					}
+				}*/
+			}
+			ImGui::End();
+		}
+	}
 }

@@ -35,7 +35,7 @@ public:
 	void ConfigurationWindow();
 	void AppConsoleWindow();
 	void PrimitivesWindow();
-	void InspectorWindow();
+	void HierarchyWindow();
 	void GetLog(const char* log);
 	void DrawGeometry();
 	void CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, float color[4], int scale[3], int translation[3], float rad, const float* axis);
@@ -46,7 +46,7 @@ private:
 	bool show_about_window = false;
 	bool show_console_window = false;
 	bool show_primitives_window = false;
-	bool show_inspector_window = false;
+	bool show_hierachy_window = false;
 	bool fullscreen = false;
 	bool resizable = false;
 	bool borderless = false;

@@ -1,9 +1,12 @@
 #include "GameObject.h"
 #include "Image.h"
 #include "Geometry.h"
+#include "Application.h"
+#include "ModuleScene.h"
 
 GameObject::GameObject()
 {
+	name = "GameObject " + std::to_string(App->scene->game_objects.size());
 }
 
 GameObject::~GameObject()
@@ -55,4 +58,50 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 		break;
 	}
 	return component;
+}
+
+void GameObject::GetHierarcy()
+{
+	if (show_inspector_window)
+		GetPropierties();
+	for (uint i = 0; i < children.size(); ++i)
+	{
+		GameObject* game_object = children[i];
+
+		if (game_object->children.size() != 0)
+		{
+			if (ImGui::TreeNodeEx(game_object->name.c_str()))
+			{
+				game_object->GetHierarcy();
+				ImGui::TreePop();
+			}
+		}
+		else
+		{
+			if (ImGui::TreeNodeEx(game_object->name.c_str()))
+			{
+				ImGui::TreePop();
+			}
+		}
+	}
+}
+
+void GameObject::GetPropierties()
+{
+	if (ImGui::Begin("Inspector", &show_inspector_window))
+	{
+		if (ImGui::CollapsingHeader("Properties"))
+		{
+			if (ImGui::BeginMenu("Options"))
+			{
+				if (ImGui::MenuItem("Quit"))
+					to_delete = true;
+
+				ImGui::EndMenu();
+			}
+
+
+		}
+		ImGui::End();
+	}
 }
