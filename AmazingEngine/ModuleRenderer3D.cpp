@@ -87,7 +87,10 @@ bool ModuleRenderer3D::Init()
 			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
 			ret = false;
 		}
-		
+		else
+		{
+			LOG("OpenGL initialized correctly \n");
+		}
 		GLfloat LightModelAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
 		
@@ -114,8 +117,12 @@ bool ModuleRenderer3D::Init()
 	GLenum Glewerror = glewInit();
 	if (Glewerror != GL_NO_ERROR)
 	{
-		LOG("Error initializing glew Library /n", SDL_GetError());
+		LOG("Error initializing glew Library \n", SDL_GetError());
 		ret = false;
+	}
+	else
+	{
+		LOG("Glew library initialized \n");
 	}
 	// Projection matrix for
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);

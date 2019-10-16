@@ -14,9 +14,6 @@
 #include "SDL/include/SDL_opengl.h"
 #include <fstream>
 #include <iomanip>
-#include "PhysFS/include/physfs.h"
-
-#pragma comment (lib, "PhysFS/libx86/physfs.lib")
 
 GuiManager::GuiManager(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -492,6 +489,9 @@ void GuiManager::AboutWindow()
 			ImGui::NewLine();
 			if(ImGui::Button("OpenGL 3.1.0"))
 				App->RequestBrowser("https://www.khronos.org/registry/OpenGL-Refpages/es3.0/");
+			ImGui::NewLine();
+			if (ImGui::Button("DevIl 1.4.0"))
+				App->RequestBrowser("http://openil.sourceforge.net/");
 		}
 	}
 	ImGui::End();

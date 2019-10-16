@@ -121,6 +121,8 @@ void Image::LoadMaterials(const aiScene* scene, std::string file_name)
 
 		LoadBuffers();
 	}
+	else
+		LOG("It hasn't been detected a material");
 }
 
 void Image::LoadBuffers()

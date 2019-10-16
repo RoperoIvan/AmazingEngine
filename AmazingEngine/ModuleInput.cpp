@@ -82,15 +82,6 @@ update_status ModuleInput::PreUpdate(float dt)
 		}
 	}
 
-	if (mouse_z > 0) // scroll up
-	{
-		
-	}
-	else if (mouse_z < 0) // scroll down
-	{
-		
-	}
-
 	mouse_x_motion = mouse_y_motion = 0;
 
 	bool quit = false;
