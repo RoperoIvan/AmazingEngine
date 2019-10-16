@@ -1,6 +1,7 @@
 #include "GameObject.h"
 #include "Image.h"
 #include "Geometry.h"
+#include "Application.h"
 
 GameObject::GameObject()
 {
@@ -44,6 +45,7 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	case COMPONENT_TYPE::COMPONENT_MESH:
 		component = new Geometry(this);
 		components.push_back(component);
+		App->camera->GoAroundGeometry();
 		break;
 	case COMPONENT_TYPE::COMPONENT_MATERIAL:
 		component = new Image(this);

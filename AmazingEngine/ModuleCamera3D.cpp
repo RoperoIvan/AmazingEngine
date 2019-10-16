@@ -48,13 +48,22 @@ update_status ModuleCamera3D::Update(float dt)
 
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_REPEAT) newPos.y += speed;
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT) newPos.y -= speed;
-
+	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT) GoAroundGeometry();
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= Z * speed;
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += Z * speed;
 
 
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= X * speed;
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
+
+	if (App->input->GetMouseZ() > 0)
+	{
+		newPos -= Z * speed * 10;
+	}
+	if (App->input->GetMouseZ() < 0)
+	{
+		newPos += Z * speed * 10;
+	}
 
 	Position += newPos;
 	Reference += newPos;
@@ -149,27 +158,53 @@ float* ModuleCamera3D::GetViewMatrix()
 	return &ViewMatrix;
 }
 
-void ModuleCamera3D::GoAroundGeometry(const Geometry* geom)
+void ModuleCamera3D::GoAroundGeometry()
 {
-	math::AABB box(float3(0, 0, 0), float3(0, 0, 0));
-	std::vector <float3> vertex;
+	if (App->scene->game_objects.empty())
+		return;
 
-	for (int i = 0; i < geom->num_vertices * 3; i += 3)
+	std::vector<float3> vertices;
+
+	for (std::vector<GameObject*>::iterator it = App->scene->game_objects.begin(); it != App->scene->game_objects.end(); ++it)
 	{
-		vertex.push_back(float3(geom->vertices[i], geom->vertices[i + 1], geom->vertices[i + 2]));
+		for (std::vector < Component*>::iterator iter = (*it)->components.begin(); iter != (*it)->components.end(); ++iter)
+		{
+			COMPONENT_TYPE type = (*iter)->type;
+			if (type == COMPONENT_TYPE::COMPONENT_MESH)
+			{
+				//Generate AABBS for each geom in scene
+				math::AABB new_aabb(float3(0, 0, 0), float3(0, 0, 0));
+				std::vector <float3> vertex_array;
+
+				Geometry* g = dynamic_cast<Geometry*>(*iter);
+				for (int j = 0; j < g->num_vertices * 3; j += 3)
+				{
+					vertex_array.push_back(float3(g->vertices[j], g->vertices[j + 1], g->vertices[j + 2]));
+				}
+
+				new_aabb.Enclose(&vertex_array[0], g->num_vertices);
+
+				//Stores the 8 vertices of the box in a general array
+				for (int j = 0; j < 8; j++)
+				{
+					vertices.push_back(new_aabb.CornerPoint(j));
+				}
+			}
+
+		}
 	}
 
-	box.Enclose(&vertex[0], geom->num_vertices);
+	//Creates a general AABB 
+	math::AABB general(float3(0, 0, 0), float3(0, 0, 0));
+	general.Enclose(&vertices[0], vertices.size());
 
+	Position.x = general.maxPoint.x*1.5;
+	Position.y = general.maxPoint.y*1.5;
+	Position.z = general.maxPoint.z*1.5;
 
-	Position.x = box.maxPoint.x*2;
-	Position.y = box.maxPoint.y*2;
-	Position.z = box.maxPoint.z*2;
-
-	Reference.x = box.CenterPoint().x;
-	Reference.y = box.CenterPoint().y;
-	Reference.z = box.CenterPoint().z;
-
+	Reference.x = general.CenterPoint().x;
+	Reference.y = general.CenterPoint().y;
+	Reference.z = general.CenterPoint().z;
 
 	LookAt(Reference);
 }
