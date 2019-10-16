@@ -56,6 +56,5 @@ private:
 	std::vector<float> ms_log;
 	AppConsole console;
 	Primitives prim = Primitives::UKNOWN;
-	std::vector<Geometry*> geoms;
 };
 #endif

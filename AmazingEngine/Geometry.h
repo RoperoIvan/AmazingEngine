@@ -5,7 +5,8 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include "Globals.h"
-#include "Image.h";
+#include "Image.h"
+#include "par_shapes.h"
 
 enum  class Primitives
 {
@@ -20,11 +21,11 @@ enum  class Primitives
 class Geometry: public Component
 {
 public:
-	Geometry(float* ver, uint* ind,float* norm, uint num_vert, uint num_ind, uint num_norm, GameObject* parent = nullptr);
-	Geometry(Geometry* geo, GameObject* parent);
-	Geometry(float* ver, uint* ind, float* normals, int num_vert, int num_ind, float r, float g, float b,float a, GameObject* parent = nullptr); // Creation of primitives with par_shapes library
-	Geometry(GameObject* parent);
+
+	Geometry(GameObject* parent = nullptr);
 	~Geometry();
+
+	void CreatePrimitive(par_shapes_mesh* p_mesh, float col0 = 255, float col1 = 255, float col2 = 255, float col3 = 255);
 	void DrawPrimitives();
 	void DebugDraw();
 
@@ -51,8 +52,11 @@ public:
 
 	Image* texture = nullptr;
 
+	bool is_primitive = false;
+	par_shapes_mesh* primitive_mesh = nullptr;
+
 public:
-	GameObject* parent;
+	GameObject* parent = nullptr;
 
 };
 

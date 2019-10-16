@@ -15,6 +15,7 @@
 #include <iomanip>
 #include "PhysFS/include/physfs.h"
 
+
 #pragma comment (lib, "PhysFS/libx86/physfs.lib")
 
 GuiManager::GuiManager(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -139,12 +140,6 @@ update_status GuiManager::PostUpdate(float dt)
 
 bool GuiManager::CleanUp()
 {
-	for (std::vector<Geometry*>::iterator it = geoms.begin(); it != geoms.end(); it++)
-	{
-		if ((*it) != nullptr)
-			delete (*it);
-		(*it) = nullptr;
-	}
 	fps_log.clear();
 	ms_log.clear();
 
@@ -520,7 +515,7 @@ void GuiManager::PrimitivesWindow()
 			static int translation[3] = { 1,1,1 };
 			static int rad = 0;
 			static float axis[3] = {0,0,0};
-			if(ImGui::CollapsingHeader("Cube"))
+			if(ImGui::CollapsingHeader("Primitives"))
 			{
 				ImGui::SliderInt3("Size", scale, 1, 10);
 				ImGui::SliderInt3("Translation", translation, 0, 100);
@@ -550,139 +545,16 @@ void GuiManager::PrimitivesWindow()
 				}
 				DegToRad(rad);
 				ImGui::ColorEdit4("Color", col);
-				if(ImGui::Button("Create"))
-					CreatePrimitives(m, Primitives::CUBE, col, scale, translation, rad, axis);				
-			}
-			if (ImGui::CollapsingHeader("Sphere"))
-			{
-				ImGui::SliderInt3("Size", scale, 1, 10);
-				ImGui::SliderInt3("Translation", translation, 0, 100);
-				ImGui::TextWrapped("Rotation");
-				ImGui::Separator();
-				ImGui::SliderInt("Radiant", &rad, 0, 360);
-				const char* items[] = { "X", "Y", "Z" };
-				static int item_current = 0;
-				ImGui::Combo("Axis", &item_current, items, IM_ARRAYSIZE(items));
-				switch (item_current)
-				{
-				case 0:
-					axis[0] = 1;
-					axis[1] = 0;
-					axis[2] = 0;
-					break;
-				case 1:
-					axis[0] = 0;
-					axis[1] = 1;
-					axis[2] = 0;
-					break;
-				case 2:
-					axis[0] = 0;
-					axis[1] = 0;
-					axis[2] = 1;
-					break;
-				}
-				DegToRad(rad);
-				ImGui::ColorEdit4("Color", col);
-				if (ImGui::Button("Create"))
+
+				if(ImGui::Button("  Cube  "))
+					CreatePrimitives(m, Primitives::CUBE, col, scale, translation, rad, axis);	
+				else if (ImGui::Button(" Sphere "))
 					CreatePrimitives(m, Primitives::SPHERE, col, scale, translation, rad, axis);
-			}
-			if (ImGui::CollapsingHeader("Cone"))
-			{
-				ImGui::SliderInt3("Size", scale, 1, 10);
-				ImGui::SliderInt3("Translation", translation, 0, 100);
-				ImGui::TextWrapped("Rotation");
-				ImGui::Separator();
-				ImGui::SliderInt("Radiant", &rad, 0, 360);
-				const char* items[] = { "X", "Y", "Z" };
-				static int item_current = 0;
-				ImGui::Combo("Axis", &item_current, items, IM_ARRAYSIZE(items));
-				switch (item_current)
-				{
-				case 0:
-					axis[0] = 1;
-					axis[1] = 0;
-					axis[2] = 0;
-					break;
-				case 1:
-					axis[0] = 0;
-					axis[1] = 1;
-					axis[2] = 0;
-					break;
-				case 2:
-					axis[0] = 0;
-					axis[1] = 0;
-					axis[2] = 1;
-					break;
-				}
-				DegToRad(rad);
-				ImGui::ColorEdit4("Color", col);
-				if (ImGui::Button("Create"))
+				else if (ImGui::Button("  Cone  "))
 					CreatePrimitives(m, Primitives::CONE, col, scale, translation, rad, axis);
-			}
-			if (ImGui::CollapsingHeader("Cylinder"))
-			{
-				ImGui::SliderInt3("Size", scale, 1, 10);
-				ImGui::SliderInt3("Translation", translation, 0, 100);
-				ImGui::TextWrapped("Rotation");
-				ImGui::Separator();
-				ImGui::SliderInt("Radiant", &rad, 0, 360);
-				const char* items[] = { "X", "Y", "Z" };
-				static int item_current = 0;
-				ImGui::Combo("Axis", &item_current, items, IM_ARRAYSIZE(items));
-				switch (item_current)
-				{
-				case 0:
-					axis[0] = 1;
-					axis[1] = 0;
-					axis[2] = 0;
-					break;
-				case 1:
-					axis[0] = 0;
-					axis[1] = 1;
-					axis[2] = 0;
-					break;
-				case 2:
-					axis[0] = 0;
-					axis[1] = 0;
-					axis[2] = 1;
-					break;
-				}
-				DegToRad(rad);
-				ImGui::ColorEdit4("Color", col);
-				if (ImGui::Button("Create"))
+				else if (ImGui::Button("Cylinder"))
 					CreatePrimitives(m, Primitives::CYILINDER, col, scale, translation, rad, axis);
-			}
-			if (ImGui::CollapsingHeader("Plane"))
-			{
-				ImGui::SliderInt3("Size", scale, 1, 10);
-				ImGui::SliderInt3("Translation", translation, 0, 100);
-				ImGui::TextWrapped("Rotation");
-				ImGui::Separator();
-				ImGui::SliderInt("Radiant", &rad, 0, 360);
-				const char* items[] = { "X", "Y", "Z" };
-				static int item_current = 0;
-				ImGui::Combo("Axis", &item_current, items, IM_ARRAYSIZE(items));
-				switch (item_current)
-				{
-				case 0:
-					axis[0] = 1;
-					axis[1] = 0;
-					axis[2] = 0;
-					break;
-				case 1:
-					axis[0] = 0;
-					axis[1] = 1;
-					axis[2] = 0;
-					break;
-				case 2:
-					axis[0] = 0;
-					axis[1] = 0;
-					axis[2] = 1;
-					break;
-				}
-				DegToRad(rad);
-				ImGui::ColorEdit4("Color", col);
-				if (ImGui::Button("Create"))
+				else if (ImGui::Button(" Plane  "))
 					CreatePrimitives(m, Primitives::PLANE, col, scale, translation, rad, axis);
 			}
 			ImGui::End();
@@ -698,18 +570,18 @@ void GuiManager::GetLog(const char* log)
 
 void GuiManager::DrawGeometry()
 {
-	//for (std::vector<Geometry*>::iterator it = App->mesh->geometry.begin(); it != App->mesh->geometry.end(); it++)
-	//{
-	//	/*(*it)->Draw();
-	//	if (debug_draw)
-	//		(*it)->DebugDraw();*/
-	//}
-	for (std::vector<Geometry*>::iterator it = geoms.begin(); it != geoms.end(); it++)
-	{
-		(*it)->DrawPrimitives();
-		if (debug_draw)
-			(*it)->DebugDraw();
-	}
+//	for (std::vector<Geometry*>::iterator it = App->mesh->geometry.begin(); it != App->mesh->geometry.end(); it++)
+//	{
+//		/*(*it)->Draw();
+//		if (debug_draw)
+//			(*it)->DebugDraw();*/
+//	}
+//	for (std::vector<Geometry*>::iterator it = geoms.begin(); it != geoms.end(); it++)
+//	{
+//		(*it)->DrawPrimitives();
+//		if (debug_draw)
+//			(*it)->DebugDraw();
+//	}
 }
 
 void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, float col[4], int scale[3], int translation[3], float rad, const float* axis)
@@ -738,8 +610,11 @@ void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, floa
 	par_shapes_scale(p_mesh, scale[0], scale[1], scale[2]);
 	par_shapes_translate(p_mesh, translation[0], translation[1], translation[2]);
 	par_shapes_rotate(p_mesh, rad, axis);
-	Geometry* geo = new Geometry(p_mesh->points, p_mesh->triangles, p_mesh->normals, p_mesh->npoints, p_mesh->ntriangles,col[0], col[1], col[2], col[3]);
-	geoms.push_back(geo);
+
+	GameObject* game_object = new GameObject();
+	Geometry* geo = dynamic_cast<Geometry*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
+	geo->CreatePrimitive(p_mesh,col[0], col[1], col[2], col[3]);
+	App->scene->game_objects.push_back(game_object);
 	App->camera->GoAroundGeometry(geo);
 }
 
