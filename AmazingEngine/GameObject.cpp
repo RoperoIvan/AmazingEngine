@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "ModuleScene.h"
 
+
 GameObject::GameObject()
 {
 	name = "GameObject " + std::to_string(App->scene->game_objects.size());
@@ -47,6 +48,7 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	case COMPONENT_TYPE::COMPONENT_MESH:
 		component = new Geometry(this);
 		components.push_back(component);
+		App->camera->GoAroundGeometry();
 		break;
 	case COMPONENT_TYPE::COMPONENT_MATERIAL:
 		component = new Image(this);
