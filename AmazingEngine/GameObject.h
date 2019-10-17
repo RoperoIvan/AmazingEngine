@@ -27,6 +27,7 @@ public:
 
 	bool show_inspector_window = true;
 	bool to_delete = false;
+	bool is_enable = true;
 };
 
 #endif

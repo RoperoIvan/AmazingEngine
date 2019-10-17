@@ -22,6 +22,14 @@ bool ModuleScene::Init()
 
 update_status ModuleScene::PreUpdate(float dt)
 {
+	for (std::vector<GameObject*>::iterator object = game_objects.begin(); object != game_objects.end(); ++object)
+	{
+		if ((*object)->to_delete)
+		{
+			game_objects.erase(object);
+			break;
+		}
+	}
 	
 	return UPDATE_CONTINUE;
 }

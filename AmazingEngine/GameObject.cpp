@@ -31,7 +31,7 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
-	for (uint i = 0; i < components.size(); ++i)
+	for (uint i = 0; i < components.size() && is_enable; ++i)
 	{
 		if (components[i]->is_enable)
 			components[i]->Update();
@@ -96,12 +96,20 @@ void GameObject::GetPropierties()
 		{
 			if (ImGui::BeginMenu("Options"))
 			{
-				if (ImGui::MenuItem("Quit"))
+				if (ImGui::MenuItem("Delete"))
 					to_delete = true;
 
 				ImGui::EndMenu();
 			}
 
+			if (ImGui::Checkbox("Active", &is_enable))
+				(&is_enable) ? true : false;
+
+			ImGui::SameLine();
+			char* str0;
+			str0 = PAR_MALLOC(char, strlen(name.c_str()) + 1);
+			strcpy(str0, name.c_str());
+			ImGui::InputText(" ", str0, IM_ARRAYSIZE(str0));
 
 		}
 		ImGui::End();
