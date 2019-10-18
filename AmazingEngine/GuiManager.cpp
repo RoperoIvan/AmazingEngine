@@ -608,10 +608,6 @@ void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, floa
 		LOG("Unknown primtive selected");
 		break;
 	}
-	par_shapes_scale(p_mesh, scale[0], scale[1], scale[2]);
-	par_shapes_translate(p_mesh, translation[0], translation[1], translation[2]);
-	par_shapes_rotate(p_mesh, rad, axis);
-
 	GameObject* game_object = new GameObject();
 	Geometry* geo = dynamic_cast<Geometry*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
 	geo->CreatePrimitive(p_mesh,col[0], col[1], col[2], col[3]);
@@ -693,6 +689,14 @@ void GuiManager::HierarchyWindow()
 							
 							game_object->GetHierarcy();
 							ImGui::TreePop();
+						}
+						if (*ImGui::GetIO().MouseDoubleClicked == true)
+							game_object->show_inspector_window = true;
+
+						if (game_object->show_inspector_window)
+						{
+							game_object->GetPropierties();
+							break;
 						}
 					}
 					

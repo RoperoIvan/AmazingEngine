@@ -25,7 +25,7 @@ public:
 	std::vector<GameObject*> children;
 	std::vector<Component*> components;
 
-	bool show_inspector_window = true;
+	bool show_inspector_window = false;
 	bool to_delete = false;
 	bool is_enable = true;
 };

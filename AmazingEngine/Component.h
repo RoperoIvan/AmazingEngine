@@ -21,11 +21,15 @@ public:
 	virtual void Update() = 0;
 	virtual void Disable();
 
+	virtual void ShowProperties() = 0;
 public:
 
+	bool to_delete = false;
 	bool is_enable = true;
 	COMPONENT_TYPE type = COMPONENT_TYPE::NO_COMPONENT;
 	GameObject* parent = nullptr;
 };
 
 #endif
+
+

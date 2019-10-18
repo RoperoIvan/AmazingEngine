@@ -7,6 +7,7 @@
 #include "Globals.h"
 #include "Image.h"
 #include "par_shapes.h"
+#include "Transform.h"
 
 enum  class Primitives
 {
@@ -33,6 +34,7 @@ public:
 
 	void LoadData(aiMesh* mesh);
 
+	void ShowProperties();
 private:
 
 	void LoadBuffers();
@@ -56,8 +58,7 @@ public:
 	par_shapes_mesh* primitive_mesh = nullptr;
 
 public:
-	GameObject* parent = nullptr;
-
+	Transform* transform = nullptr;
 };
 
 

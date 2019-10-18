@@ -1,7 +1,8 @@
 #include "Geometry.h"
-
+#include <vector>
+#include "ImGui/imgui.h"
 #include "Assimp/include/scene.h"
-
+#include "GameObject.h"
 //Primitives constructor
 
 Geometry::Geometry(GameObject* parent):Component(parent, COMPONENT_TYPE::COMPONENT_MESH)
@@ -132,6 +133,54 @@ void Geometry::LoadData(aiMesh* mesh)
 		}
 	}
 	LoadBuffers();
+}
+
+void Geometry::ShowProperties()
+{
+	static int scale[3] = { 1,1,1 };
+	static int translation[3] = { 1,1,1 };
+	static int rad = 0;
+	static float axis[3] = { 0,0,0 };
+	if (ImGui::CollapsingHeader("Transformation"))
+	{
+		ImGui::SliderInt3("Scale", scale, 1, 10);
+		ImGui::SliderInt3("Translation", translation, 0, 100);
+		ImGui::TextWrapped("Rotation");
+		ImGui::Separator();
+		ImGui::SliderInt("Radiant", &rad, 0, 360);
+
+		static int item_current = 0;
+		const char* items[] = { "X", "Y", "Z" };
+		ImGui::Combo("Axis", &item_current, items, IM_ARRAYSIZE(items));
+		switch (item_current)
+		{
+		case 0:
+			axis[0] = 1;
+			axis[1] = 0;
+			axis[2] = 0;
+			break;
+		case 1:
+			axis[0] = 0;
+			axis[1] = 1;
+			axis[2] = 0;
+			break;
+		case 2:
+			axis[0] = 0;
+			axis[1] = 0;
+			axis[2] = 1;
+			break;
+		}
+		if (ImGui::Button("Transform"))
+		{
+			if (transform == nullptr)
+			{
+				transform = dynamic_cast<Transform*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
+				transform->LoadTransformation(primitive_mesh, translation, scale, rad, axis);
+			}
+			else
+				transform->LoadTransformation(primitive_mesh, translation, scale, rad, axis);
+		}
+	}
 }
 
 void Geometry::LoadBuffers()

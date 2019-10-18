@@ -169,6 +169,7 @@
     <ClInclude Include="par_shapes.h" />
     <ClInclude Include="PhysFS\include\physfs.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -228,6 +229,7 @@
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="par_shapes.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DLL\config.json" />

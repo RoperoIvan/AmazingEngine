@@ -3,7 +3,7 @@
 #include "Geometry.h"
 #include "Application.h"
 #include "ModuleScene.h"
-
+#include "Transform.h"
 
 GameObject::GameObject()
 {
@@ -31,10 +31,15 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
-	for (uint i = 0; i < components.size() && is_enable; ++i)
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
-		if (components[i]->is_enable)
-			components[i]->Update();
+		if ((*it)->to_delete)
+		{
+			components.erase(it);
+			break;
+		}
+		else if ((*it)->is_enable)
+			(*it)->Update();
 	}
 }
 
@@ -44,6 +49,8 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	switch (type)
 	{
 	case COMPONENT_TYPE::COMPONENT_TRANSFORM:
+		component = new Transform(this);
+		components.push_back(component);
 		break;
 	case COMPONENT_TYPE::COMPONENT_MESH:
 		component = new Geometry(this);
@@ -64,8 +71,7 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 
 void GameObject::GetHierarcy()
 {
-	if (show_inspector_window)
-		GetPropierties();
+
 	for (uint i = 0; i < children.size(); ++i)
 	{
 		GameObject* game_object = children[i];
@@ -96,22 +102,42 @@ void GameObject::GetPropierties()
 		{
 			if (ImGui::BeginMenu("Options"))
 			{
+				//delete object
 				if (ImGui::MenuItem("Delete"))
 					to_delete = true;
 
 				ImGui::EndMenu();
 			}
-
+			//view oobject
 			if (ImGui::Checkbox("Active", &is_enable))
 				(&is_enable) ? true : false;
 
+			//change name
 			ImGui::SameLine();
 			char* str0;
 			str0 = PAR_MALLOC(char, strlen(name.c_str()) + 1);
 			strcpy(str0, name.c_str());
-			ImGui::InputText(" ", str0, IM_ARRAYSIZE(str0));
-
+			ImGuiInputTextCallback size = (ImGuiInputTextCallback)name.size();
+			WM_KEYDOWN / WM_KEYUP / WM_CHAR;
+			ImGui::GetIO().WantCaptureKeyboard = true;
+			ImGui::GetIO().WantTextInput = true;
+			if(ImGui::InputText(" ", str0, IM_ARRAYSIZE(str0),ImGuiInputTextFlags_CallbackResize , size,&str0))
+			{
+				name.assign(str0);
+			}
 		}
+		Component* mesh = nullptr;
+		std::vector<Component*>::iterator it = components.begin();
+		while ( it != components.end())
+		{
+			if ((*it)->type == COMPONENT_TYPE::COMPONENT_MESH)
+			{
+				mesh = *it;
+				break;
+			}
+		}
+		if (mesh != nullptr)
+			mesh->ShowProperties();
 		ImGui::End();
 	}
 }
