@@ -56,5 +56,6 @@ private:
 	std::vector<float> ms_log;
 	AppConsole console;
 	Primitives prim = Primitives::UKNOWN;
+	std::string test = "";
 };
 #endif

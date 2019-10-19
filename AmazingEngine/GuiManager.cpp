@@ -173,6 +173,15 @@ void GuiManager::ConfigurationWindow()
 
 		if (ImGui::Begin("Settings", &show_config_window))
 		{
+			char a[100] = "";
+			
+
+			if (ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue))
+			{
+				test = a;
+				/*std::stoi(test);*/
+			}
+			ImGui::Text(test.c_str());
 			// Application options tab
 			if (ImGui::CollapsingHeader("Application"))
 			{
