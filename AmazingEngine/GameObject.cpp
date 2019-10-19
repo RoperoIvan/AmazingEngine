@@ -114,17 +114,12 @@ void GameObject::GetPropierties()
 
 			//change name
 			ImGui::SameLine();
-			char* str0;
-			str0 = PAR_MALLOC(char, strlen(name.c_str()) + 1);
-			strcpy(str0, name.c_str());
-			ImGuiInputTextCallback size = (ImGuiInputTextCallback)name.size();
-			WM_KEYDOWN / WM_KEYUP / WM_CHAR;
-			ImGui::GetIO().WantCaptureKeyboard = true;
-			ImGui::GetIO().WantTextInput = true;
-			if(ImGui::InputText(" ", str0, IM_ARRAYSIZE(str0),ImGuiInputTextFlags_CallbackResize , size,&str0))
+			char a[100] = "";
+			if (ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue))
 			{
-				name.assign(str0);
+				name.assign(a);
 			}
+			
 		}
 		Component* mesh = nullptr;
 		std::vector<Component*>::iterator it = components.begin();

@@ -174,8 +174,6 @@ void GuiManager::ConfigurationWindow()
 		if (ImGui::Begin("Settings", &show_config_window))
 		{
 			char a[100] = "";
-			
-
 			if (ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue))
 			{
 				test = a;
@@ -185,10 +183,13 @@ void GuiManager::ConfigurationWindow()
 			// Application options tab
 			if (ImGui::CollapsingHeader("Application"))
 			{
-				static char* str1 = "Amazing Engine";
-				ImGui::Text("App Name:     ");
-				ImGui::SameLine(); ImGui::InputText(" ", str1, IM_ARRAYSIZE(str1));
-
+				static char* str1 = "";
+				ImGui::Text("App Name: ");
+				ImGui::SameLine();
+				if (ImGui::Button("Amazing Engine", ImVec2(357, 0)))
+				{
+					App->RequestBrowser("https://github.com/RoperoIvan/AmazingEngine");
+				}
 				ImGui::Text("Organitzation:");
 				ImGui::SameLine();
 				if (ImGui::Button("UPC CITM", ImVec2(357, 0)))
