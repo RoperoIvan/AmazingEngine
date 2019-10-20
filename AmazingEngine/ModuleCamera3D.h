@@ -4,8 +4,6 @@
 #include "glmath.h"
 #include "json.hpp"
 
-struct Geometry;
-
 class ModuleCamera3D : public Module
 {
 public:
