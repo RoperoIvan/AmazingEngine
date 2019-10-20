@@ -20,6 +20,12 @@ bool ModuleScene::Init()
 	return true;
 }
 
+bool ModuleScene::Start()
+{
+	App->mesh->LoadFile("..\\Assets\\BakerHouse.fbx");
+	return true;
+}
+
 update_status ModuleScene::PreUpdate(float dt)
 {
 	for (std::vector<GameObject*>::iterator object = game_objects.begin(); object != game_objects.end(); ++object)

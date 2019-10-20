@@ -56,6 +56,8 @@ private:
 	bool debug_draw = false;
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;
+	std::vector<float> vram_log;
+	std::vector<float> curr_vram_log;
 	AppConsole console;
 	Primitives prim = Primitives::UKNOWN;
 	std::string test = "";

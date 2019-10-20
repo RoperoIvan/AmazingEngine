@@ -30,13 +30,12 @@ bool GuiManager::Init()
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
 	UIStyle();
 	ImGui_ImplOpenGL3_Init();
-	show_config_window = false;
+	/*show_config_window = false;*/
 	return true;
 }
 
 bool GuiManager::Start()
 {
-	//App->mesh->LoadFile("../Assets/BakerHouse.fbx");
 
 	return true;
 }
@@ -104,9 +103,11 @@ update_status GuiManager::PreUpdate(float dt)
 	if (show_primitives_window)
 		PrimitivesWindow();
 
+	//Hierarchy window
 	if (show_hierachy_window)
 		HierarchyWindow();
-	
+
+	//Textures window
 	if (show_textures_window)
 		TexturesWindow();
 
@@ -207,7 +208,6 @@ void GuiManager::ConfigurationWindow()
 					fps_log.erase(fps_log.begin());
 					ms_log.erase(ms_log.begin());
 				}
-				//TODO: delete memory from vectors in the clean up
 				fps_log.push_back(frames);
 				ms_log.push_back(milisec);
 
@@ -292,6 +292,74 @@ void GuiManager::ConfigurationWindow()
 				ImGui::Text("GPU Drivers version:");
 				ImGui::SameLine();
 				ImGui::TextColored({ 255, 255, 0, 255 }, "%s", glGetString(GL_VERSION));
+
+				const GLubyte* v = glGetString(GL_VENDOR);
+				char vendor[30];
+
+				for (int i = 0; i<30; i++)
+				{
+					vendor[i] = v[i];
+				}
+				//Nvidia VRAM usage
+				if (strcmp(vendor, "NVIDIA Corporation") == 0)
+				{
+					GLint total_mem_kb = 0;
+					
+					glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &total_mem_kb);
+
+					GLint cur_avail_mem_kb = 0;
+					glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &cur_avail_mem_kb);
+
+					//Calculate VRAM usage
+					char vram[25];
+					vram_log.push_back(((float)total_mem_kb) / 1000.f);
+					if (vram_log.size() > 100)
+					{
+						for (int i = 0; vram_log.size() > i - 1; i++)
+						{
+							vram_log[i] = vram_log[i + 1];
+						}
+						vram_log.pop_back();
+					}
+					sprintf_s(vram, 25, "VRAM usage: %.3f Mb", ((float)total_mem_kb) / 1000.f);
+					ImGui::PlotHistogram("##VRAM usage: ", &vram_log[0], vram_log.size(), 0, vram, 0.0f, 100.0f, ImVec2(310, 100));
+
+					//Calculate VRAM aviable
+					char vram_curr[50];
+					curr_vram_log.push_back(((float)cur_avail_mem_kb) / 1000.f);
+					if (curr_vram_log.size() > 100)
+					{
+						for (int i = 0; curr_vram_log.size() > i - 1; i++)
+						{
+							curr_vram_log[i] = curr_vram_log[i + 1];
+						}
+						curr_vram_log.pop_back();
+					}
+					sprintf_s(vram_curr, 50, "VRAM Aviable: %.3f Mb", ((float)cur_avail_mem_kb) / 1000.f);
+					ImGui::PlotHistogram("##VRAM Aviable: ", &curr_vram_log[0], curr_vram_log.size(), 0, vram_curr, 0.0f, 100.0f, ImVec2(310, 100));
+
+				}
+				//AMD VRAM usage still in project
+				else if (strcmp(vendor, "ATI Technologies Inc.") == 0)
+				{
+					GLint nCurAvailMemoryInKB = 0;
+					glGetIntegerv(GL_ATI_meminfo,
+						&nCurAvailMemoryInKB);
+					char vram_curr[50];
+					curr_vram_log.push_back(((float)nCurAvailMemoryInKB) / 1000.f);
+					if (curr_vram_log.size() > 100)
+					{
+						for (int i = 0; curr_vram_log.size() > i - 1; i++)
+						{
+							curr_vram_log[i] = curr_vram_log[i + 1];
+						}
+						curr_vram_log.pop_back();
+					}
+					sprintf_s(vram_curr, 50, "VRAM Aviable: %.3f Mb", ((float)nCurAvailMemoryInKB) / 1000.f);
+					ImGui::PlotHistogram("##VRAM Aviable: ", &curr_vram_log[0], curr_vram_log.size(), 0, vram_curr, 0.0f, 100.0f, ImVec2(310, 100));
+
+				}
+				else (ImGui::TextWrapped("VRam Usage only available for NVIDIA devices"));
 			}
 			// Window tab
 			if (ImGui::CollapsingHeader("Window"))
