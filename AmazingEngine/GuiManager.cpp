@@ -681,53 +681,45 @@ void GuiManager::HierarchyWindow()
 		{
 			if (ImGui::CollapsingHeader("Geometry"))
 			{
+				static int selection_mask = (1 << 0); 
+				static int node_clicked = 0;             
+
 				for (uint i = 0; i < App->scene->game_objects.size(); ++i)
 				{
 					GameObject* game_object = App->scene->game_objects[i];
 
 					if(game_object->parent == nullptr)
 					{
-						if (ImGui::TreeNodeEx(game_object->name.c_str()))
+						// Disable the default open on single-click behavior and pass in Selected flag according to our selection state.
+						ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+						if (selection_mask & (1 << i))
+							node_flags |= ImGuiTreeNodeFlags_Selected;
+
+						bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, game_object->name.c_str());
+						if (ImGui::IsItemClicked())
 						{
-							
-							game_object->GetHierarcy();
-							ImGui::TreePop();
-						}
-						if (*ImGui::GetIO().MouseDoubleClicked == true)
+							selection_mask = (1 << i);
 							game_object->show_inspector_window = true;
 
-						if (game_object->show_inspector_window)
-						{
-							game_object->GetPropierties();
-							break;
+							//al show inspector windows = false
+							std::vector<GameObject*>::iterator iterator = App->scene->game_objects.begin();
+							while (iterator != App->scene->game_objects.end())
+							{
+								if (*iterator != game_object)
+									(*iterator)->show_inspector_window = false;
+								++iterator;
+							}
 						}
-					}
+						if (node_open)
+						{
+							game_object->GetHierarcy();
+							ImGui::TreePop();
+						}				
+						if (game_object->show_inspector_window)
+							game_object->GetPropierties();
+					}	
 					
 				}
-				/*for (int i = 0; i < geoms.size(); ++i)
-				{
-					Geometry* g = geoms[i];
-					std::string node_name = "Primitive " + std::to_string(i + 1);
-
-					if (ImGui::TreeNodeEx(node_name.c_str()))
-					{
-						ImGui::TextColored(ImVec4(1, 0.5, 0.2, 1), "Triangle Count: %i", g->par_num_indices);
-
-						ImGui::TreePop();
-					}
-				}
-				for (int i = 0; i < App->mesh->geometry.size(); ++i)
-				{
-					Geometry* h = App->mesh->geometry[i];
-					std::string node_name = "Geometry " + std::to_string(i + 1);
-
-					if (ImGui::TreeNodeEx(node_name.c_str()))
-					{
-						ImGui::TextColored(ImVec4(1, 0.5, 0.2, 1), "Triangle Count: %i", h->num_indices / 3);
-
-						ImGui::TreePop();
-					}
-				}*/
 			}
 			ImGui::End();
 		}
