@@ -712,6 +712,17 @@ void GuiManager::HierarchyWindow()
 									(*iterator)->show_inspector_window = false;
 								++iterator;
 							}
+
+							if (game_object->children.size() != 0)
+							{
+								std::vector<GameObject*>::iterator child = game_object->children.begin();
+								while (child != game_object->children.end())
+								{
+									if (*child != game_object)
+										(*child)->show_inspector_window = false;
+									++child;
+								}
+							}
 						}
 						if (node_open)
 						{

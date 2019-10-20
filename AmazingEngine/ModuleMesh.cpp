@@ -103,12 +103,15 @@ bool ModuleMesh::LoadFBXFile(const char * file_name)
 
 	if (scene != nullptr && scene->HasMeshes())
 	{
-		GameObject* game_object = new GameObject();
+		GameObject* newfbx = new GameObject();
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		for (int i = 0; i < scene->mNumMeshes; ++i)
 		{
-			Geometry* data = dynamic_cast<Geometry*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
+			GameObject* game_object = new GameObject(newfbx);
 
+			Geometry* data = dynamic_cast<Geometry*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
+			
+			data->transform = dynamic_cast<Transform*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 			data->LoadData(scene->mMeshes[i]);
 
 			if (scene->HasMaterials())
@@ -120,8 +123,11 @@ bool ModuleMesh::LoadFBXFile(const char * file_name)
 
 			}
 			LOG("New mesh created from %s", file_name);
+
+			newfbx->children.push_back(game_object);
 		}
-		App->scene->game_objects.push_back(game_object);
+		App->scene->game_objects.push_back(newfbx);
+		
 		aiReleaseImport(scene);
 
 	}

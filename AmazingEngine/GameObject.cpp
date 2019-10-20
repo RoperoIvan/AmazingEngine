@@ -6,9 +6,12 @@
 #include "ModuleScene.h"
 #include "Transform.h"
 
-GameObject::GameObject()
+GameObject::GameObject(GameObject* parent): parent(parent)
 {
-	name = "GameObject " + std::to_string(App->scene->game_objects.size());
+	if(parent == nullptr)
+		name = "GameObject " + std::to_string(App->scene->game_objects.size() + 1);
+	else
+		name = "GameObject " + std::to_string(App->scene->game_objects.size() + 1) + "." + std::to_string(parent->children.size() + 1);
 }
 
 GameObject::~GameObject()
@@ -32,15 +35,25 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
-	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+	if (children.empty())
 	{
-		if ((*it)->to_delete)
+		for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 		{
-			components.erase(it);
-			break;
+			if ((*it)->to_delete)
+			{
+				components.erase(it);
+				break;
+			}
+			else if ((*it)->is_enable)
+			{
+				(*it)->Update();
+			}
 		}
-		else if ((*it)->is_enable)
-			(*it)->Update();
+	}
+	else
+	{
+		for (std::vector<GameObject*>::iterator iter = children.begin(); iter != children.end(); ++iter)
+			(*iter)->Update();
 	}
 }
 
@@ -72,25 +85,53 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 
 void GameObject::GetHierarcy()
 {
+	static int selection_mask = (1 << 0);
+	static int node_clicked = 0;
 
 	for (uint i = 0; i < children.size(); ++i)
 	{
 		GameObject* game_object = children[i];
 
-		if (game_object->children.size() != 0)
+		//start to show inspector
+			// Disable the default open on single-click behavior and pass in Selected flag according to our selection state.
+		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+		if (selection_mask & (1 << i))
+			node_flags |= ImGuiTreeNodeFlags_Selected;
+
+		bool node_open = ImGui::TreeNodeEx((void*)(intptr_t)i, node_flags, game_object->name.c_str());
+		if (ImGui::IsItemClicked())
 		{
-			if (ImGui::TreeNodeEx(game_object->name.c_str()))
+			selection_mask = (1 << i);
+			//al show inspector windows = false
+			std::vector<GameObject*>::iterator iterator = children.begin();
+			while (iterator != children.end())
+			{
+				if (*iterator != game_object)
+					(*iterator)->show_inspector_window = false;
+				++iterator;
+			}
+			//parent inspector = false
+			if(show_inspector_window)
+				show_inspector_window = false;
+			
+			//show inspector
+			game_object->show_inspector_window = true;
+		}
+		//finish show inspector
+
+		
+		if (node_open)
+		{
+			if (game_object->children.size() != 0)
 			{
 				game_object->GetHierarcy();
-				ImGui::TreePop();
 			}
+			ImGui::TreePop();
 		}
-		else
+		
+		if (game_object->show_inspector_window)
 		{
-			if (ImGui::TreeNodeEx(game_object->name.c_str()))
-			{
-				ImGui::TreePop();
-			}
+			game_object->GetPropierties();
 		}
 	}
 }
@@ -120,14 +161,12 @@ void GameObject::GetPropierties()
 			if (ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue))
 			{
 				name.assign(a);
-				/*while ((&name[name.size()] == "?"))
-				{
-					name.pop_back();
-				}*/
 			}
 	
 		}
+
 		Component* mesh = nullptr;
+
 		std::vector<Component*>::iterator it = components.begin();
 		int id = 0;
 		while ( it != components.end())
@@ -136,8 +175,8 @@ void GameObject::GetPropierties()
 			{
 				mesh = *it;
 				mesh->ShowProperties();
+				break;
 			}
-			
 			++it;
 		}
 

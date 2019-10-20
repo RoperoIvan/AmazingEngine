@@ -54,7 +54,6 @@ public:
 	Image* texture = nullptr;
 
 	bool is_primitive = false;
-	par_shapes_mesh* primitive_mesh = nullptr;
 
 public:
 	Transform* transform = nullptr;

@@ -4,6 +4,8 @@
 #include "Component.h"
 #include "par_shapes.h"
 
+class Geometry;
+
 class Transform :public Component
 {
 public:
@@ -15,17 +17,21 @@ public:
 	void Update();
 	void Disable();
 
-	void LoadTransformation(par_shapes_mesh* p_mesh,int trans[3], int scle[3], float rd, float axs[3]);
+	void LoadTransformation(Geometry* p_mesh,int trans[3], int scle[3], float rd, float axs[3]);
 	void UnLoadTransformation();
+
 	int GetTextureId() { return 0; };
 	void ShowProperties() {};
+
+	void ChangeScale(Geometry* mesh, float x, float y, float z);
+	void ChangePosition(Geometry* mesh, float x, float y, float z);
 public:
 
 	int translation[3] = { 1,1,1 };
 	int scale[3] = { 1,1,1 };
 	float rad = 0;
 	float axis[3] = { 0,0,0 };
-	par_shapes_mesh* mesh = nullptr;
+	Geometry* mesh = nullptr;
 };
 
 

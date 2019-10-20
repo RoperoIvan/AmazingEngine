@@ -16,7 +16,6 @@ Geometry::~Geometry()
 
 void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, float col2, float col3)
 {
-	primitive_mesh = p_mesh;
 	num_vertices = p_mesh->npoints;
 	par_num_indices = p_mesh->ntriangles;
 	num_indices = p_mesh->ntriangles * 3;
@@ -30,6 +29,7 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 	b = col2;
 	a = col3;
 
+	transform = new Transform(parent);
 	LoadBuffers();
 
 	LOG("PENE");
@@ -91,7 +91,7 @@ void Geometry::Update()
 
 void Geometry::LoadData(aiMesh* mesh)
 {
-	//Load vertex
+	//Load vertex	
 	num_vertices = mesh->mNumVertices;
 	vertices = new float[num_vertices * 3];
 	memcpy(vertices, mesh->mVertices, sizeof(float) * num_vertices * 3);
@@ -99,7 +99,7 @@ void Geometry::LoadData(aiMesh* mesh)
 
 	//load index
 	if (mesh->HasFaces())
-	{
+	{	
 		num_indices = mesh->mNumFaces * 3;
 		indices = new uint[num_indices * 3];
 		for (uint j = 0; j < mesh->mNumFaces; ++j)
@@ -124,7 +124,7 @@ void Geometry::LoadData(aiMesh* mesh)
 void Geometry::ShowProperties()
 {
 	static int scale[3] = { 1,1,1 };
-	static int translation[3] = { 1,1,1 };
+	static int translation[3] = { 0,0,0 };
 	static int rad = 0;
 	static float axis[3] = { 0,0,0 };
 	if (ImGui::CollapsingHeader("Transformation"))
@@ -158,13 +158,13 @@ void Geometry::ShowProperties()
 		}
 		if (ImGui::Button("Transform"))
 		{
-			if (transform == nullptr)
-			{
-				transform = dynamic_cast<Transform*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
-				transform->LoadTransformation(primitive_mesh, translation, scale, rad, axis);
-			}
-			else
-				transform->LoadTransformation(primitive_mesh, translation, scale, rad, axis);
+			transform->LoadTransformation(this, translation, scale, rad, axis);
+
+			glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices * 3, vertices, GL_STATIC_DRAW);
+
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, indices, GL_STATIC_DRAW);
 		}
 	}
 }

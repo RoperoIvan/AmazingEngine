@@ -8,7 +8,7 @@
 class GameObject
 {
 public:
-	GameObject();
+	GameObject(GameObject* parent = nullptr);
 	~GameObject();
 
 	void Update();
