@@ -152,7 +152,7 @@ void GameObject::GetPropierties()
 		if (id != 0)
 		{
 			ImVec2 size = {200,200};
-			ImGui::Image((ImTextureID)id, ImVec2(200, 200));
+			ImGui::Image((ImTextureID)id, size);
 			ImGui::TextColored(ImVec4(0, 0, 255, 255), "%i x %i", (int)size.x, (int)size.y);
 		}
 		ImGui::End();
