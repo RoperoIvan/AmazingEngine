@@ -1,3 +1,4 @@
+#include "Application.h"
 #include "GameObject.h"
 #include "Image.h"
 #include "Geometry.h"
@@ -115,10 +116,16 @@ void GameObject::GetPropierties()
 			//change name
 			ImGui::SameLine();
 			char a[100] = "";
+			memcpy(a, name.c_str(),name.size());
 			if (ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue))
 			{
 				name.assign(a);
+				/*while ((&name[name.size()] == "?"))
+				{
+					name.pop_back();
+				}*/
 			}
+	
 		}
 		Component* mesh = nullptr;
 		std::vector<Component*>::iterator it = components.begin();
@@ -128,12 +135,11 @@ void GameObject::GetPropierties()
 			if ((*it)->type == COMPONENT_TYPE::COMPONENT_MESH)
 			{
 				mesh = *it;
-				break;
+				mesh->ShowProperties();
 			}
+			
 			++it;
 		}
-		if (mesh != nullptr)
-			mesh->ShowProperties();
 
 		Component* tex = nullptr;
 		std::vector<Component*>::iterator it2 = components.begin();
