@@ -60,7 +60,7 @@ update_status GuiManager::PreUpdate(float dt)
 		}
 		if (ImGui::BeginMenu("View"))
 		{
-			if (ImGui::MenuItem("Inspector")) show_hierachy_window = true;
+			if (ImGui::MenuItem("Hierarchy")) show_hierachy_window = true;
 
 			ImGui::EndMenu();
 		}
@@ -173,13 +173,6 @@ void GuiManager::ConfigurationWindow()
 
 		if (ImGui::Begin("Settings", &show_config_window))
 		{
-			char a[100] = "";
-			if (ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue))
-			{
-				test = a;
-				/*std::stoi(test);*/
-			}
-			ImGui::Text(test.c_str());
 			// Application options tab
 			if (ImGui::CollapsingHeader("Application"))
 			{

@@ -23,7 +23,7 @@ public:
 	void LoadCoords(aiMesh* scene);
 	void LoadMaterials(const aiScene* scene, std::string file_name);
 	void LoadBuffers();
-
+	int GetTextureId();
 	void ShowProperties() {};
 public:
 	uint id_coords = 0;

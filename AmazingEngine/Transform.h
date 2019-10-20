@@ -17,7 +17,7 @@ public:
 
 	void LoadTransformation(par_shapes_mesh* p_mesh,int trans[3], int scle[3], float rd, float axs[3]);
 	void UnLoadTransformation();
-
+	int GetTextureId() { return 0; };
 	void ShowProperties() {};
 public:
 

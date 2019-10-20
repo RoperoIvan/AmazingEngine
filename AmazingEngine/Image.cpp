@@ -135,3 +135,8 @@ void Image::LoadBuffers()
 		LOG("Error Storing textures! %s\n", gluErrorString(error));
 }
 
+int Image::GetTextureId()
+{
+	return texture_id;
+}
+

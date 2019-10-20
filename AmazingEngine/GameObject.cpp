@@ -119,10 +119,10 @@ void GameObject::GetPropierties()
 			{
 				name.assign(a);
 			}
-			
 		}
 		Component* mesh = nullptr;
 		std::vector<Component*>::iterator it = components.begin();
+		int id = 0;
 		while ( it != components.end())
 		{
 			if ((*it)->type == COMPONENT_TYPE::COMPONENT_MESH)
@@ -130,9 +130,31 @@ void GameObject::GetPropierties()
 				mesh = *it;
 				break;
 			}
+			++it;
 		}
 		if (mesh != nullptr)
 			mesh->ShowProperties();
+
+		Component* tex = nullptr;
+		std::vector<Component*>::iterator it2 = components.begin();
+		while (it2 != components.end())
+		{
+			if ((*it2)->type == COMPONENT_TYPE::COMPONENT_MATERIAL)
+			{
+				tex = *it2;
+				break;
+			}
+			++it2;
+		}
+		if(tex != nullptr)
+			id = tex->GetTextureId();
+
+		if (id != 0)
+		{
+			ImVec2 size = {200,200};
+			ImGui::Image((ImTextureID)id, ImVec2(200, 200));
+			ImGui::TextColored(ImVec4(0, 0, 255, 255), "%i x %i", (int)size.x, (int)size.y);
+		}
 		ImGui::End();
 	}
 }
