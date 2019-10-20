@@ -65,10 +65,42 @@ bool ModuleMesh::CleanUp()
 bool ModuleMesh::LoadFile(const char * file_name)
 {
 	bool ret = false;
-	float* texture_coords = nullptr;
-	int text_id = 0;
+
+	std::string p_file = file_name;
+	std::string format;
+
+	LOG("Loading file from %s", file_name);
+
+	//We want to get the format so we read the path from the end
+	while (p_file.back() != '.')
+	{
+		format.push_back(p_file.back());
+		p_file.pop_back();
+	}
+	std::transform(format.begin(), format.end(), format.begin(), ::tolower);
+	//Since its backwards we reverse it to then compare it with the formats that the engine supports
+	std::reverse(format.begin(), format.end());
+	if (format.compare("fbx") == 0)
+	{
+		LOG("FORMAT IS FBX");
+		LoadFBXFile(file_name);
+	}
+	else if (format.compare("png") == 0 || format.compare("dds") == 0 || format.compare("jpg") == 0)
+	{
+		LOG("FORMAT IS AN IMAGE");
+		LoadTextureFile(file_name);
+	}
+	else LOG("File format '.%s' not recognized", format.c_str());
+
+	
+	return ret;
+}
+
+bool ModuleMesh::LoadFBXFile(const char * file_name)
+{
+	bool ret = true;
 	const aiScene* scene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_Quality);
-		
+
 	if (scene != nullptr && scene->HasMeshes())
 	{
 		GameObject* game_object = new GameObject();
@@ -76,16 +108,16 @@ bool ModuleMesh::LoadFile(const char * file_name)
 		for (int i = 0; i < scene->mNumMeshes; ++i)
 		{
 			Geometry* data = dynamic_cast<Geometry*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
-			
+
 			data->LoadData(scene->mMeshes[i]);
-			
+
 			if (scene->HasMaterials())
 			{
 				Image* tex = dynamic_cast<Image*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
 				tex->LoadCoords(scene->mMeshes[i]);
 				tex->LoadMaterials(scene, file_name);
-				data->texture =tex;
-				
+				data->texture = tex;
+
 			}
 			LOG("New mesh created from %s", file_name);
 		}
@@ -95,68 +127,21 @@ bool ModuleMesh::LoadFile(const char * file_name)
 	}
 	else
 		LOG("Error loading scene %s", file_name);
-	
+
+
 	return ret;
 }
 
-//GLuint ModuleMesh::LoadTexture(const char * p_tex)
-//{
-//	//Gen image
-//	ILuint img_id = 0;
-//	ilGenImages(1, &img_id);
-//	ilBindImage(img_id);
-//
-//	//load from path
-//	ilLoadImage(p_tex);
-//
-//
-//
-//	ILuint devilError1 = ilGetError();
-//	if (devilError1 != IL_NO_ERROR)
-//	{
-//		LOG("Devil Error (ilInit: %s)", iluErrorString(devilError1));
-//		return 0;
-//	}
-//
-//	// If the image is flipped
-//	ILinfo ImageInfo;
-//	iluGetImageInfo(&ImageInfo);
-//	if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
-//	{
-//		iluFlipImage();
-//	}
-//
-//	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-//
-//
-//
-//	ILuint devilError2 = ilGetError();
-//	if (devilError2 != IL_NO_ERROR)
-//	{
-//		LOG("Devil Error (ilInit: %s)", iluErrorString(devilError2));
-//		return 0;
-//	}
-//
-//	//Send texture to GPU
-//	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-//	glGenTextures(1, &img_id);
-//	glBindTexture(GL_TEXTURE_2D, img_id);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT),
-//		0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
-//
-//	ILuint devilError3 = ilGetError();
-//	if (devilError3 != IL_NO_ERROR)
-//	{
-//		LOG("Devil Error (ilInit: %s)", iluErrorString(devilError3));
-//		return 0;
-//	}
-//
-//	return img_id;
-//}
+bool ModuleMesh::LoadTextureFile(const char * file_name)
+{
+	bool ret = true;
+
+	Image* tex = new Image(nullptr);
+	
+	int id = tex->LoadImages(file_name);
+	App->scene->textures.push_back(id);
+	return ret;
+}
 
 float ModuleMesh::TriangleCenterAxis(const float & p1, const float & p2, const float & p3)
 {

@@ -61,7 +61,7 @@ update_status GuiManager::PreUpdate(float dt)
 		if (ImGui::BeginMenu("View"))
 		{
 			if (ImGui::MenuItem("Hierarchy")) show_hierachy_window = true;
-
+			if (ImGui::MenuItem("Textures")) show_textures_window = true;
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Create"))
@@ -106,6 +106,9 @@ update_status GuiManager::PreUpdate(float dt)
 
 	if (show_hierachy_window)
 		HierarchyWindow();
+	
+	if (show_textures_window)
+		TexturesWindow();
 
 	ImGui::ShowDemoWindow();
 	//TODO: Move this somewhere where it has more sense to be written
@@ -704,31 +707,32 @@ void GuiManager::HierarchyWindow()
 					}
 					
 				}
-				/*for (int i = 0; i < geoms.size(); ++i)
-				{
-					Geometry* g = geoms[i];
-					std::string node_name = "Primitive " + std::to_string(i + 1);
+			}
+			ImGui::End();
+		}
+	}
+}
 
+void GuiManager::TexturesWindow()
+{
+	if (show_textures_window)
+	{
+		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
+		if (ImGui::Begin("Textures", &show_hierachy_window))
+		{
+				for (uint i = 0; i < App->scene->textures.size(); ++i)
+				{
+					std::string node_name = "Texture " + std::to_string(i + 1);
 					if (ImGui::TreeNodeEx(node_name.c_str()))
 					{
-						ImGui::TextColored(ImVec4(1, 0.5, 0.2, 1), "Triangle Count: %i", g->par_num_indices);
-
+						ImVec2 size = { 200,200 };
+						int id = App->scene->textures[i];
+						ImGui::Image((ImTextureID)id, size);
+						ImGui::TextColored(ImVec4(0, 0, 255, 255), "%i x %i", (int)size.x, (int)size.y);
 						ImGui::TreePop();
 					}
 				}
-				for (int i = 0; i < App->mesh->geometry.size(); ++i)
-				{
-					Geometry* h = App->mesh->geometry[i];
-					std::string node_name = "Geometry " + std::to_string(i + 1);
-
-					if (ImGui::TreeNodeEx(node_name.c_str()))
-					{
-						ImGui::TextColored(ImVec4(1, 0.5, 0.2, 1), "Triangle Count: %i", h->num_indices / 3);
-
-						ImGui::TreePop();
-					}
-				}*/
-			}
 			ImGui::End();
 		}
 	}

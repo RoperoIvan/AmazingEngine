@@ -18,8 +18,8 @@ public:
 	update_status PostUpdate(float dt)override;
 	bool CleanUp();
 	bool LoadFile(const char* file_name);
-	//GLuint LoadTexture(const char* p_tex);
-
+	bool LoadFBXFile(const char* file_name);
+	bool LoadTextureFile(const char* file_name);
 private:
 	float TriangleCenterAxis(const float &p1, const float &p2, const float &p3);
 };

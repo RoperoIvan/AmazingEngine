@@ -58,21 +58,6 @@ void Geometry::DebugDraw()
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-//Draw primitives geometries
-void Geometry::DrawPrimitives()
-{
-	
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	glDrawElements(GL_TRIANGLES, par_num_indices * 3, GL_UNSIGNED_INT, NULL);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	
-}
-
 void Geometry::Update()
 {
 	glPushAttrib(GL_CURRENT_BIT);
@@ -98,6 +83,7 @@ void Geometry::Update()
 		glColor4f(r, g, b, a);
 
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, NULL);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glPopAttrib();

@@ -20,5 +20,6 @@ public:
 public:
 
 	std::vector<GameObject*> game_objects;
+	std::vector<int> textures;
 };
 #endif
