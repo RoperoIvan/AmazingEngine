@@ -32,7 +32,6 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 	transform = new Transform(parent);
 	LoadBuffers();
 
-	LOG("PENE");
 }
 
 

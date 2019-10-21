@@ -28,7 +28,7 @@ void Transform::LoadTransformation(Geometry* mesh,int trans[3], int scle[3], flo
 {
 	if (mesh != nullptr)
 	{
-		ChangeScale(mesh, scle[0], scle[1], scle[3]);
+		//ChangeScale(mesh, scle[0], scle[1], scle[3]);
 		ChangePosition(mesh, trans[0], trans[1], trans[2]);
 		//par_shapes_rotate(p_mesh, rd, axs);
 
@@ -75,12 +75,11 @@ void Transform::UnLoadTransformation()
 
 void Transform::ChangeScale(Geometry* mesh, float x, float y, float z)
 {
-	glScalef(x,y,z);
-	/*for (uint i = 0; i < mesh->num_vertices; i += 3) {
+	for (uint i = 0; i < mesh->num_vertices; i += 3) {
 		mesh->vertices[i] *= x;
 		mesh->vertices[i + 1] *= y;
 		mesh->vertices[i + 2] *= z;
-	}*/
+	}
 
 	/*if (mesh->normals && (x != y || x != z || y != z)) {
 		x = 1.0f / x;
