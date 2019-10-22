@@ -159,13 +159,14 @@ void Geometry::ShowProperties()
 		{
 			transform->LoadTransformation(this, translation, scale, rad, axis);
 
-			glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices * 3, vertices, GL_STATIC_DRAW);
-
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, indices, GL_STATIC_DRAW);
 		}
 	}
+}
+
+void Geometry::ActualitzateBuffer()
+{
+	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices * 3, vertices, GL_STATIC_DRAW);
 }
 
 void Geometry::LoadBuffers()

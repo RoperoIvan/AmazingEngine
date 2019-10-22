@@ -25,6 +25,8 @@ public:
 
 	void ChangeScale(Geometry* mesh, float x, float y, float z);
 	void ChangePosition(Geometry* mesh, float x, float y, float z);
+	void Rotate(Geometry* mesh, float rd, float axs[3]);
+	void DoRotation(Geometry* mesh, float  r_matrix[3][3]);
 public:
 
 	int translation[3] = { 1,1,1 };
@@ -32,6 +34,11 @@ public:
 	float rad = 0;
 	float axis[3] = { 0,0,0 };
 	Geometry* mesh = nullptr;
+
+	float R[3][3] = 
+	{ 1, 0, 0,
+	0, 1, 0,
+	0, 0, 1 };
 };
 
 
