@@ -82,6 +82,9 @@ GLuint Image::LoadImages(const char* p_tex)
 		return 0;
 	}
 
+	tex_dimension[0] = ilGetInteger(IL_IMAGE_WIDTH);
+	tex_dimension[1] = ilGetInteger(IL_IMAGE_HEIGHT);
+
 	return img_id;
 }
 
@@ -117,6 +120,7 @@ void Image::LoadMaterials(const aiScene* scene, std::string file_name)
 			p_geo.pop_back();
 		}
 		p_geo += tex;
+		p_tex = p_geo;
 		texture_id = LoadImages(p_geo.c_str());
 
 		LoadBuffers();
@@ -138,5 +142,10 @@ void Image::LoadBuffers()
 int Image::GetTextureId()
 {
 	return texture_id;
+}
+
+std::string Image::GetTexturePath()
+{
+	return p_tex;
 }
 

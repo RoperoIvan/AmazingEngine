@@ -142,13 +142,11 @@ void GameObject::GetPropierties()
 	{
 		if (ImGui::CollapsingHeader("Properties"))
 		{
-			if (ImGui::BeginMenu("Options"))
+			if (ImGui::CollapsingHeader("Options"))
 			{
 				//delete object
-				if (ImGui::MenuItem("Delete"))
+				if (ImGui::Button("Delete"))
 					to_delete = true;
-
-				ImGui::EndMenu();
 			}
 			//view oobject
 			if (ImGui::Checkbox("Active", &is_enable))
@@ -198,7 +196,8 @@ void GameObject::GetPropierties()
 		{
 			ImVec2 size = {200,200};
 			ImGui::Image((ImTextureID)id, size);
-			ImGui::TextColored(ImVec4(0, 0, 255, 255), "%i x %i", (int)size.x, (int)size.y);
+			ImGui::TextColored(ImVec4(255, 255, 0, 255), " Size: %i x %i", tex->tex_dimension[0], tex->tex_dimension[1]);
+			ImGui::TextColored(ImVec4(255, 255, 0, 255), "Path: %s", tex->GetTexturePath().c_str());
 		}
 		ImGui::End();
 	}

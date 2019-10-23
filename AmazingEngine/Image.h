@@ -25,11 +25,13 @@ public:
 	void LoadBuffers();
 	int GetTextureId();
 	void ShowProperties() {};
+	std::string GetTexturePath();
 public:
 	uint id_coords = 0;
 	uint num_coords = 0;
 	float* uv_coord = nullptr;
 	int texture_id = 0;
+	std::string p_tex;
 };
 
 #endif

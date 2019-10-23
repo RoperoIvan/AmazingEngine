@@ -120,7 +120,7 @@ bool ModuleMesh::LoadFBXFile(const char * file_name)
 				tex->LoadCoords(scene->mMeshes[i]);
 				tex->LoadMaterials(scene, file_name);
 				data->texture = tex;
-
+				
 			}
 			LOG("New mesh created from %s", file_name);
 

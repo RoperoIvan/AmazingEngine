@@ -22,7 +22,7 @@ public:
 
 	int GetTextureId() { return 0; };
 	void ShowProperties() {};
-
+	std::string GetTexturePath() { return std::string(); };
 	void ChangeScale(Geometry* mesh, float x, float y, float z);
 	void ChangePosition(Geometry* mesh, float x, float y, float z);
 	void Rotate(Geometry* mesh, float rd, float axs[3]);
