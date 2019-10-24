@@ -175,7 +175,7 @@ void GuiManager::ConfigurationWindow()
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
 
-		if (ImGui::Begin("Settings", &show_config_window))
+		if (ImGui::Begin("Settings", &show_config_window, window_flags))
 		{
 			// Application options tab
 			if (ImGui::CollapsingHeader("Application"))
@@ -511,9 +511,8 @@ void GuiManager::ConfigurationWindow()
 					else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 				}
 			}
-			ImGui::End();
 		}
-
+		ImGui::End();
 	}
 }
 //Window about info of the creators
@@ -632,8 +631,8 @@ void GuiManager::PrimitivesWindow()
 				else if (ImGui::Button(" Plane  "))
 					CreatePrimitives(m, Primitives::PLANE, col, scale, translation, rad, axis);
 			}
-			ImGui::End();
 		}
+		ImGui::End();
 	}
 }
 
@@ -803,8 +802,8 @@ void GuiManager::HierarchyWindow()
 					
 				}
 			}
-			ImGui::End();
 		}
+		ImGui::End();
 	}
 }
 
@@ -814,7 +813,7 @@ void GuiManager::TexturesWindow()
 	{
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
-		if (ImGui::Begin("Textures", &show_hierachy_window))
+		if (ImGui::Begin("Textures", &show_textures_window))
 		{
 				for (uint i = 0; i < App->scene->textures.size(); ++i)
 				{
@@ -828,7 +827,7 @@ void GuiManager::TexturesWindow()
 						ImGui::TreePop();
 					}
 				}
-			ImGui::End();
 		}
+		ImGui::End();
 	}
 }
