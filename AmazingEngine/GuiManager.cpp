@@ -792,13 +792,17 @@ void GuiManager::HierarchyWindow()
 								}
 							}
 						}
+								
+						if (game_object->show_inspector_window)
+						{
+							game_object->GetPropierties();
+							App->scene->game_object_select = game_object;
+						}
 						if (node_open)
 						{
 							game_object->GetHierarcy();
 							ImGui::TreePop();
-						}				
-						if (game_object->show_inspector_window)
-							game_object->GetPropierties();
+						}
 					}	
 					
 				}

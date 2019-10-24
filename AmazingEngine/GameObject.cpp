@@ -138,6 +138,7 @@ void GameObject::GetHierarcy()
 
 void GameObject::GetPropierties()
 {
+	App->scene->game_object_select = this;
 	if (ImGui::Begin("Inspector", &show_inspector_window))
 	{
 		if (ImGui::CollapsingHeader("Properties"))

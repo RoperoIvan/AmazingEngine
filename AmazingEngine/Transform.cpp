@@ -77,25 +77,6 @@ void Transform::ChangeScale(Geometry* mesh, float x, float y, float z)
 		mesh->vertices[i + 1] *= y;
 		mesh->vertices[i + 2] *= z;
 	}
-
-	/*if (mesh->normals && (x != y || x != z || y != z)) {
-		x = 1.0f / x;
-		y = 1.0f / y;
-		z = 1.0f / z;
-
-		for (int i = 0; i < mesh->num_vertices*3; i += 3) {
-			mesh->normals[i] *= x;
-			mesh->normals[i + 1] *= y;
-			mesh->normals[i + 2] *= z;
-
-			float lsqr = sqrt(mesh->normals[i] * mesh->normals[i] + mesh->normals[i+1] * mesh->normals[i+1] + mesh->normals[i+2] * mesh->normals[i+2]);
-			if (lsqr > 0) {
-				mesh->normals[i] *= 1.0f / lsqr;
-				mesh->normals[i+1] *= 1.0f / lsqr;
-				mesh->normals[i+2] *= 1.0f / lsqr;
-			}
-		}
-	}*/
 }
 
 void Transform::ChangePosition(Geometry* mesh, float x, float y, float z)

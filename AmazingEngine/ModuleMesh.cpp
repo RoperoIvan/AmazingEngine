@@ -141,12 +141,38 @@ bool ModuleMesh::LoadFBXFile(const char * file_name)
 bool ModuleMesh::LoadTextureFile(const char * file_name)
 {
 	bool ret = true;
-
-	Image* tex = new Image(nullptr);
-	
-	int id = tex->LoadImages(file_name);
-	App->scene->textures.push_back(id);
+	if (App->scene->game_object_select != nullptr)
+	{
+		ChangeTex(App->scene->game_object_select , file_name);
+	}
+	else
+	{
+		Image* tex = new Image(nullptr);
+		tex->texture_id = tex->LoadImages(file_name);
+		App->scene->textures.push_back(tex->texture_id);
+	}
 	return ret;
+}
+
+void ModuleMesh::ChangeTex(GameObject* object, const char* file_name)
+{
+	if (object->children.empty())
+	{
+		for (std::vector<Component*>::iterator iter = object->components.begin(); iter != object->components.end(); ++iter)
+		{
+			if ((*iter)->type == COMPONENT_TYPE::COMPONENT_MATERIAL)
+			{
+				Image* tex = dynamic_cast<Image*>(*iter);
+				tex->texture_id = tex->LoadImages(file_name);
+				App->scene->textures.push_back(tex->texture_id);
+			}
+		}
+	}
+	else
+	{
+		for (std::vector<GameObject*>::iterator iter = object->children.begin(); iter != object->children.end(); ++iter)
+			ChangeTex(*iter,file_name);
+	}
 }
 
 float ModuleMesh::TriangleCenterAxis(const float & p1, const float & p2, const float & p3)

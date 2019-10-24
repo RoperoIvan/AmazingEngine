@@ -22,5 +22,7 @@ public:
 
 	std::vector<GameObject*> game_objects;
 	std::vector<int> textures;
+
+	GameObject* game_object_select = nullptr;
 };
 #endif
