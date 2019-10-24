@@ -61,5 +61,6 @@ private:
 	AppConsole console;
 	Primitives prim = Primitives::UKNOWN;
 	std::string test = "";
+	ImGuiWindowFlags window_flags = 0;
 };
 #endif
