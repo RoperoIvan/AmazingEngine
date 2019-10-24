@@ -8,10 +8,13 @@
 
 GameObject::GameObject(GameObject* parent): parent(parent)
 {
-	if(parent == nullptr)
-		name = "GameObject " + std::to_string(App->scene->game_objects.size() + 1);
-	else
-		name = "GameObject " + std::to_string(App->scene->game_objects.size() + 1) + "." + std::to_string(parent->children.size() + 1);
+	if (name.empty())
+	{
+		if (parent == nullptr)
+			name = "GameObject " + std::to_string(App->scene->game_objects.size() + 1);
+		else
+			name = "GameObject " + std::to_string(App->scene->game_objects.size() + 1) + "." + std::to_string(parent->children.size() + 1);
+	}
 }
 
 GameObject::~GameObject()
@@ -143,12 +146,10 @@ void GameObject::GetPropierties()
 	{
 		if (ImGui::CollapsingHeader("Properties"))
 		{
-			if (ImGui::CollapsingHeader("Options"))
-			{
-				//delete object
-				if (ImGui::Button("Delete"))
-					to_delete = true;
-			}
+			//delete object
+			if (ImGui::Button("Delete"))
+				to_delete = true;
+			
 			//view oobject
 			if (ImGui::Checkbox("Active", &is_enable))
 				(&is_enable) ? true : false;
@@ -195,11 +196,16 @@ void GameObject::GetPropierties()
 
 		if (id != 0)
 		{
-			ImVec2 size = {200,200};
-			ImGui::Image((ImTextureID)id, size);
-			ImGui::TextColored(ImVec4(255, 255, 0, 255), " Size: %i x %i", tex->tex_dimension[0], tex->tex_dimension[1]);
-			ImGui::TextColored(ImVec4(255, 255, 0, 255), "Path: %s", tex->GetTexturePath().c_str());
+			if (ImGui::CollapsingHeader("Material"))
+			{
+				ImGui::Checkbox("show", &tex->show);
+				ImVec2 size = { 200,200 };
+				ImGui::Image((ImTextureID)id, size);
+				ImGui::TextColored(ImVec4(255, 255, 0, 255), " Size: %i x %i", tex->tex_dimension[0], tex->tex_dimension[1]);
+				ImGui::TextColored(ImVec4(255, 255, 0, 255), "Path: %s", tex->GetTexturePath().c_str());
+			}
 		}
+		
 		ImGui::End();
 	}
 }

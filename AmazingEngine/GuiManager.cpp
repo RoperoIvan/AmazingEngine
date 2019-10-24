@@ -591,33 +591,6 @@ void GuiManager::PrimitivesWindow()
 			static float axis[3] = {0,0,0};
 			if(ImGui::CollapsingHeader("Primitives"))
 			{
-				ImGui::SliderInt3("Size", scale, 1, 10);
-				ImGui::SliderInt3("Translation", translation, 0, 100);
-				ImGui::TextWrapped("Rotation");
-				ImGui::Separator();
-				ImGui::SliderInt("Radiant", &rad, 0, 360);
-				const char* items[] = { "X", "Y", "Z"};
-				static int item_current = 0;
-				ImGui::Combo("Axis", &item_current, items, IM_ARRAYSIZE(items));
-				switch (item_current)
-				{
-				case 0:
-					axis[0] = 1;
-					axis[1] = 0;
-					axis[2] = 0;
-					break;
-				case 1:
-					axis[0] = 0;
-					axis[1] = 1;
-					axis[2] = 0;
-					break;
-				case 2:
-					axis[0] = 0;
-					axis[1] = 0;
-					axis[2] = 1;
-					break;
-				}
-				DegToRad(rad);
 				ImGui::ColorEdit4("Color", col);
 
 				if(ImGui::Button("  Cube  "))
