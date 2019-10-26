@@ -45,8 +45,10 @@ public:
 	// Tabs from Configuration window
 	void ApplicationTab();
 	void HardwareTab();
+	void VRamHardware();
 	void RenderTab();
 	void WindowTab();
+	void InputTab();
 
 	void GetLog(const char* log);
 	void CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, float color[4], int scale[3], int translation[3], float rad, const float* axis);
