@@ -489,11 +489,15 @@ void GuiManager::ApplicationTab()
 		{
 			App->RequestBrowser("https://www.citm.upc.edu/");
 		}
-		uint min = 0;
-		uint max = 144;
+		int min = 0;
+		int max = 144;
 
-		ImGui::SliderScalar("Max FPS", ImGuiDataType_U32, &App->framerate_cap, &min, &max, "%d");
-
+		if (ImGui::SliderInt("Max FPS", &maximum_fps, min, max))
+		{
+			App->MaxFrames(maximum_fps);
+			
+		}
+		ImGui::TextWrapped("Limit Framerate: ");
 		// FPS and MPF graphics logic
 		int frames;
 		float milisec;
@@ -666,7 +670,7 @@ void GuiManager::WindowTab()
 	if (ImGui::CollapsingHeader("Window"))
 	{
 		bool check_vsync = App->renderer3D->vsync;
-		if(ImGui::Checkbox("Active", &check_vsync))
+		if(ImGui::Checkbox("VSync", &check_vsync))
 		{
 			App->renderer3D->vsync = check_vsync;
 			App->renderer3D->ChangeVSync();

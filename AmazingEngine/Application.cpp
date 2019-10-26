@@ -63,6 +63,8 @@ bool Application::Init()
 		ret = (*item)->Start();
 	}
 	
+	MaxFrames(0);
+
 	//Hardware specs from the pc executing the program
 	SDL_GetVersion(&system_specs.sdl_version);
 	system_specs.cpus = SDL_GetCPUCount();
@@ -116,15 +118,14 @@ void Application::FinishUpdate()
 		last_sec_frame_count = 0;
 	}
 
-
-	avg_fps = float(frame_count) / startup_time.Read()/1000;
-	uint last_frame_ms = frame_time.Read();
+	uint last_frame_ms = ms_timer.Read();
 	frames_on_last_update = prev_last_sec_frame_count;
 
-	if (framerate_cap > 0 && last_frame_ms < framerate_cap)
+	if (framerate_cap > 0 && last_frame_ms < miliseconds_cap)
 	{
-		SDL_Delay(framerate_cap - last_frame_ms);
+		SDL_Delay(miliseconds_cap - last_frame_ms);
 	}
+	last_frame_ms = ms_timer.Read();
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules
@@ -213,6 +214,12 @@ void Application::GetFrames(int & frames, float & miliseconds)
 {
 	frames = frames_on_last_update - 1;
 	miliseconds = frame_ms;
+}
+
+void Application::MaxFrames(int maximum)
+{
+	framerate_cap = maximum;
+	miliseconds_cap = (framerate_cap > 0) ? 1000 / maximum : 0;
 }
 
 void Application::AddModule(Module* mod)
