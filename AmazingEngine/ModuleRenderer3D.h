@@ -21,7 +21,7 @@ public:
 	bool Load(nlohmann::json &j) override;
 
 	void OnResize(int width, int height);
-
+	bool ChangeVSync();
 public:
 
 	Light lights[MAX_LIGHTS];

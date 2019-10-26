@@ -190,3 +190,11 @@ void ModuleRenderer3D::OnResize(int width, int height)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
+
+bool ModuleRenderer3D::ChangeVSync()
+{
+	if (SDL_GL_SetSwapInterval(vsync) < 0)
+		LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+
+	return true;
+}

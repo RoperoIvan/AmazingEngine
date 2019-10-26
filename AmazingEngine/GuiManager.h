@@ -31,16 +31,27 @@ public:
 
 	bool Save(nlohmann::json &j) const override;
 	bool Load(nlohmann::json &j) override;
+
+	void ManageUI(bool open);
+
+	//Windows in the main bar
 	void AboutWindow();
 	void ConfigurationWindow();
 	void AppConsoleWindow();
 	void PrimitivesWindow();
 	void HierarchyWindow();
 	void TexturesWindow();
+
+	// Tabs from Configuration window
+	void ApplicationTab();
+	void HardwareTab();
+	void RenderTab();
+	void WindowTab();
+
 	void GetLog(const char* log);
-	void DrawGeometry();
 	void CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, float color[4], int scale[3], int translation[3], float rad, const float* axis);
 	void UIStyle();
+	void CheckDrop();
 private:
 
 	bool show_config_window = false;
