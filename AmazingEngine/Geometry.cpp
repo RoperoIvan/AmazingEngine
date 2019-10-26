@@ -3,6 +3,8 @@
 #include "ImGui/imgui.h"
 #include "Assimp/include/scene.h"
 #include "GameObject.h"
+#include "Application.h"
+#include "ModuleInput.h"
 //Primitives constructor
 
 Geometry::Geometry(GameObject* parent):Component(parent, COMPONENT_TYPE::COMPONENT_MESH)
@@ -23,6 +25,8 @@ void Geometry::Disable()
 	indices = nullptr;
 	delete[] normals;
 	normals = nullptr;
+	/*delete[] face_normals;
+	face_normals = nullptr;*/
 }
 
 void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, float col2, float col3)
@@ -37,8 +41,11 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 
 	memcpy(vertices, p_mesh->points, sizeof(float) * num_vertices * 3);
 	memcpy(indices, p_mesh->triangles, sizeof(uint) * num_indices);
-	memcpy(normals, p_mesh->normals, sizeof(float) * num_vertices * 3);
-	
+	if (p_mesh->normals != NULL)
+	{
+		memcpy(normals, p_mesh->normals, sizeof(float) * num_vertices * 3);
+		num_normals = num_vertices * 3;
+	}
 
 	r = col0;
 	g = col1;
@@ -55,24 +62,39 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 
 //DebugDraw for all geometries
 void Geometry::DebugDraw()
-{//TODO: Fix normals in the primitive geometries
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
-	for (uint i = 0; i < num_vertices * 3; i += 3)
+{
+	if (parent->show_vertices_normals && num_normals != 0)
 	{
-		glColor3f(3.0f, 0.0f, 1.0f);
-		glBegin(GL_LINES);
-		glVertex3f(vertices[i], vertices[i + 1], vertices[i + 2]);
-		glVertex3f(vertices[i] + normals[i]*10, vertices[i + 1] + normals[i + 1]*10, vertices[i + 2] + normals[i + 2]*10);
-		glEnd();
-		glColor3f(1.0f, 1.0f, 1.0f);
-	}
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, NULL);
+		glEnableClientState(GL_VERTEX_ARRAY);
 
-	glDisableClientState(GL_VERTEX_ARRAY);
+		for (uint i = 0; i < num_vertices * 3; i += 3)
+		{
+			glColor3f(3.0f, 0.0f, 1.0f);
+			glBegin(GL_LINES);
+			glVertex3f(vertices[i], vertices[i + 1], vertices[i + 2]);
+			glVertex3f(vertices[i] + normals[i] * 2, vertices[i + 1] + normals[i + 1] * 2, vertices[i + 2] + normals[i + 2] * 2);
+			glEnd();
+			glColor3f(1.0f, 1.0f, 1.0f);
+		}
+
+		glDisableClientState(GL_VERTEX_ARRAY);
+	}
+	if (parent->show_face_normals && num_normals != 0)
+	{
+		glEnableClientState(GL_VERTEX_ARRAY);
+
+		for (uint i = 0; i <  num_face_normals; i += 6)
+		{
+			glColor3f(3.0f, 0.0f, 1.0f);
+			glBegin(GL_LINES);
+			glVertex3f(face_normals[i], face_normals[i + 1], face_normals[i + 2]);
+			glVertex3f(face_normals[i + 3], face_normals[i + 4], face_normals[i + 5]);
+			glEnd();
+			glColor3f(1.0f, 1.0f, 1.0f);
+		}
+
+		glDisableClientState(GL_VERTEX_ARRAY);
+	}
 }
 
 void Geometry::Update()
@@ -104,6 +126,10 @@ void Geometry::Update()
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glPopAttrib();
+
+	DebugDraw();
+	
+	
 }
 
 void Geometry::LoadData(aiMesh* mesh)
@@ -131,8 +157,25 @@ void Geometry::LoadData(aiMesh* mesh)
 		//load normals
 		if (mesh->HasNormals())
 		{
+			num_normals = mesh->mNumVertices * 3;
 			normals = new float[mesh->mNumVertices * 3];
 			memcpy(normals, mesh->mNormals, sizeof(float) * mesh->mNumVertices * 3);
+		}
+
+		num_face_normals = num_vertices * 2;
+		face_normals = new float[num_face_normals];
+		uint j = 0;
+		for (uint i = 0; i < num_vertices; i += 9)
+		{
+			float u[3] = { (vertices[i + 3] - vertices[i + 0]),(vertices[i + 4] - vertices[i + 1]),(vertices[i + 5] - vertices[i + 2]) };
+			float v[3] = { (vertices[i + 6] - vertices[i + 3]),(vertices[i + 7] - vertices[i + 4]),(vertices[i + 8] - vertices[i + 5]) };
+			face_normals[j] = (vertices[i] + vertices[i + 3] + vertices[i + 6])/3;
+			face_normals[j + 1] = (vertices[i + 1] + vertices[i + 4] + vertices[i + 7]) / 3;;
+			face_normals[j + 2] = (vertices[i + 2] + vertices[i + 5] + vertices[i + 8]) / 3;;
+			face_normals[j + 3] = face_normals[j] + (u[1] * v[2] - u[2] * v[1]);
+			face_normals[j + 4] = face_normals[j + 1] + (u[2] * v[0] - u[0] * v[2]);
+			face_normals[j + 5] = face_normals[j + 2] + (u[0] * v[1] - u[1] * v[0]);
+			j += 6;
 		}
 	}
 	LoadBuffers();
@@ -140,11 +183,11 @@ void Geometry::LoadData(aiMesh* mesh)
 
 void Geometry::ShowProperties()
 {
-
 	if (ImGui::CollapsingHeader("Transformation"))
 	{
 		if(transform->LoadTransformation(this))
 			ActualitzateBuffer();
+
 	}
 }
 

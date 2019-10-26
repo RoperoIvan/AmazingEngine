@@ -50,12 +50,15 @@ public:
 	uint num_normals = 0;
 	float* normals = nullptr;
 	int par_num_indices = 0;
+	uint num_face_normals = 0;
+	float* face_normals = nullptr;
 
 	float r, g, b, a;
 
 	Image* texture = nullptr;
 
 	bool is_primitive = false;
+
 
 public:
 	Transform* transform = nullptr;

@@ -856,6 +856,7 @@ par_shapes_mesh* par_shapes_create_cube()
 		*tris++ = quad[3];
 		*tris++ = quad[0];
 	}
+	par_shapes_compute_normals(mesh);
 	return mesh;
 }
 

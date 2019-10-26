@@ -150,11 +150,12 @@ void GameObject::GetPropierties()
 			//delete object
 			if (ImGui::Button("Delete"))
 				to_delete = true;
-			
+
 			//view oobject
 			if (ImGui::Checkbox("Active", &is_enable))
 				(&is_enable) ? true : false;
 
+			
 			//change name
 			ImGui::SameLine();
 			char a[100] = "";
@@ -164,6 +165,21 @@ void GameObject::GetPropierties()
 				name.assign(a);
 			}
 	
+			if (ImGui::Checkbox("show vertices normals", &show_vertices_normals))
+			{
+				(&show_vertices_normals) ? true : false;
+
+				ShowNormalsVertices(show_vertices_normals);
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Checkbox("show faces normals", &show_face_normals))
+			{
+				(&show_face_normals) ? true : false;
+
+				ShowNormalsFaces(show_face_normals);
+			}
 		}
 
 		Component* mesh = nullptr;
@@ -180,7 +196,7 @@ void GameObject::GetPropierties()
 			}
 			++it;
 		}
-
+		
 		Component* tex = nullptr;
 		std::vector<Component*>::iterator it2 = components.begin();
 		while (it2 != components.end())
@@ -209,4 +225,21 @@ void GameObject::GetPropierties()
 		
 		ImGui::End();
 	}
+}
+
+void GameObject::ShowNormalsVertices(const bool& x)
+{
+	for (std::vector<GameObject*>::iterator iter = children.begin(); iter < children.end(); ++iter)
+	{
+		(*iter)->show_vertices_normals = x;
+	}
+}
+
+void GameObject::ShowNormalsFaces(const bool& x)
+{
+	for (std::vector<GameObject*>::iterator iter = children.begin(); iter < children.end(); ++iter)
+	{
+		(*iter)->show_face_normals = x;
+	}
+
 }
