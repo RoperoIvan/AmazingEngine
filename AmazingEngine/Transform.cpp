@@ -4,6 +4,9 @@
 #include "Geometry.h"
 #include "par_shapes.h"
 #include "MathGeoLib/include/MathGeoLib.h"
+#include <vector>
+#include "ImGui/imgui.h"
+#include "Assimp/include/scene.h"
 Transform::Transform(GameObject* parent):Component(parent,COMPONENT_TYPE::COMPONENT_TRANSFORM)
 {
 }
@@ -24,38 +27,78 @@ void Transform::Disable()
 {
 }
 
-void Transform::LoadTransformation(Geometry* mesh,int trans[3], int scle[3], float rd, float axs[3])
+void Transform::Init(const int& x, const int& y, const int& z)
 {
-	if (mesh != nullptr)
-	{
-		//ChangeScale(mesh, scle[0], scle[1], scle[3]);
-		ChangePosition(mesh, trans[0], trans[1], trans[2]);
-		Rotate(mesh, rd, axs);
-		mesh->ActualitzateBuffer();
+	position[0] = x;
+	position[1] = y;
+	position[2] = z;
+}
 
-		this->mesh = mesh;
+bool Transform::LoadTransformation(Geometry* mesh)
+{
+	bool ret = false;
+
+	float new_position[3] = { position[0], position[1] ,position[2] };
+	//change name
+	//scale
+	if(ImGui::InputFloat3("scale", scale, 1, ImGuiInputTextFlags_EnterReturnsTrue))
+		ret = true;
+	if (ImGui::InputFloat3("position", new_position,1,ImGuiInputTextFlags_EnterReturnsTrue))
+	{
+		float translation_x = new_position[0] - position[0];
+		float translation_y = new_position[1] - position[1];
+		float translation_z = new_position[2] - position[2];
+		ChangePosition(mesh, translation_x, translation_y, translation_z);
 		for (uint i = 0; i < 3; ++i)
 		{
-			translation[i] += trans[i];
-			scale[i] += scle[i];
+				position[i] = new_position[i];
 		}
-		rad = +rd;
+		ret = true;
 	}
+	ImGui::TextWrapped("Rotation");
+	ImGui::Separator();
+	if (ImGui::SliderInt("Radiant", &rad, 0, 360)) 
+		ret = true;
+
+	static int item_current = 0;
+	const char* items[] = { "X", "Y", "Z" };
+	ImGui::Combo("Axis", &item_current, items, IM_ARRAYSIZE(items));
+	switch (item_current)
+	{
+	case 0:
+		axis[0] = 1;
+		axis[1] = 0;
+		axis[2] = 0;
+		break;
+	case 1:
+		axis[0] = 0;
+		axis[1] = 1;
+		axis[2] = 0;
+		break;
+	case 2:
+		axis[0] = 0;
+		axis[1] = 0;
+		axis[2] = 1;
+		break;
+	}
+
 	//if parent have childs apply the transformation in all of them 
-	if (parent->children.size() != 0)
+	if (mesh != nullptr)
 	{
 		for (std::vector<GameObject*>::iterator it = parent->children.begin(); it != parent->children.end(); ++it)
 		{
 			Transform* comp = dynamic_cast<Transform*>((*it)->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
-			comp->LoadTransformation(mesh, trans, scle, rd, axs);
+			comp->LoadTransformation(mesh);
 		}
-	}
+	}		
+
+	return ret;
 }
 
 void Transform::UnLoadTransformation()
 {
 	//ChangeScale(mesh, scale[0], scale[1], scale[3]);
-	ChangePosition(mesh, translation[0], translation[1], translation[2]);
+	ChangePosition(mesh, position[0], position[1], position[2]);
 	//par_shapes_rotate(mesh, rad, axis);
 
 	//if parent have childs apply the transformation in all of them 

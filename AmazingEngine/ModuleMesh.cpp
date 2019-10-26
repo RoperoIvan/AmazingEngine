@@ -110,9 +110,10 @@ bool ModuleMesh::LoadFBXFile(const char * file_name)
 			GameObject* game_object = new GameObject(newfbx);
 
 			Geometry* data = dynamic_cast<Geometry*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
-			
-			data->transform = dynamic_cast<Transform*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 			data->LoadData(scene->mMeshes[i]);
+
+			data->transform = dynamic_cast<Transform*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
+			data->transform->Init(data->vertices[0], data->vertices[1], data->vertices[2]);
 
 			if (scene->HasMaterials())
 			{

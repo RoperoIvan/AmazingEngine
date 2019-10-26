@@ -17,7 +17,8 @@ public:
 	void Update();
 	void Disable();
 
-	void LoadTransformation(Geometry* p_mesh,int trans[3], int scle[3], float rd, float axs[3]);
+	void Init(const int& x, const int& y, const int& z);
+	bool LoadTransformation(Geometry* p_mesh);
 	void UnLoadTransformation();
 
 	int GetTextureId() { return 0; };
@@ -29,9 +30,9 @@ public:
 	void DoRotation(Geometry* mesh, float  r_matrix[3][3]);
 public:
 
-	int translation[3] = { 1,1,1 };
-	int scale[3] = { 1,1,1 };
-	float rad = 0;
+	float position[3] = { 1,1,1 };
+	float scale[3] = { 1,1,1 };
+	int rad = 0;
 	float axis[3] = { 0,0,0 };
 	Geometry* mesh = nullptr;
 
