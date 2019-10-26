@@ -311,6 +311,7 @@ void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, floa
 	geo->CreatePrimitive(p_mesh,col[0], col[1], col[2], col[3]);
 	App->scene->game_objects.push_back(game_object);
 	App->camera->GoAroundGeometry(&App->scene->game_objects);
+	par_shapes_free_mesh(p_mesh);
 }
 
 void GuiManager::UIStyle()

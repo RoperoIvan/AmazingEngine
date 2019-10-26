@@ -21,6 +21,7 @@ GameObject::~GameObject()
 {
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
+		(*it)->Disable();
 		if ((*it) != nullptr)
 			delete (*it);
 		(*it) = nullptr;

@@ -12,6 +12,17 @@ Geometry::Geometry(GameObject* parent):Component(parent, COMPONENT_TYPE::COMPONE
 }
 Geometry::~Geometry()
 {
+
+}
+
+void Geometry::Disable()
+{
+	delete[] vertices;
+	vertices = nullptr;
+	delete[] indices;
+	indices = nullptr;
+	delete[] normals;
+	normals = nullptr;
 }
 
 void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, float col2, float col3)
@@ -20,16 +31,23 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 	par_num_indices = p_mesh->ntriangles;
 	num_indices = p_mesh->ntriangles * 3;
 	
-	vertices = p_mesh->points;
-	indices = p_mesh->triangles;
-	normals = p_mesh->normals;
+	vertices = new float[num_vertices*3];
+	indices = new uint[num_indices];
+	normals = new float[num_vertices*3];
+
+	memcpy(vertices, p_mesh->points, sizeof(float) * num_vertices * 3);
+	memcpy(indices, p_mesh->triangles, sizeof(uint) * num_indices);
+	memcpy(normals, p_mesh->normals, sizeof(float) * num_vertices * 3);
+	
 
 	r = col0;
 	g = col1;
 	b = col2;
 	a = col3;
 
-	transform = new Transform(parent);
+	transform = dynamic_cast<Transform*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
+	texture = dynamic_cast<Image*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
+	texture->LoadCoords(p_mesh);
 	LoadBuffers();
 
 }

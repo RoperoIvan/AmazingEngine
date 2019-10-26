@@ -21,6 +21,13 @@ Image::Image(GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_M
 
 Image::~Image()
 {
+
+}
+
+void Image::Disable()
+{
+	delete[] uv_coord;
+	uv_coord = nullptr;
 }
 
 void Image::Update()
@@ -103,6 +110,13 @@ void Image::LoadCoords(aiMesh* scene)
 			}
 		}
 	}
+}
+
+void Image::LoadCoords(par_shapes_mesh* p_mesh)
+{
+	num_coords = p_mesh->npoints * 2 / 3;
+	uv_coord = p_mesh->tcoords;
+	LoadBuffers();
 }
 
 void Image::LoadMaterials(const aiScene* scene, std::string file_name)
