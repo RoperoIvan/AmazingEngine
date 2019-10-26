@@ -13,6 +13,7 @@ Transform::Transform(GameObject* parent):Component(parent,COMPONENT_TYPE::COMPON
 
 Transform::~Transform()
 {
+	
 }
 
 void Transform::Enable()
