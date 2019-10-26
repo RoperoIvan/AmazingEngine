@@ -60,18 +60,22 @@ private:
 	bool show_primitives_window = false;
 	bool show_hierachy_window = false;
 	bool show_textures_window = false;
+
 	bool fullscreen = false;
 	bool resizable = false;
 	bool borderless = false;
 	bool full_desktop = false;
 	bool debug_draw = false;
+
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;
 	std::vector<float> vram_log;
 	std::vector<float> curr_vram_log;
+
 	AppConsole console;
 	Primitives prim = Primitives::UKNOWN;
 	std::string test = "";
 	ImGuiWindowFlags window_flags = 0;
+	int maximum_fps = 0;
 };
 #endif

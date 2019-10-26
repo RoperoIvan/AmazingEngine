@@ -58,12 +58,11 @@ public:
 	Timer					ms_time;
 	uint					frame_count = 0u;
 	Timer					startup_time;
-	Timer					frame_time;
 	Timer					last_sec_frame_time;
 	uint					last_sec_frame_count = 0u;
 	uint					prev_last_sec_frame_count = 0u;
 	uint16_t				framerate_cap = 0u;
-	float					avg_fps = 0.0f;
+	uint16_t				miliseconds_cap = 0u;
 	uint					frames_on_last_update = 0u;
 	float					dt;
 	uint					maxFrames = 60u;
@@ -81,7 +80,7 @@ public:
 	bool Load();
 
 	void GetFrames(int& frames, float& miliseconds);
-
+	void MaxFrames(int maximum);
 	void RequestBrowser(const char*);
 	HardwareSpecs system_specs;
 private:
