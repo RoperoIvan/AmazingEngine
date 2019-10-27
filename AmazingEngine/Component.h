@@ -28,6 +28,7 @@ public:
 	virtual std::string GetTexturePath() = 0;
 public:
 	bool show = true;
+	bool show_checker_tex = false;
 	bool to_delete = false;
 	bool is_enable = true;
 	int tex_dimension[2];

@@ -36,7 +36,6 @@ public:
 	bool show_inspector_window = false;
 	bool to_delete = false;
 	bool is_enable = true;
-
 	bool show_vertices_normals = false;
 	bool show_face_normals = false;
 };

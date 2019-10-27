@@ -4,7 +4,6 @@
 #include "Module.h"
 #include <vector>
 #include "GameObject.h"
-#include "Image.h"
 
 class ModuleScene : public Module
 {
@@ -20,15 +19,13 @@ public:
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 
-
-	void DeleteTexture(Image* tex);
 public:
 	
 	uint nplane = 0;
 	int* plane = nullptr;
 	uint id = 0;
 	std::vector<GameObject*> game_objects;
-	std::vector<Image*> textures;
+	std::vector<int> textures;
 
 	GameObject* game_object_select = nullptr;
 };

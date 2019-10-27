@@ -53,10 +53,6 @@ public:
 	uint num_face_normals = 0;
 	float* face_normals = nullptr;
 
-	uint id_coords = 0;
-	uint num_coords = 0;
-	float* uv_coord = nullptr;
-
 	float r, g, b, a;
 
 	Image* texture = nullptr;
