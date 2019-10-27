@@ -39,25 +39,35 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
-	if (children.empty())
+
+
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
-		for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+		if ((*it)->to_delete)
 		{
-			if ((*it)->to_delete)
-			{
-				components.erase(it);
-				break;
-			}
-			else if ((*it)->is_enable)
-			{
-				(*it)->Update();
-			}
+			components.erase(it);
+			break;
+		}
+		else if ((*it)->is_enable)
+		{
+			(*it)->Update();
 		}
 	}
-	else
+
+	if (!children.empty())
 	{
 		for (std::vector<GameObject*>::iterator iter = children.begin(); iter != children.end(); ++iter)
-			(*iter)->Update();
+		{
+			if ((*iter)->to_delete)
+			{
+				children.erase(iter);
+				break;
+			}
+			else if ((*iter)->is_enable)
+			{
+				(*iter)->Update();
+			}
+		}
 	}
 }
 
