@@ -111,7 +111,6 @@ bool ModuleScene::CleanUp()
 	{
 		if ((*it) != nullptr)
 		{
-			(*it)->Disable();
 			delete (*it);
 			(*it) = nullptr;
 		}

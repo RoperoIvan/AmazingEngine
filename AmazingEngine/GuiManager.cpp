@@ -97,7 +97,7 @@ bool GuiManager::Load(nlohmann::json & j)
 	return true;
 }
 
-void GuiManager::ManageUI(bool open)
+void GuiManager::ManageUI(bool& open)
 {
 	//Menu top bar
 	if (ImGui::BeginMainMenuBar())
