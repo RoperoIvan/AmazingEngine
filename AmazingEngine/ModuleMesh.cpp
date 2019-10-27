@@ -165,6 +165,7 @@ void ModuleMesh::ChangeTex(GameObject* object, const char* file_name)
 			{
 				Image* tex = dynamic_cast<Image*>(*iter);
 				tex->texture_id = tex->LoadImages(file_name);
+				tex->tmp_id = tex->texture_id;
 				App->scene->textures.push_back(tex->texture_id);
 			}
 		}
