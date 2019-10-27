@@ -15,7 +15,7 @@ The Engine is an assignment of one of the subjects studied in the videogames deg
 
 ## How to execute
 
-- Download the latest release from this (link)[https://github.com/RoperoIvan/AmazingEngine/releases]
+- Download the latest release from this [link](https://github.com/RoperoIvan/AmazingEngine/releases)
 
 - Unzip the AmazingEngine.zip file
 
@@ -28,13 +28,13 @@ The Engine is an assignment of one of the subjects studied in the videogames deg
 
 ## Authors
 
-- (Dídac Llop Serna)[https://github.com/didaclis]
+- [Dídac Llop Serna](https://github.com/didaclis)
 
-- (Ivan Ropero Garcia)[https://github.com/RoperoIvan]
+- [Ivan Ropero Garcia](https://github.com/RoperoIvan)
 
 ## Repository Link
 
-Link: (Repository)[https://github.com/RoperoIvan/AmazingEngine]
+Link: [Repository](https://github.com/RoperoIvan/AmazingEngine)
 
 ## License
 
