@@ -185,6 +185,7 @@ void ModuleMesh::ChangeTex(GameObject* object, const char* file_name, Image* tex
 				if (texture == nullptr)
 				{
 					tex->texture_id = tex->LoadImages(file_name);
+					tex->tmp_id = tex->texture_id;
 					tex->p_tex.assign(file_name);
 					App->scene->textures.push_back(tex);
 				}
