@@ -183,11 +183,6 @@ void Geometry::LoadData(aiMesh* mesh)
 
 void Geometry::ShowProperties()
 {
-	if (ImGui::CollapsingHeader("Information"))
-	{
-		ImGui::Text("triangles: %u", num_indices/3);
-		ImGui::Text("vertices: %u",num_vertices);
-	}
 	if (ImGui::CollapsingHeader("Transformation"))
 	{
 		if(transform->LoadTransformation(this))
