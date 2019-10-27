@@ -16,13 +16,17 @@ public:
 	bool Start();
 	update_status PreUpdate(float dt);
 	update_status Update(float dt);
+	void DrawPlane();
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 
 
 	void DeleteTexture(Image* tex);
 public:
-
+	
+	uint nplane = 0;
+	int* plane = nullptr;
+	uint id = 0;
 	std::vector<GameObject*> game_objects;
 	std::vector<Image*> textures;
 

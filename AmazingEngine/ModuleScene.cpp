@@ -16,7 +16,7 @@ ModuleScene::~ModuleScene()
 
 bool ModuleScene::Init()
 {
-	
+
 	return true;
 }
 
@@ -28,6 +28,7 @@ bool ModuleScene::Start()
 
 update_status ModuleScene::PreUpdate(float dt)
 {
+
 	for (std::vector<GameObject*>::iterator object = game_objects.begin(); object != game_objects.end(); ++object)
 	{
 		if ((*object)->to_delete)
@@ -48,7 +49,35 @@ update_status ModuleScene::Update(float dt)
 			App->camera->GoAroundGeometry(game_object_select);
 	}
 
+	DrawPlane();
+
 	return UPDATE_CONTINUE;
+}
+
+void ModuleScene::DrawPlane()
+{
+	//Draw plane
+	int num_lines = 100;
+	glEnableClientState(GL_VERTEX_ARRAY);
+	for (int j = 0; j < num_lines; ++j)
+	{
+		glColor3f(255.f, 255.f, 255.f);
+		glBegin(GL_LINES);
+		glVertex3f(j, 0, -num_lines);
+		glVertex3f(j, 0, num_lines);
+
+		glVertex3f(-j, 0, -num_lines);
+		glVertex3f(-j, 0, num_lines);
+
+		glVertex3f(-num_lines, 0, -j);
+		glVertex3f(num_lines, 0, -j);
+
+		glVertex3f(-num_lines, 0, j);
+		glVertex3f(num_lines, 0, j);
+		glEnd();
+		glColor3f(1.0f, 1.0f, 1.0f);
+	}
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 update_status ModuleScene::PostUpdate(float dt)
