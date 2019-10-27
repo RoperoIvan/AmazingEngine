@@ -7,9 +7,9 @@
 #include "ModuleRenderer3D.h"
 #include "MathGeoLib/include/MathGeoLib.h"
 #ifdef _DEBUG
-#pragma comment (lib, "MathGeoLib/lib_x86/Debug/MathGeoLib.lib")
+#pragma comment (lib, "MathGeoLib/libx86/Debug/MathGeoLib.lib")
 #else
-#pragma comment (lib, "MathGeoLib/lib_x86/Release/MathGeoLib.lib")
+#pragma comment (lib, "MathGeoLib/libx86/Release/MathGeoLib.lib")
 #endif
 
 ModuleScene::ModuleScene(Application* app, bool start_enable): Module(app)
