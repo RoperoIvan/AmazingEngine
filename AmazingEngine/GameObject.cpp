@@ -39,8 +39,6 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
-
-
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
 		if ((*it)->to_delete)
@@ -244,18 +242,6 @@ void GameObject::GetPropierties()
 		{
 			if (ImGui::CollapsingHeader("Material"))
 			{
-				if(ImGui::Checkbox("Checker Texture", &tex->show_checker_tex))
-				{
-					Image* img = dynamic_cast<Image*>(tex);
-					if (tex->show_checker_tex)
-					{						
-						img->SetTextureId(img->check_id);
-					}
-					else
-					{
-						img->SetTextureId(img->tmp_id);
-					}
-				}
 				ImGui::Checkbox("show", &tex->show);
 				ImVec2 size = { 200,200 };
 				ImGui::Image((ImTextureID)id, size);
