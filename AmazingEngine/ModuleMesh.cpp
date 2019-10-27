@@ -155,6 +155,26 @@ bool ModuleMesh::LoadTextureFile(const char * file_name)
 	return ret;
 }
 
+bool ModuleMesh::UnLoadTexture(GameObject * object)
+{
+	if (object->children.empty())
+	{
+		for (std::vector<Component*>::iterator iter = object->components.begin(); iter != object->components.end(); ++iter)
+		{
+			if ((*iter)->type == COMPONENT_TYPE::COMPONENT_MATERIAL)
+			{
+				/*(*iter)->te*/
+			}
+		}
+	}
+	else
+	{
+		for (std::vector<GameObject*>::iterator iter = object->children.begin(); iter != object->children.end(); ++iter)
+			UnLoadTexture(*iter);
+	}
+	return false;
+}
+
 void ModuleMesh::ChangeTex(GameObject* object, const char* file_name)
 {
 	if (object->children.empty())

@@ -175,14 +175,11 @@ void GameObject::GetPropierties()
 			{
 				name.assign(a);
 			}
-			if (ImGui::IsItemActive())
-			{
+			if (ImGui::IsItemActive())// If the user is writing the camera movement is disabled
 				App->camera->write = true;
-			}
 			else
-			{
 				App->camera->write = false;
-			}
+
 
 			if (ImGui::Checkbox("show vertices normals", &show_vertices_normals))
 			{
@@ -238,17 +235,21 @@ void GameObject::GetPropierties()
 			++it2;
 		}
 		if(tex != nullptr)
-			id = tex->GetTextureId();
+			id = dynamic_cast<Image*>(tex)->GetTextureId();
 
 		if (id != 0)
 		{
 			if (ImGui::CollapsingHeader("Material"))
 			{
 				ImGui::Checkbox("show", &tex->show);
+				if (ImGui::Checkbox("checker texture", &tex->checker))
+				{
+					dynamic_cast<Image*>(tex)->SetTextureId();
+				}
 				ImVec2 size = { 200,200 };
 				ImGui::Image((ImTextureID)id, size);
 				ImGui::TextColored(ImVec4(255, 255, 0, 255), " Size: %i x %i", tex->tex_dimension[0], tex->tex_dimension[1]);
-				ImGui::TextColored(ImVec4(255, 255, 0, 255), "Path: %s", tex->GetTexturePath().c_str());
+				ImGui::TextColored(ImVec4(255, 255, 0, 255), "Path: %s", dynamic_cast<Image*>(tex)->GetTexturePath().c_str());
 			}
 		}
 		

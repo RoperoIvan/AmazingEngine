@@ -235,6 +235,10 @@ void GuiManager::AboutWindow()
 			ImGui::NewLine();
 			if (ImGui::Button("DevIl 1.4.0"))
 				App->RequestBrowser("http://openil.sourceforge.net/");
+			if (ImGui::Button("Assimp 3.1.1"))
+				App->RequestBrowser("http://www.assimp.org/");
+			if (ImGui::Button("ParShapes"))
+				App->RequestBrowser("https://prideout.net/shapes");
 		}
 	}
 	ImGui::End();

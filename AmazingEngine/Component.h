@@ -24,10 +24,9 @@ public:
 	virtual void Disable();
 
 	virtual void ShowProperties() = 0;
-	virtual int GetTextureId() = 0;
-	virtual std::string GetTexturePath() = 0;
 public:
 	bool show = true;
+	bool checker = false;
 	bool to_delete = false;
 	bool is_enable = true;
 	int tex_dimension[2];
