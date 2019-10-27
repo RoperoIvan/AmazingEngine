@@ -115,13 +115,11 @@ bool ModuleMesh::LoadFBXFile(const char * file_name)
 			data->transform = dynamic_cast<Transform*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 			data->transform->Init(data->vertices[0], data->vertices[1], data->vertices[2]);
 
-			
 			if (scene->HasMaterials())
 			{
 				Image* tex = dynamic_cast<Image*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
-				if (tex->LoadMaterials(scene, file_name))
-					App->scene->textures.push_back(tex);
-				
+				tex->LoadCoords(scene->mMeshes[i]);
+				tex->LoadMaterials(scene, file_name);
 				data->texture = tex;
 				
 			}
@@ -144,36 +142,40 @@ bool ModuleMesh::LoadFBXFile(const char * file_name)
 bool ModuleMesh::LoadTextureFile(const char * file_name)
 {
 	bool ret = true;
-	bool is_loaded = false;
-	Image* tex = nullptr;
-	for (std::vector<Image*>::iterator iter = App->scene->textures.begin(); iter != App->scene->textures.end(); ++iter)
-	{
-		if (((*iter)->p_tex.compare(file_name)) == 0)
-		{
-			is_loaded = true;
-			tex = *iter;
-
-			break;
-		}
-	}
 	if (App->scene->game_object_select != nullptr)
 	{
-		ChangeTex(App->scene->game_object_select , file_name, tex);
+		ChangeTex(App->scene->game_object_select , file_name);
 	}
 	else
 	{
-		if (!is_loaded)
-		{
-			tex = new Image(nullptr);
-			tex->texture_id = tex->LoadImages(file_name);
-			tex->p_tex.assign(file_name);
-			App->scene->textures.push_back(tex);
-		}
+		Image* tex = new Image(nullptr);
+		tex->texture_id = tex->LoadImages(file_name);
+		App->scene->textures.push_back(tex->texture_id);
 	}
 	return ret;
 }
 
-void ModuleMesh::ChangeTex(GameObject* object, const char* file_name, Image* texture)
+bool ModuleMesh::UnLoadTexture(GameObject * object)
+{
+	if (object->children.empty())
+	{
+		for (std::vector<Component*>::iterator iter = object->components.begin(); iter != object->components.end(); ++iter)
+		{
+			if ((*iter)->type == COMPONENT_TYPE::COMPONENT_MATERIAL)
+			{
+				/*(*iter)->te*/
+			}
+		}
+	}
+	else
+	{
+		for (std::vector<GameObject*>::iterator iter = object->children.begin(); iter != object->children.end(); ++iter)
+			UnLoadTexture(*iter);
+	}
+	return false;
+}
+
+void ModuleMesh::ChangeTex(GameObject* object, const char* file_name)
 {
 	if (object->children.empty())
 	{
@@ -182,33 +184,15 @@ void ModuleMesh::ChangeTex(GameObject* object, const char* file_name, Image* tex
 			if ((*iter)->type == COMPONENT_TYPE::COMPONENT_MATERIAL)
 			{
 				Image* tex = dynamic_cast<Image*>(*iter);
-				if (texture == nullptr)
-				{
-					tex->texture_id = tex->LoadImages(file_name);
-					App->scene->textures.push_back(tex);
-				}
-				else
-				{
-					tex = texture;
-					
-				}
-				for (std::vector<Component*>::iterator it = object->components.begin(); it != object->components.end(); ++it)
-				{
-					if ((*it)->type == COMPONENT_TYPE::COMPONENT_MESH)
-					{
-						Geometry* mesh = dynamic_cast<Geometry*>(*it);
-						mesh->texture = tex;
-						break;
-					}
-				}
-				break;
+				tex->texture_id = tex->LoadImages(file_name);
+				App->scene->textures.push_back(tex->texture_id);
 			}
 		}
 	}
 	else
 	{
 		for (std::vector<GameObject*>::iterator iter = object->children.begin(); iter != object->children.end(); ++iter)
-			ChangeTex(*iter,file_name, texture);
+			ChangeTex(*iter,file_name);
 	}
 }
 

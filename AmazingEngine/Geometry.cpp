@@ -34,12 +34,11 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 	num_vertices = p_mesh->npoints;
 	par_num_indices = p_mesh->ntriangles;
 	num_indices = p_mesh->ntriangles * 3;
-	num_coords = p_mesh->npoints * 2;
-
+	
 	vertices = new float[num_vertices*3];
 	indices = new uint[num_indices];
 	normals = new float[num_vertices*3];
-	uv_coord = new float[num_coords];
+
 	memcpy(vertices, p_mesh->points, sizeof(float) * num_vertices * 3);
 	memcpy(indices, p_mesh->triangles, sizeof(uint) * num_indices);
 	if (p_mesh->normals != NULL)
@@ -47,7 +46,6 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 		memcpy(normals, p_mesh->normals, sizeof(float) * num_vertices * 3);
 		num_normals = num_vertices * 3;
 	}
-	memcpy(uv_coord, p_mesh->tcoords, sizeof(float) * num_coords);
 
 	r = col0;
 	g = col1;
@@ -56,7 +54,7 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 
 	transform = dynamic_cast<Transform*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 	texture = dynamic_cast<Image*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
-	
+	texture->LoadCoords(p_mesh);
 	LoadBuffers();
 
 }
@@ -116,7 +114,7 @@ void Geometry::Update()
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 			glBindTexture(GL_TEXTURE_2D, 0);
 			glBindTexture(GL_TEXTURE_2D, texture->texture_id);
-			glBindBuffer(GL_ARRAY_BUFFER, id_coords);
+			glBindBuffer(GL_ARRAY_BUFFER, texture->id_coords);
 			glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 		}
 	} 
@@ -180,20 +178,6 @@ void Geometry::LoadData(aiMesh* mesh)
 			j += 6;
 		}
 	}
-
-	if (mesh->HasTextureCoords(0))
-	{
-		num_coords = mesh->mNumVertices * 2;
-		uv_coord = new float[num_coords];
-		for (uint i = 0; i < mesh->GetNumUVChannels(); ++i)
-		{
-			for (uint k = 0; k < mesh->mNumVertices; ++k) {
-				uv_coord[k * 2] = mesh->mTextureCoords[i][k].x;
-				uv_coord[k * 2 + 1] = mesh->mTextureCoords[i][k].y;
-				/*LOG("Texture coords: %f", texture_coords[k]);*/
-			}
-		}
-	}
 	LoadBuffers();
 }
 
@@ -222,10 +206,6 @@ void Geometry::LoadBuffers()
 	glGenBuffers(1, (uint*) & (id_indices));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, indices, GL_STATIC_DRAW);
-
-	glGenBuffers(1, (uint*) & (id_coords));
-	glBindBuffer(GL_ARRAY_BUFFER, id_coords);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_coords, uv_coord, GL_STATIC_DRAW);
 
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)
