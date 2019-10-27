@@ -28,12 +28,8 @@ public:
 	int GetTextureId();
 	void ShowProperties() {};
 	std::string GetTexturePath();
-	void LoadCheckerTexture();
-	int SetTextureId(int id);
 public:
-	bool show_checker_tex = false;
-	uint check_id = 0;
-	int tmp_id = 0;
+	
 	int texture_id = 0;
 	std::string p_tex;
 };
