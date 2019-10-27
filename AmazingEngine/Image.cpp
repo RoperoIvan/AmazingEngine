@@ -9,11 +9,9 @@
 #include "Assimp/include/postprocess.h"
 #include "Assimp/include/cfileio.h"
 
-#pragma comment(lib, "DevIL/lib/x86/Release/ILU.lib")
-#pragma comment(lib, "DevIL/lib/x86/Release/DevIL.lib")
-#pragma comment(lib, "DevIL/lib/x86/Release/ILUT.lib")
-
-
+#pragma comment(lib, "DevIL/libx86/ILU.lib")
+#pragma comment(lib, "DevIL/libx86/DevIL.lib")
+#pragma comment(lib, "DevIL/libx86/ILUT.lib")
 
 Image::Image(GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_MATERIAL)
 {
