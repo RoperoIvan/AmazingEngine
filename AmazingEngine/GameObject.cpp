@@ -170,11 +170,20 @@ void GameObject::GetPropierties()
 			ImGui::SameLine();
 			char a[100] = "";
 			memcpy(a, name.c_str(),name.size());
-			if (ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue))
+			
+			if (bool write = ImGui::InputText("", a, 100, ImGuiInputTextFlags_EnterReturnsTrue))
 			{
 				name.assign(a);
 			}
-	
+			if (ImGui::IsItemActive())
+			{
+				App->camera->write = true;
+			}
+			else
+			{
+				App->camera->write = false;
+			}
+
 			if (ImGui::Checkbox("show vertices normals", &show_vertices_normals))
 			{
 				(&show_vertices_normals) ? true : false;

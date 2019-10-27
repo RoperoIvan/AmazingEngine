@@ -43,63 +43,66 @@ update_status ModuleCamera3D::Update(float dt)
 
 	vec3 newPos(0, 0, 0);
 	float speed = 0.3f;
-	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
-		speed = 8.0f;
-
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= Z * speed;
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += Z * speed;
-
-
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= X * speed;
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
-
-	if (App->input->GetMouseZ() > 0)
+	if (!write)
 	{
-		newPos -= Z * speed * 10;
-	}
-	if (App->input->GetMouseZ() < 0)
-	{
-		newPos += Z * speed * 10;
-	}
+		if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
+			speed = 8.0f;
 
-	Position += newPos;
-	Reference += newPos;
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= Z * speed;
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += Z * speed;
 
-	// Mouse motion ----------------
 
-	if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
-	{
-		int dx = -App->input->GetMouseXMotion();
-		int dy = -App->input->GetMouseYMotion();
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= X * speed;
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
 
-		float Sensitivity = 0.25f;
-
-		Position -= Reference;
-
-		if (dx != 0)
+		if (App->input->GetMouseZ() > 0)
 		{
-			float DeltaX = (float)dx * Sensitivity;
-
-			X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-			Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-			Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+			newPos -= Z * speed * 10;
+		}
+		if (App->input->GetMouseZ() < 0)
+		{
+			newPos += Z * speed * 10;
 		}
 
-		if (dy != 0)
+		Position += newPos;
+		Reference += newPos;
+
+		// Mouse motion ----------------
+
+		if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 		{
-			float DeltaY = (float)dy * Sensitivity;
+			int dx = -App->input->GetMouseXMotion();
+			int dy = -App->input->GetMouseYMotion();
 
-			Y = rotate(Y, DeltaY, X);
-			Z = rotate(Z, DeltaY, X);
+			float Sensitivity = 0.25f;
 
-			if (Y.y < 0.0f)
+			Position -= Reference;
+
+			if (dx != 0)
 			{
-				Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
-				Y = cross(Z, X);
+				float DeltaX = (float)dx * Sensitivity;
+
+				X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+				Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+				Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
 			}
+
+			if (dy != 0)
+			{
+				float DeltaY = (float)dy * Sensitivity;
+
+				Y = rotate(Y, DeltaY, X);
+				Z = rotate(Z, DeltaY, X);
+
+				if (Y.y < 0.0f)
+				{
+					Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
+					Y = cross(Z, X);
+				}
+			}
+
+			Position = Reference + Z * length(Position);
 		}
-		
-		Position = Reference + Z * length(Position);
 	}
 
 	// Recalculate matrix -------------
@@ -160,44 +163,6 @@ void ModuleCamera3D::GoAroundGeometry(GameObject* obj)
 	if (obj == nullptr)
 		return;
 
-	//std::vector<float3> vertices;
-
-	//for (std::vector<GameObject*>::iterator it = vec->begin(); it != vec->end(); ++it)
-	//{
-	//	if ((*it)->children.empty())
-	//	{
-	//		for (std::vector < Component*>::iterator iter = (*it)->components.begin(); iter != (*it)->components.end(); ++iter)
-	//		{
-	//			COMPONENT_TYPE type = (*iter)->type;
-	//			if (type == COMPONENT_TYPE::COMPONENT_MESH)
-	//			{
-	//				//Generate AABBS for each geom in scene
-	//				math::AABB new_aabb(float3(0, 0, 0), float3(0, 0, 0));
-	//				std::vector <float3> vertex_array;
-
-	//				Geometry* g = dynamic_cast<Geometry*>(*iter);
-	//				for (int j = 0; j < g->num_vertices * 3; j += 3)
-	//				{
-	//					vertex_array.push_back(float3(g->vertices[j], g->vertices[j + 1], g->vertices[j + 2]));
-	//				}
-
-	//				new_aabb.Enclose(&vertex_array[0], g->num_vertices);
-
-	//				//Stores the 8 vertices of the box in a general array
-	//				for (int j = 0; j < 8; j++)
-	//				{
-	//					vertices.push_back(new_aabb.CornerPoint(j));
-	//				}
-	//			}
-
-	//		}
-	//	}
-	//	else
-	//	{
-	//		GoAroundGeometry(&(*it)->children);
-	//		return;
-	//	}
-	//}
 	std::vector<float3> vertices;
 	if (obj->children.empty())
 	{
@@ -210,7 +175,7 @@ void ModuleCamera3D::GoAroundGeometry(GameObject* obj)
 			vertices = LoadAABBVertex((*iter), vertices);
 		}
 	}
-	//Creates a general AABB 
+	//Creates an AABB 
 	math::AABB general(float3(0, 0, 0), float3(0, 0, 0));
 	general.Enclose(&vertices[0], vertices.size());
 
