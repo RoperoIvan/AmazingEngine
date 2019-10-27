@@ -31,10 +31,11 @@ public:
 	void DebugDraw();
 
 	void Update() override;
+	std::string GetTexturePath() { return std::string(); };
 	void LoadData(aiMesh* mesh);
+	int GetTextureId() { return 0; };
 	void ShowProperties();
 	void ActualitzateBuffer();
-
 private:
 
 	void LoadBuffers();
