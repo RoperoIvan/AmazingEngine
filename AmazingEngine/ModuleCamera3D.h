@@ -4,6 +4,7 @@
 #include "glmath.h"
 #include "json.hpp"
 #include <vector>
+#include "MathGeoLib/include/Math/MathAll.h"
 
 class GameObject;
 
@@ -24,7 +25,8 @@ public:
 	void LookAt(const vec3 &Spot);
 	void Move(const vec3 &Movement);
 	float* GetViewMatrix();
-	void GoAroundGeometry(std::vector<GameObject*>* vec);
+	void GoAroundGeometry(GameObject* obj);
+	std::vector<float3> LoadAABBVertex(GameObject* obj, std::vector<float3> vertices);
 private:
 
 	void CalculateViewMatrix();

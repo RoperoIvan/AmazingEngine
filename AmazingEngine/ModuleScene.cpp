@@ -41,7 +41,13 @@ update_status ModuleScene::PreUpdate(float dt)
 }
 
 update_status ModuleScene::Update(float dt)
-{
+{		
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT)
+	{
+		if (game_object_select != nullptr)
+			App->camera->GoAroundGeometry(game_object_select);
+	}
+
 	return UPDATE_CONTINUE;
 }
 
