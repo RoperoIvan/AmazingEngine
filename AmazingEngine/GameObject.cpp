@@ -73,7 +73,7 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	case COMPONENT_TYPE::COMPONENT_MESH:
 		component = new Geometry(this);
 		components.push_back(component);
-		App->camera->GoAroundGeometry(&App->scene->game_objects);
+		//App->camera->GoAroundGeometry(&App->scene->game_objects);
 		break;
 	case COMPONENT_TYPE::COMPONENT_MATERIAL:
 		component = new Image(this);

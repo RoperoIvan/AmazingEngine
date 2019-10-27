@@ -46,8 +46,6 @@ update_status ModuleCamera3D::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 		speed = 8.0f;
 
-	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT) 
-		GoAroundGeometry(&App->scene->game_objects);
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= Z * speed;
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += Z * speed;
 
@@ -157,27 +155,93 @@ float* ModuleCamera3D::GetViewMatrix()
 	return &ViewMatrix;
 }
 
-void ModuleCamera3D::GoAroundGeometry(std::vector<GameObject*>* vec)
+void ModuleCamera3D::GoAroundGeometry(GameObject* obj)
 {
-	if (App->scene->game_objects.empty())
+	if (obj == nullptr)
 		return;
 
-	std::vector<float3> vertices;
+	//std::vector<float3> vertices;
 
-	for (std::vector<GameObject*>::iterator it = vec->begin(); it != vec->end(); ++it)
+	//for (std::vector<GameObject*>::iterator it = vec->begin(); it != vec->end(); ++it)
+	//{
+	//	if ((*it)->children.empty())
+	//	{
+	//		for (std::vector < Component*>::iterator iter = (*it)->components.begin(); iter != (*it)->components.end(); ++iter)
+	//		{
+	//			COMPONENT_TYPE type = (*iter)->type;
+	//			if (type == COMPONENT_TYPE::COMPONENT_MESH)
+	//			{
+	//				//Generate AABBS for each geom in scene
+	//				math::AABB new_aabb(float3(0, 0, 0), float3(0, 0, 0));
+	//				std::vector <float3> vertex_array;
+
+	//				Geometry* g = dynamic_cast<Geometry*>(*iter);
+	//				for (int j = 0; j < g->num_vertices * 3; j += 3)
+	//				{
+	//					vertex_array.push_back(float3(g->vertices[j], g->vertices[j + 1], g->vertices[j + 2]));
+	//				}
+
+	//				new_aabb.Enclose(&vertex_array[0], g->num_vertices);
+
+	//				//Stores the 8 vertices of the box in a general array
+	//				for (int j = 0; j < 8; j++)
+	//				{
+	//					vertices.push_back(new_aabb.CornerPoint(j));
+	//				}
+	//			}
+
+	//		}
+	//	}
+	//	else
+	//	{
+	//		GoAroundGeometry(&(*it)->children);
+	//		return;
+	//	}
+	//}
+	std::vector<float3> vertices;
+	if (obj->children.empty())
 	{
-		if ((*it)->children.empty())
+
+		for (std::vector < Component*>::iterator iter2 = obj->components.begin(); iter2 != obj->components.end(); ++iter2)
 		{
-			for (std::vector < Component*>::iterator iter = (*it)->components.begin(); iter != (*it)->components.end(); ++iter)
+			COMPONENT_TYPE type = (*iter2)->type;
+			if (type == COMPONENT_TYPE::COMPONENT_MESH)
 			{
-				COMPONENT_TYPE type = (*iter)->type;
+				//Generate AABBS for each geom in scene
+				math::AABB new_aabb(float3(0, 0, 0), float3(0, 0, 0));
+				std::vector <float3> vertex_array;
+
+				Geometry* g = dynamic_cast<Geometry*>(*iter2);
+				for (int j = 0; j < g->num_vertices * 3; j += 3)
+				{
+					vertex_array.push_back(float3(g->vertices[j], g->vertices[j + 1], g->vertices[j + 2]));
+				}
+
+				new_aabb.Enclose(&vertex_array[0], g->num_vertices);
+
+				//Stores the 8 vertices of the box in a general array
+				for (int j = 0; j < 8; j++)
+				{
+					vertices.push_back(new_aabb.CornerPoint(j));
+				}
+			}
+
+		}
+	}
+	else
+	{
+		for (std::vector<GameObject*>::iterator iter = obj->children.begin(); iter < obj->children.end(); ++iter)
+		{
+			for (std::vector < Component*>::iterator iter2 = (*iter)->components.begin(); iter2 != (*iter)->components.end(); ++iter2)
+			{
+				COMPONENT_TYPE type = (*iter2)->type;
 				if (type == COMPONENT_TYPE::COMPONENT_MESH)
 				{
 					//Generate AABBS for each geom in scene
 					math::AABB new_aabb(float3(0, 0, 0), float3(0, 0, 0));
 					std::vector <float3> vertex_array;
 
-					Geometry* g = dynamic_cast<Geometry*>(*iter);
+					Geometry* g = dynamic_cast<Geometry*>(*iter2);
 					for (int j = 0; j < g->num_vertices * 3; j += 3)
 					{
 						vertex_array.push_back(float3(g->vertices[j], g->vertices[j + 1], g->vertices[j + 2]));
@@ -194,13 +258,7 @@ void ModuleCamera3D::GoAroundGeometry(std::vector<GameObject*>* vec)
 
 			}
 		}
-		else
-		{
-			GoAroundGeometry(&(*it)->children);
-			return;
-		}
 	}
-
 	//Creates a general AABB 
 	math::AABB general(float3(0, 0, 0), float3(0, 0, 0));
 	general.Enclose(&vertices[0], vertices.size());
