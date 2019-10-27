@@ -13,6 +13,8 @@ The Engine is an assignment of one of the subjects studied in the videogames deg
 
 - SHIFT + WASD: move the camera faster
 
+- SCROLL MOUSE: zoom in/out
+
 ## How to execute
 
 - Download the latest release from this [link](https://github.com/RoperoIvan/AmazingEngine/releases)
@@ -26,6 +28,24 @@ The Engine is an assignment of one of the subjects studied in the videogames deg
 - Translation work
 - Hierarchy structure with childs in a recursive way
 
+## Tools used
+
+- [SDL 2.0.4](https://www.libsdl.org/)
+
+- [OpenGL 3.1.0](https://www.khronos.org/registry/OpenGL-Refpages/es3.0/)
+
+- [DevIL 1.4.0](http://openil.sourceforge.net/)
+
+- [Assimp 3.1.1](http://www.assimp.org/)
+
+- [ParShapes](https://prideout.net/shapes)
+
+- [MathGeoLib 1.5.0](https://github.com/juj/MathGeoLib)
+
+- [Glew 2.1.0](http://glew.sourceforge.net/)
+
+- [ImGui 1.7.3](https://github.com/ocornut/imgui)
+
 ## Authors
 
 - [Dídac Llop Serna](https://github.com/didaclis)
@@ -35,6 +55,34 @@ The Engine is an assignment of one of the subjects studied in the videogames deg
 ## Repository Link
 
 Link: [Repository](https://github.com/RoperoIvan/AmazingEngine)
+
+## Functionalities
+
+### 1.0
+
+- Create Primitives
+
+- Rotate around geometries
+
+- Load and display FBX with multiple meshes with drag and drop
+
+- Load Textures from FBX
+
+- Load and save textures in png, jpeg and dds formats
+
+- Apply to the selected GameObject the texture you drag in screen
+
+- Settings menu
+
+- Hierarchy and inspector menus
+
+- Change translation of the GameObject selected
+
+- Logs Console
+
+- Camera movement
+
+- Information about application
 
 ## License
 
