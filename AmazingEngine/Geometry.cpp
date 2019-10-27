@@ -47,7 +47,10 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 		memcpy(normals, p_mesh->normals, sizeof(float) * num_vertices * 3);
 		num_normals = num_vertices * 3;
 	}
-	memcpy(uv_coord, p_mesh->tcoords, sizeof(float) * num_coords);
+	if (p_mesh->tcoords != nullptr)
+	{
+		memcpy(uv_coord, p_mesh->tcoords, sizeof(float) * num_coords);
+	}
 
 	r = col0;
 	g = col1;

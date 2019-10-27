@@ -28,7 +28,7 @@ bool ModuleScene::Init()
 
 bool ModuleScene::Start()
 {
-	App->mesh->LoadFile("..\\Assets\\BakerHouse.fbx");
+	App->mesh->LoadFile("Assets\\BakerHouse.fbx");
 	return true;
 }
 
@@ -111,7 +111,6 @@ bool ModuleScene::CleanUp()
 	{
 		if ((*it) != nullptr)
 		{
-			(*it)->Disable();
 			delete (*it);
 			(*it) = nullptr;
 		}

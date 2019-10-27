@@ -32,7 +32,7 @@ public:
 	bool Save(nlohmann::json &j) const override;
 	bool Load(nlohmann::json &j) override;
 
-	void ManageUI(bool open);
+	void ManageUI(bool& open);
 
 	//Windows in the main bar
 	void AboutWindow();
