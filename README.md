@@ -3,9 +3,38 @@
 AmazingEngine is a 3D Game Engine created by Didac Llop Serna and Ivan Ropero Garcia, using C++ and the OpenGL and other major libraries.
 The Engine is an assignment of one of the subjects studied in the videogames degree of CITM.
 
+## Controls
+
+- WASD: move the camera
+
+- ALT+LEFT-CLICK: rotate
+
+- F: Rotate around the selected GameOject
+
+- SHIFT + WASD: move the camera faster
+
+## How to execute
+
+- Download the latest release from this (link)[https://github.com/RoperoIvan/AmazingEngine/releases]
+
+- Unzip the AmazingEngine.zip file
+
+- Run the AmazingEngine.exe file
+
+## Innovation grade
+
+- Translation work
+- Hierarchy structure with childs in a recursive way
+
+## Authors
+
+- (Dídac Llop Serna)[https://github.com/didaclis]
+
+- (Ivan Ropero Garcia)[https://github.com/RoperoIvan]
+
 ## Repository Link
 
-Link: https://github.com/RoperoIvan/AmazingEngine
+Link: (Repository)[https://github.com/RoperoIvan/AmazingEngine]
 
 ## License
 
