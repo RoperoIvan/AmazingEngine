@@ -19,6 +19,8 @@ public:
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 
+
+	void DeleteTexture(Image* tex);
 public:
 
 	std::vector<GameObject*> game_objects;

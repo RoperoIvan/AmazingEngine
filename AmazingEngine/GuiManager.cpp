@@ -462,6 +462,12 @@ void GuiManager::TexturesWindow()
 					std::string node_name = "Texture " + std::to_string(i + 1);
 					if (ImGui::TreeNodeEx(node_name.c_str()))
 					{
+						if (ImGui::Button("Delete"))
+						{
+							App->scene->DeleteTexture(App->scene->textures[i]);
+							ImGui::TreePop();
+							break;
+						}
 						ImVec2 size = { 200,200 };
 						int id = App->scene->textures[i]->texture_id;
 						ImGui::Image((ImTextureID)id, size);
