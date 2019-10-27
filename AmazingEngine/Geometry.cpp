@@ -25,8 +25,8 @@ void Geometry::Disable()
 	indices = nullptr;
 	delete[] normals;
 	normals = nullptr;
-	/*delete[] face_normals;
-	face_normals = nullptr;*/
+	delete[] face_normals;
+	face_normals = nullptr;
 }
 
 void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, float col2, float col3)
@@ -162,10 +162,10 @@ void Geometry::LoadData(aiMesh* mesh)
 			memcpy(normals, mesh->mNormals, sizeof(float) * mesh->mNumVertices * 3);
 		}
 
-		num_face_normals = num_vertices * 2;
+		num_face_normals = num_vertices * 3;
 		face_normals = new float[num_face_normals];
 		uint j = 0;
-		for (uint i = 0; i < num_vertices; i += 9)
+		for (uint i = 0; i < num_vertices*3; i += 9)
 		{
 			float u[3] = { (vertices[i + 3] - vertices[i + 0]),(vertices[i + 4] - vertices[i + 1]),(vertices[i + 5] - vertices[i + 2]) };
 			float v[3] = { (vertices[i + 6] - vertices[i + 3]),(vertices[i + 7] - vertices[i + 4]),(vertices[i + 8] - vertices[i + 5]) };
@@ -183,6 +183,11 @@ void Geometry::LoadData(aiMesh* mesh)
 
 void Geometry::ShowProperties()
 {
+	if (ImGui::CollapsingHeader("Information"))
+	{
+		ImGui::Text("triangles: %u", num_indices/3);
+		ImGui::Text("vertices: %u",num_vertices);
+	}
 	if (ImGui::CollapsingHeader("Transformation"))
 	{
 		if(transform->LoadTransformation(this))
