@@ -243,6 +243,9 @@ void GameObject::GetPropierties()
 			if (ImGui::CollapsingHeader("Material"))
 			{
 				ImGui::Checkbox("show", &tex->show);
+				ImGui::SameLine;
+				/*if (ImGui::Button("Delete"))
+					App->scene->DeleteTexture(dynamic_cast<Image*>(tex));*/
 				ImVec2 size = { 200,200 };
 				ImGui::Image((ImTextureID)id, size);
 				ImGui::TextColored(ImVec4(255, 255, 0, 255), " Size: %i x %i", tex->tex_dimension[0], tex->tex_dimension[1]);
