@@ -72,5 +72,28 @@ bool ModuleScene::CleanUp()
 	}
 	game_objects.clear();
 
+	for (std::vector<Image*>::iterator it = textures.begin(); it != textures.end(); ++it)
+	{
+		if ((*it) != nullptr)
+		{
+			(*it)->Disable();
+			delete (*it);
+			(*it) = nullptr;
+		}
+	}
+	textures.clear();
+
 	return true;
+}
+
+void ModuleScene::DeleteTexture(Image* tex)
+{
+	for (std::vector<Image*>::iterator it = textures.begin(); it != textures.end(); ++it)
+	{
+		if (tex == *it)
+		{
+			textures.erase(it);
+			break;
+		}
+	}
 }

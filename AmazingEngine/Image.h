@@ -22,19 +22,15 @@ public:
 
 
 	GLuint LoadImages(const char* p_tex);
-	void LoadCoords(aiMesh* scene);
-	void LoadCoords(par_shapes_mesh* p_mesh);
-	void LoadMaterials(const aiScene* scene, std::string file_name);
-	void LoadBuffers();
 	void LoadCheckerTexture();
+	GLuint GetID();
+	bool LoadMaterials(const aiScene* scene, std::string file_name);
 	int GetTextureId();
 	void SetTextureId();
 	void ShowProperties() {};
 	std::string GetTexturePath();
 public:
-	uint id_coords = 0;
-	uint num_coords = 0;
-	float* uv_coord = nullptr;
+	
 	int texture_id = 0;
 	uint check_id = 0;
 	std::string p_tex;

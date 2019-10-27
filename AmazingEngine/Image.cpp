@@ -1,5 +1,8 @@
 #include "Image.h"
 #include <vector>
+#include "Application.h"
+#include "ModuleScene.h"
+
 #include "ImGui/imgui.h"
 #include "DevIL/include/IL/il.h"
 #include "DevIL/include/IL/ilu.h"
@@ -25,8 +28,14 @@ Image::~Image()
 
 void Image::Disable()
 {
-	delete[] uv_coord;
-	uv_coord = nullptr;
+	for (std::vector<Image*>::iterator iter = App->scene->textures.begin(); iter != App->scene->textures.end(); ++iter)
+	{
+		if (*iter = this)
+		{
+			App->scene->textures.erase(iter);
+			break;
+		}
+	}
 }
 
 void Image::Update()
@@ -36,10 +45,8 @@ void Image::Update()
 
 GLuint Image::LoadImages(const char* p_tex)
 {
-	//Gen image
-	ILuint img_id = 0;
-	ilGenImages(1, &img_id);
-	ilBindImage(img_id);
+
+	ILuint img_id = GetID();
 
 	//load from path
 	ilLoadImage(p_tex);
@@ -94,31 +101,16 @@ GLuint Image::LoadImages(const char* p_tex)
 	return img_id;
 }
 
-void Image::LoadCoords(aiMesh* scene)
+GLuint Image::GetID()
 {
-	if (scene->HasTextureCoords(0))
-	{
-		num_coords = scene->mNumVertices * 2;
-		uv_coord = new float[num_coords];
-		for (uint i = 0; i < scene->GetNumUVChannels(); ++i)
-		{
-			for (uint k = 0; k < scene->mNumVertices; ++k) {
-				uv_coord[k * 2] = scene->mTextureCoords[i][k].x;
-				uv_coord[k * 2 + 1] = scene->mTextureCoords[i][k].y;
-				/*LOG("Texture coords: %f", texture_coords[k]);*/
-			}
-		}
-	}
+	//Gen image
+	ILuint img_id = 0;
+	ilGenImages(1, &img_id);
+	ilBindImage(img_id);
+	return img_id;
 }
 
-void Image::LoadCoords(par_shapes_mesh* p_mesh)
-{
-	num_coords = p_mesh->npoints * 2 / 3;
-	uv_coord = p_mesh->tcoords;
-	LoadBuffers();
-}
-
-void Image::LoadMaterials(const aiScene* scene, std::string file_name)
+bool Image::LoadMaterials(const aiScene* scene, std::string file_name)
 {
 	if (scene->mMaterials[0]->GetTextureCount(aiTextureType_DIFFUSE) > 0)
 	{
@@ -136,21 +128,21 @@ void Image::LoadMaterials(const aiScene* scene, std::string file_name)
 		p_tex = p_geo;
 		texture_id = LoadImages(p_geo.c_str());
 
-		LoadBuffers();
+		for (std::vector<Image*>::iterator iter = App->scene->textures.begin(); iter != App->scene->textures.end(); ++iter)
+		{
+			if (p_geo == (*iter)->p_tex)
+			{
+				return false;
+				break;
+			}
+		}
+		
 	}
 	else
 		LOG("It hasn't been detected a material");
+	return true;
 }
 
-void Image::LoadBuffers()
-{
-	glGenBuffers(1, (uint*) & (id_coords));
-	glBindBuffer(GL_ARRAY_BUFFER, id_coords);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_coords, uv_coord, GL_STATIC_DRAW);
-	GLenum error = glGetError();
-	if (error != GL_NO_ERROR)
-		LOG("Error Storing textures! %s\n", gluErrorString(error));
-}
 
 void Image::LoadCheckerTexture()
 {

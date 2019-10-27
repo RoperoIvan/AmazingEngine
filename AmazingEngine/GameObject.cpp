@@ -39,8 +39,6 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
-
-
 	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 	{
 		if ((*it)->to_delete)
