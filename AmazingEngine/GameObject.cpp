@@ -15,6 +15,7 @@ GameObject::GameObject(GameObject* parent): parent(parent)
 		else
 			name = "GameObject " + std::to_string(App->scene->game_objects.size() + 1) + "." + std::to_string(parent->children.size() + 1);
 	}
+	bounding_box.SetNegativeInfinity();
 }
 
 GameObject::~GameObject()
@@ -66,6 +67,11 @@ void GameObject::Update()
 				(*iter)->Update();
 			}
 		}
+	}
+
+	if (App->guiManager->debug_draw)
+	{
+		App->mesh->b_boxes.push(&bounding_box);
 	}
 }
 

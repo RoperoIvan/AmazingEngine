@@ -5,6 +5,7 @@
 #include <vector>
 #include "Component.h"
 #include "Globals.h"
+#include "MathGeoLib/include/Geometry/AABB.h"
 
 class Geometry;
 
@@ -26,7 +27,6 @@ public:
 
 	void ShowNormalsVertices(const bool&);
 	void ShowNormalsFaces(const bool&);
-
 public:
 	std::string name;
 	GameObject* parent = nullptr;
@@ -39,6 +39,8 @@ public:
 
 	bool show_vertices_normals = false;
 	bool show_face_normals = false;
+
+	math::AABB bounding_box;
 };
 
 #endif

@@ -53,6 +53,13 @@ bool ModuleMesh::Init()
 
 update_status ModuleMesh::PostUpdate(float dt)
 {
+	if (App->guiManager->debug_draw)
+	{
+		glBegin(GL_LINES);
+		DrawBoundingBoxes();
+		glEnd();
+	}
+
 	return UPDATE_CONTINUE;
 }
 
@@ -221,3 +228,35 @@ float ModuleMesh::TriangleCenterAxis(const float & p1, const float & p2, const f
 	return (middle_point + p3)*0.5;
 }
 
+void ModuleMesh::DrawBoundingBoxes()
+{
+	glLineWidth(0.2);
+	glColor3f(204, 255, 0.0f);
+
+	while (b_boxes.empty() == false)
+	{
+		//We create the lines of the cube
+		for (int i = 0; i < 4; i++)
+		{
+			glVertex3f(b_boxes.front()->CornerPoint(i + 4).x, b_boxes.front()->CornerPoint(i + 4).y, b_boxes.front()->CornerPoint(i + 4).z);
+			glVertex3f(b_boxes.front()->CornerPoint(i).x, b_boxes.front()->CornerPoint(i).y, b_boxes.front()->CornerPoint(i).z);
+		}
+		//Create the vertices that define the cubes faces that form the mesh box
+		for (int i = 0; i <= 4; i += 4)
+		{
+			glVertex3f(b_boxes.front()->CornerPoint(i).x, b_boxes.front()->CornerPoint(i).y, b_boxes.front()->CornerPoint(i).z);
+			glVertex3f(b_boxes.front()->CornerPoint(i + 1).x, b_boxes.front()->CornerPoint(i + 1).y, b_boxes.front()->CornerPoint(i + 1).z);
+
+			glVertex3f(b_boxes.front()->CornerPoint(i + 2).x, b_boxes.front()->CornerPoint(i + 2).y, b_boxes.front()->CornerPoint(i + 2).z);
+			glVertex3f(b_boxes.front()->CornerPoint(i + 3).x, b_boxes.front()->CornerPoint(i + 3).y, b_boxes.front()->CornerPoint(i + 3).z);
+
+			glVertex3f(b_boxes.front()->CornerPoint(i).x, b_boxes.front()->CornerPoint(i).y, b_boxes.front()->CornerPoint(i).z);
+			glVertex3f(b_boxes.front()->CornerPoint(i + 2).x, b_boxes.front()->CornerPoint(i + 2).y, b_boxes.front()->CornerPoint(i + 2).z);
+
+			glVertex3f(b_boxes.front()->CornerPoint(i + 1).x, b_boxes.front()->CornerPoint(i + 1).y, b_boxes.front()->CornerPoint(i + 1).z);
+			glVertex3f(b_boxes.front()->CornerPoint(i + 3).x, b_boxes.front()->CornerPoint(i + 3).y, b_boxes.front()->CornerPoint(i + 3).z);
+		}
+		//We pop from the queue because we need to maintain update it for future changes in the gameobject's bounding box 
+		b_boxes.pop();
+	}
+}

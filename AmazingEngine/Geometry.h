@@ -36,6 +36,7 @@ public:
 	int GetTextureId() { return 0; };
 	void ShowProperties();
 	void ActualitzateBuffer();
+
 private:
 
 	void LoadBuffers();

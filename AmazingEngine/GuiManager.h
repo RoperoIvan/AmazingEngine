@@ -67,7 +67,6 @@ private:
 	bool resizable = false;
 	bool borderless = false;
 	bool full_desktop = false;
-	bool debug_draw = false;
 
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;
@@ -79,5 +78,10 @@ private:
 	std::string test = "";
 	ImGuiWindowFlags window_flags = 0;
 	int maximum_fps = 0;
+
+public:
+
+	bool debug_draw = false;
+
 };
 #endif
