@@ -3,6 +3,9 @@
 
 #include "Component.h"
 #include "par_shapes.h"
+#include "MathGeoLib\include\Math\Quat.h"
+#include "MathGeoLib\include\Math\float3.h"
+#include "MathGeoLib\include\Math\float4x4.h"
 
 class Geometry;
 
@@ -18,28 +21,21 @@ public:
 	void Disable();
 
 	void Init(const int& x, const int& y, const int& z);
-	bool LoadTransformation(Geometry* p_mesh);
+	bool LoadTransformation();
+	void RotateObjects(GameObject* object_to_rotate);
 	void UnLoadTransformation();
 
 	int GetTextureId() { return 0; };
-	void ShowProperties() {};
 	std::string GetTexturePath() { return std::string(); };
-	void ChangeScale(Geometry* mesh, float x, float y, float z);
-	void ChangePosition(Geometry* mesh, float x, float y, float z);
-	void Rotate(Geometry* mesh, float rd, float axs[3]);
-	void DoRotation(Geometry* mesh, float  r_matrix[3][3]);
+	void DoRotation(Geometry* mesh, float4x4 r_matrix);
 public:
 
-	float position[3] = { 1,1,1 };
-	float scale[3] = { 1,1,1 };
-	int rad = 0;
-	float axis[3] = { 0,0,0 };
-	Geometry* mesh = nullptr;
+	math::float3 position = math::float3::zero;
+	math::float3 scale = math::float3::one;
+	math::Quat rot = math::Quat::identity;
+	math::float3 euler_angles = math::float3::zero;
 
-	float R[3][3] = 
-	{ 1, 0, 0,
-	0, 1, 0,
-	0, 0, 1 };
+	math::float4x4 rotation_matrix = math::float4x4::identity;
 };
 
 

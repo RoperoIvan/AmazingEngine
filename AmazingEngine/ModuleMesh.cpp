@@ -111,6 +111,7 @@ bool ModuleMesh::LoadFBXFile(const char * file_name)
 	if (scene != nullptr && scene->HasMeshes())
 	{
 		GameObject* newfbx = new GameObject();
+		newfbx->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM);
 		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		for (int i = 0; i < scene->mNumMeshes; ++i)
 		{

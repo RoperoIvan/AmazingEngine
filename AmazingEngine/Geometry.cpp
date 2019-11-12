@@ -209,16 +209,6 @@ void Geometry::LoadData(aiMesh* mesh)
 	LoadBuffers();
 }
 
-void Geometry::ShowProperties()
-{
-	if (ImGui::CollapsingHeader("Transformation"))
-	{
-		if(transform->LoadTransformation(this))
-			ActualitzateBuffer();
-
-	}
-}
-
 void Geometry::ActualitzateBuffer()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);

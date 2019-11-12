@@ -35,73 +35,76 @@ void Transform::Init(const int& x, const int& y, const int& z)
 	position[2] = z;
 }
 
-bool Transform::LoadTransformation(Geometry* mesh)
+bool Transform::LoadTransformation()
 {
 	bool ret = false;
-
-	float new_position[3] = { position[0], position[1] ,position[2] };
+	float new_position[3] = { 0, 0 ,0 };
+	float new_scale[3] = { 0, 0 ,0 };
+	float new_rotation[3] = { 0, 0 ,0};
 	//change name
 	//scale
-	if(ImGui::InputFloat3("scale", scale, 1, ImGuiInputTextFlags_EnterReturnsTrue))
-		ret = true;
-	if (ImGui::InputFloat3("position", new_position,1,ImGuiInputTextFlags_EnterReturnsTrue))
+	if (ImGui::InputFloat3("scale", new_scale, 1, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-		float translation_x = new_position[0] - position[0];
-		float translation_y = new_position[1] - position[1];
-		float translation_z = new_position[2] - position[2];
-		ChangePosition(mesh, translation_x, translation_y, translation_z);
-		for (uint i = 0; i < 3; ++i)
-		{
-				position[i] = new_position[i];
-		}
+		scale.x += new_scale[0];
+		scale.y += new_scale[1];
+		scale.z += new_scale[2];
+		rotation_matrix = math::float4x4::FromTRS(position.zero, rot.identity, {new_scale[0],new_scale[1],new_scale[2]});
 		ret = true;
 	}
-	ImGui::TextWrapped("Rotation");
-	ImGui::Separator();
-	if (ImGui::SliderInt("Radiant", &rad, 0, 360)) 
-		ret = true;
-
-	static int item_current = 0;
-	const char* items[] = { "X", "Y", "Z" };
-	ImGui::Combo("Axis", &item_current, items, IM_ARRAYSIZE(items));
-	switch (item_current)
+	//position
+	if (ImGui::InputFloat3("transicion", new_position,1,ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-	case 0:
-		axis[0] = 1;
-		axis[1] = 0;
-		axis[2] = 0;
-		break;
-	case 1:
-		axis[0] = 0;
-		axis[1] = 1;
-		axis[2] = 0;
-		break;
-	case 2:
-		axis[0] = 0;
-		axis[1] = 0;
-		axis[2] = 1;
-		break;
+		position.x += new_position[0];
+		position.y += new_position[1];
+		position.z += new_position[2];
+		rotation_matrix = math::float4x4::FromTRS({ new_position[0],new_position[1],new_position[2] }, rot.identity, scale.one);
+		ret = true;
+	}
+	//rotation
+	if (ImGui::InputFloat3("rotation", new_rotation, 1, ImGuiInputTextFlags_EnterReturnsTrue))
+	{
+		math::float3 to_rotate;
+		to_rotate.x = new_rotation[0];
+		to_rotate.y = new_rotation[1];
+		to_rotate.z = new_rotation[2];
+		rot = math::Quat::FromEulerXYZ(math::DegToRad(to_rotate).x, math::DegToRad(to_rotate).y, math::DegToRad(to_rotate).z);
+		euler_angles += to_rotate;
+		rotation_matrix = math::float4x4::FromTRS(position.zero, rot, scale.one);
+		ret = true;
 	}
 
+	if (ret)
+	{
+		RotateObjects(parent);
+	}
 	//if parent have childs apply the transformation in all of them 
-	if (mesh != nullptr)
-	{
-		for (std::vector<GameObject*>::iterator it = parent->children.begin(); it != parent->children.end(); ++it)
-		{
-			Transform* comp = dynamic_cast<Transform*>((*it)->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
-			comp->LoadTransformation(mesh);
-		}
-	}		
+	
 
 	return ret;
 }
 
+void Transform::RotateObjects(GameObject* object_to_rotate)
+{
+	for (std::vector<Component*>::iterator component_iterator = object_to_rotate->components.begin(); component_iterator != object_to_rotate->components.end(); ++component_iterator)
+	{
+		if ((*component_iterator)->type == COMPONENT_TYPE::COMPONENT_MESH)
+		{
+			Geometry* mesh = dynamic_cast<Geometry*>(*component_iterator);
+			DoRotation(mesh, rotation_matrix);
+			mesh->ActualitzateBuffer();
+		}
+	}
+	if (object_to_rotate->children.size() > 0)
+	{
+		for (std::vector<GameObject*>::iterator it = object_to_rotate->children.begin(); it != object_to_rotate->children.end(); ++it)
+		{
+			RotateObjects(*it);
+		}
+	}
+}
+
 void Transform::UnLoadTransformation()
 {
-	//ChangeScale(mesh, scale[0], scale[1], scale[3]);
-	ChangePosition(mesh, position[0], position[1], position[2]);
-	//par_shapes_rotate(mesh, rad, axis);
-
 	//if parent have childs apply the transformation in all of them 
 	if (parent->children.size() != 0)
 	{
@@ -114,93 +117,25 @@ void Transform::UnLoadTransformation()
 	to_delete = true;
 }
 
-void Transform::ChangeScale(Geometry* mesh, float x, float y, float z)
-{
-	for (uint i = 0; i < mesh->num_vertices; i += 3) {
-		mesh->vertices[i] *= x;
-		mesh->vertices[i + 1] *= y;
-		mesh->vertices[i + 2] *= z;
-	}
-}
-
-void Transform::ChangePosition(Geometry* mesh, float x, float y, float z)
-{
-	for (uint i = 0; i < mesh->num_vertices*3; i += 3) 
-	{
-		mesh->vertices[i] += x;
-		mesh->vertices[i + 1] += y;
-		mesh->vertices[i + 2] += z;
-
-		if (mesh->normals != nullptr)
-		{
-			mesh->normals[i] += x;
-			mesh->normals[i + 1] += y;
-			mesh->normals[i + 2] += z;
-		}
-		if (mesh->face_normals != nullptr)
-		{
-			mesh->face_normals[i] += x;
-			mesh->face_normals[i + 1] += y;
-			mesh->face_normals[i + 2] += z;
-		}
-	}
-}
-
-void Transform::Rotate(Geometry* mesh, float rd, float axs[3])
-{
-	//calculate rotation matrix
-
-	float rd_cos = cosf(rd);
-	float rd_sin = sinf(rd);
-
-	float r_matrix[3][3] =
-	{
-		(axs[0] * axs[0]) * (1-rd_cos) + rd_cos,(axs[0] * axs[1] * (1 - rd_cos)) + (axs[2] * rd_sin), (axs[2] * axs[0] * (1 - rd_cos)) - (axs[1] * rd_sin),
-		(axs[0] * axs[1] * (1 - rd_cos)) - (axs[2] * rd_sin),(((axs[1] * axs[1]) * (1 - rd_cos)) + rd_cos), (axs[1] * axs[2] * (1 - rd_cos)) + (axs[0] * rd_sin),
-		((axs[2] * axs[0] * (1 - rd_cos)) + (axs[1] * rd_sin)),((axs[1] * axs[2] * (1 - rd_cos)) - (axs[0] * rd_sin)), (((axs[2] * axs[2]) * (1 - rd_cos)) + rd_cos),
-	};
-	
-	//do rotation
-	DoRotation(mesh, r_matrix);
-
-	//save rotation
-	for (uint i = 0; i < 3; ++i)
-	{
-		for (uint j = 0; j < 3; ++j)
-		{
-			for (uint k = 0; k < 3; ++k)
-			{
-				for (uint l = 0; l < 3; ++l)
-				{
-					R[i][j] += R[k][l] * r_matrix[l][k];
-				}
-			}
-		}
-	}
-}
-
-void Transform::DoRotation(Geometry* mesh, float  r_matrix[3][3])
+void Transform::DoRotation(Geometry* mesh, float4x4 r_matrix)
 {
 	for (uint i = 0; i < mesh->num_vertices * 3; i += 3)
 	{
-
-		float v1 = r_matrix[0][0] * mesh->vertices[i] + r_matrix[1][0] * mesh->vertices[i + 1] + r_matrix[2][0] * mesh->vertices[i + 2];
-		float v2 = r_matrix[0][1] * mesh->vertices[i] + r_matrix[1][1] * mesh->vertices[i + 1] + r_matrix[2][1] * mesh->vertices[i + 2];
-		float v3 = r_matrix[0][2] * mesh->vertices[i] + r_matrix[1][2] * mesh->vertices[i + 1] + r_matrix[2][2] * mesh->vertices[i + 2];
+		float v1 = r_matrix[0][0] * (mesh->vertices[i] - mesh->vertices[0]) + r_matrix[1][0] * (mesh->vertices[i + 1] - mesh->vertices[1]) + r_matrix[2][0] * (mesh->vertices[i + 2] - mesh->vertices[2]);
+		float v2 = r_matrix[0][1] * (mesh->vertices[i] - mesh->vertices[0]) + r_matrix[1][1] * (mesh->vertices[i + 1] - mesh->vertices[1]) + r_matrix[2][1] * (mesh->vertices[i + 2] - mesh->vertices[2]);
+		float v3 = r_matrix[0][2] * (mesh->vertices[i] - mesh->vertices[0]) + r_matrix[1][2] * (mesh->vertices[i + 1] - mesh->vertices[1]) + r_matrix[2][2] * (mesh->vertices[i + 2] - mesh->vertices[2]);
 		mesh->vertices[i] = v1;
 		mesh->vertices[i + 1] = v2;
 		mesh->vertices[i + 2] = v3;
 
 		if (mesh->normals)
 		{
-			float n1 = r_matrix[0][0] * mesh->normals[i] + r_matrix[1][0] * mesh->normals[i + 1] + r_matrix[2][0] * mesh->normals[i + 2];
-			float n2 = r_matrix[0][1] * mesh->normals[i] + r_matrix[1][1] * mesh->normals[i + 1] + r_matrix[2][1] * mesh->normals[i + 2];
-			float n3 = r_matrix[0][2] * mesh->normals[i] + r_matrix[1][2] * mesh->normals[i + 1] + r_matrix[2][2] * mesh->normals[i + 2];
+			float n1 = r_matrix[0][0] * (mesh->vertices[i] - mesh->vertices[0]) + r_matrix[1][0] * (mesh->vertices[i + 1] - mesh->vertices[1]) + r_matrix[2][0] * (mesh->vertices[i + 2] - mesh->vertices[2]);
+			float n2 = r_matrix[0][1] * (mesh->vertices[i] - mesh->vertices[0]) + r_matrix[1][1] * (mesh->vertices[i + 1] - mesh->vertices[1]) + r_matrix[2][1] * (mesh->vertices[i + 2] - mesh->vertices[2]);
+			float n3 = r_matrix[0][2] * (mesh->vertices[i] - mesh->vertices[0]) + r_matrix[1][2] * (mesh->vertices[i + 1] - mesh->vertices[1]) + r_matrix[2][2] * (mesh->vertices[i + 2] - mesh->vertices[2]);
 			mesh->normals[0] = n1;
 			mesh->normals[1] = n2;
 			mesh->normals[2] = n3;
 		}
-
-
 	}
 }

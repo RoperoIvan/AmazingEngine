@@ -26,7 +26,6 @@ public:
 
 	bool LoadMaterials(const aiScene* scene, std::string file_name);
 	int GetTextureId();
-	void ShowProperties() {};
 	std::string GetTexturePath();
 	void LoadCheckerTexture();
 	int SetTextureId(int id);

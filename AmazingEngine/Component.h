@@ -23,7 +23,6 @@ public:
 	virtual void Update() = 0;
 	virtual void Disable();
 
-	virtual void ShowProperties() = 0;
 	virtual int GetTextureId() = 0;
 	virtual std::string GetTexturePath() = 0;
 public:

@@ -205,16 +205,13 @@ void GameObject::GetPropierties()
 			}
 		}
 
-		Geometry* mesh = nullptr;
-
 		std::vector<Component*>::iterator it = components.begin();
 		int id = 0;
 		while ( it != components.end())
 		{
-			if ((*it)->type == COMPONENT_TYPE::COMPONENT_MESH)
+			if ((*it)->type == COMPONENT_TYPE::COMPONENT_TRANSFORM)
 			{
-				mesh = dynamic_cast<Geometry*>(*it);
-				mesh->ShowProperties();
+				dynamic_cast<Transform*>(*it)->LoadTransformation();
 				break;
 			}
 			++it;
