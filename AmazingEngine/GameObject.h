@@ -41,6 +41,7 @@ public:
 	bool show_face_normals = false;
 
 	math::AABB bounding_box;
+	bool show_bounding_box = false;
 };
 
 #endif

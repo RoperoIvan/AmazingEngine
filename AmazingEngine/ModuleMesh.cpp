@@ -53,12 +53,9 @@ bool ModuleMesh::Init()
 
 update_status ModuleMesh::PostUpdate(float dt)
 {
-	if (App->guiManager->debug_draw)
-	{
-		glBegin(GL_LINES);
-		DrawBoundingBoxes();
-		glEnd();
-	}
+	glBegin(GL_LINES);
+	App->mesh->DrawBoundingBoxes();
+	glEnd();	
 
 	return UPDATE_CONTINUE;
 }
