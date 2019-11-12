@@ -104,6 +104,8 @@ void Geometry::DebugDraw()
 
 void Geometry::Update()
 {
+	glPushMatrix();
+	glMultMatrixf((GLfloat*)&transform->global_matrix.Transposed());
 	glPushAttrib(GL_CURRENT_BIT);
 	glColor4f(r, g, b, a);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -131,7 +133,7 @@ void Geometry::Update()
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glPopAttrib();
-
+	glPopMatrix();
 	DebugDraw();
 	
 	

@@ -27,7 +27,6 @@ public:
 
 	int GetTextureId() { return 0; };
 	std::string GetTexturePath() { return std::string(); };
-	void DoRotation(Geometry* mesh, float4x4 r_matrix);
 public:
 
 	math::float3 position = math::float3::zero;
@@ -36,6 +35,7 @@ public:
 	math::float3 euler_angles = math::float3::zero;
 
 	math::float4x4 rotation_matrix = math::float4x4::identity;
+	math::float4x4 global_matrix = math::float4x4::identity;
 };
 
 
