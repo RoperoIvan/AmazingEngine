@@ -38,7 +38,7 @@ public:
 
 private:
 
-	void RecalculateParentBoundingBox(GameObject* object);
+	void CalculateParentBoundingBox(GameObject* object);
 	void LoadBuffers();
 public:
 	uint id_vertices = 0;  

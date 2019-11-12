@@ -23,7 +23,6 @@ public:
 	void Init(const int& x, const int& y, const int& z);
 	bool LoadTransformation();
 	void RotateObjects(GameObject* object_to_rotate);
-	void UnLoadTransformation();
 
 	int GetTextureId() { return 0; };
 	std::string GetTexturePath() { return std::string(); };

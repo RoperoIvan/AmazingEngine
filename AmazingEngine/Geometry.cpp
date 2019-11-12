@@ -202,7 +202,7 @@ void Geometry::LoadData(aiMesh* mesh)
 
 	//Adapt bounding box to geometry-----------------
 	if (parent != nullptr)
-		RecalculateParentBoundingBox(parent);
+		CalculateParentBoundingBox(parent);
 	
 	LoadBuffers();
 }
@@ -213,7 +213,7 @@ void Geometry::ActualitzateBuffer()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices * 3, vertices, GL_STATIC_DRAW);
 }
 
-void Geometry::RecalculateParentBoundingBox(GameObject* object)
+void Geometry::CalculateParentBoundingBox(GameObject* object)
 {
 	std::vector <float3> vertex_array;
 	if (vertices == nullptr)
@@ -225,7 +225,7 @@ void Geometry::RecalculateParentBoundingBox(GameObject* object)
 
 	if (object->parent != nullptr)
 	{
-		RecalculateParentBoundingBox(object->parent);
+		CalculateParentBoundingBox(object->parent);
 	}
 }
 

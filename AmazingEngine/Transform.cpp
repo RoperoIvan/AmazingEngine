@@ -39,27 +39,32 @@ bool Transform::LoadTransformation()
 {
 	bool ret = false;
 	//change name
+	math::float3 current_pos = position;
+	math::float3 current_angles = euler_angles;
 	//scale
 	if (ImGui::InputFloat3("scale", (float*)&scale, 1, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
 		
+		rotation_matrix = math::float4x4::FromTRS(position.zero, rot.identity, scale);
 		ret = true;
+		
 	}
 	//position
 	if (ImGui::InputFloat3("position", (float*)&position,1,ImGuiInputTextFlags_EnterReturnsTrue))
 	{		
+		rotation_matrix = math::float4x4::FromTRS(position - current_pos, rot.identity, scale.one);
 		ret = true;
 	}
 	//rotation
 	if (ImGui::InputFloat3("rotation", (float*)&euler_angles, 1, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-		rot = math::Quat::FromEulerXYZ(math::DegToRad(euler_angles).x, math::DegToRad(euler_angles).y, math::DegToRad(euler_angles).z);
+		rot = math::Quat::FromEulerXYZ(math::DegToRad(euler_angles - current_angles).x, math::DegToRad(euler_angles - current_angles).y, math::DegToRad(euler_angles - current_angles).z);
+		rotation_matrix = math::float4x4::FromTRS(position.zero, rot, scale.one);
 		ret = true;
 	}
 
 	if (ret)
 	{
-		rotation_matrix = math::float4x4::FromTRS(position, rot, scale);
 		RotateObjects(parent);
 	}	
 
@@ -74,6 +79,7 @@ void Transform::RotateObjects(GameObject* object_to_rotate)
 		{
 			Transform* mesh = dynamic_cast<Transform*>(*component_iterator);
 			mesh->global_matrix = mesh->global_matrix * rotation_matrix;
+
 		}
 	}
 	if (object_to_rotate->children.size() > 0)
@@ -84,18 +90,3 @@ void Transform::RotateObjects(GameObject* object_to_rotate)
 		}
 	}
 }
-
-void Transform::UnLoadTransformation()
-{
-	//if parent have childs apply the transformation in all of them 
-	if (parent->children.size() != 0)
-	{
-		for (std::vector<GameObject*>::iterator it = parent->children.begin(); it != parent->children.end(); ++it)
-		{
-			UnLoadTransformation();
-		}
-	}
-
-	to_delete = true;
-}
-
