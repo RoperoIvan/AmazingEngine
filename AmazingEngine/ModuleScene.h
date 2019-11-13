@@ -19,7 +19,7 @@ public:
 	void DrawPlane();
 	update_status PostUpdate(float dt);
 	bool CleanUp();
-
+	GameObject* CreateGameObject(const char* object_name, GameObject* parent);
 
 	void DeleteTexture(Image* tex);
 public:
@@ -29,7 +29,6 @@ public:
 	uint id = 0;
 	std::vector<GameObject*> game_objects;
 	std::vector<Image*> textures;
-
 	GameObject* game_object_select = nullptr;
 };
 #endif

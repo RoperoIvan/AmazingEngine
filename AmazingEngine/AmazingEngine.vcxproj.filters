@@ -173,6 +173,9 @@
     <ClCompile Include="Transform.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GuiManager.h">
@@ -461,6 +464,9 @@
       <Filter>Modules</Filter>
     </ClInclude>
     <ClInclude Include="Transform.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
       <Filter>GameObject</Filter>
     </ClInclude>
   </ItemGroup>

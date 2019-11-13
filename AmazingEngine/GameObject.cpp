@@ -5,6 +5,7 @@
 #include "Application.h"
 #include "ModuleScene.h"
 #include "Transform.h"
+#include "Camera.h"
 
 GameObject::GameObject(GameObject* parent): parent(parent)
 {
@@ -93,11 +94,25 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 		component = new Image(this);
 		components.push_back(component);
 		break;
+	case COMPONENT_TYPE::COMPONENT_CAMERA: // TODO: Need to change that so you can create the camera from here
+		//component = new Camera(this);
+		components.push_back(component);
+		break;
 	case COMPONENT_TYPE::NO_COMPONENT:
 		break;
 	default:
 		break;
 	}
+	return component;
+}
+
+Component * GameObject::CreateCamera(float z_near, float z_far)
+{
+	this->name = "Camera " + std::to_string(App->scene->game_objects.size());
+	Component* component = nullptr;
+	component = new Camera(this, z_near, z_far);
+	App->mesh->current_camera = (Camera*)component; //TODO: Move this to a function where you choose the main camera
+	components.push_back(component);
 	return component;
 }
 
@@ -165,7 +180,7 @@ void GameObject::GetPropierties()
 			if (ImGui::Button("Delete"))
 				to_delete = true;
 
-			//view oobject
+			//view object
 			if (ImGui::Checkbox("Active", &is_enable))
 				(&is_enable) ? true : false;
 

@@ -18,7 +18,7 @@ public:
 	void Update();
 
 	Component* CreateComponent(COMPONENT_TYPE type);
-
+	Component* CreateCamera(float z_near, float z_far);
 	virtual void GetHierarcy();
 
 	void GetPropierties();

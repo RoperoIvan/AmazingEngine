@@ -5,6 +5,7 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleRenderer3D.h"
+#include "GameObject.h"
 #include "MathGeoLib/include/MathGeoLib.h"
 #ifdef _DEBUG
 #pragma comment (lib, "MathGeoLib/libx86/Debug/MathGeoLib.lib")
@@ -22,6 +23,9 @@ ModuleScene::~ModuleScene()
 
 bool ModuleScene::Init()
 {
+	GameObject* test_camera = new GameObject();
+	game_objects.push_back(test_camera);
+	test_camera->CreateCamera(0.1, 10);
 
 	return true;
 }
@@ -131,3 +135,4 @@ void ModuleScene::DeleteTexture(Image* tex)
 		}
 	}
 }
+
