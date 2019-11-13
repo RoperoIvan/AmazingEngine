@@ -105,6 +105,16 @@ void Geometry::DebugDraw()
 void Geometry::Update()
 {
 	if (App->guiManager->frustum_culling)
+	glPushMatrix();
+	glMultMatrixf((GLfloat*)&transform->global_matrix.Transposed());
+	glPushAttrib(GL_CURRENT_BIT);
+	glColor4f(r, g, b, a);
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	if (texture != nullptr)
 	{
 		if (App->mesh->IsCulling(this))
 		{
@@ -143,10 +153,11 @@ void Geometry::Update()
 	}
 	else
 	{
+		glPushMatrix();
+		glMultMatrixf((GLfloat*)&transform->global_matrix.Transposed());
 		glPushAttrib(GL_CURRENT_BIT);
 		glColor4f(r, g, b, a);
 		glEnableClientState(GL_VERTEX_ARRAY);
-
 		glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
 		glVertexPointer(3, GL_FLOAT, 0, NULL);
@@ -175,6 +186,13 @@ void Geometry::Update()
 
 
 	}
+	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, NULL);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glPopAttrib();
+	glPopMatrix();
+	DebugDraw();
 }
 
 void Geometry::LoadData(aiMesh* mesh)
@@ -239,13 +257,9 @@ void Geometry::LoadData(aiMesh* mesh)
 	}
 
 	//Adapt bounding box to geometry-----------------
-	std::vector <float3> vertex_array;
-
-	for (int i = 0; i < num_indices * 3; i += 3)
-		vertex_array.push_back(float3(vertices[i], vertices[i + 1], vertices[i + 2]));
-
-	parent->bounding_box.Enclose(&vertex_array[0], (int)num_vertices);
-
+	if (parent != nullptr)
+		CalculateParentBoundingBox(parent);
+	
 	LoadBuffers();
 }
 
@@ -253,6 +267,22 @@ void Geometry::ActualitzateBuffer()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices * 3, vertices, GL_STATIC_DRAW);
+}
+
+void Geometry::CalculateParentBoundingBox(GameObject* object)
+{
+	std::vector <float3> vertex_array;
+	if (vertices == nullptr)
+		return;
+	for (int i = 0; i < num_indices * 3; i += 3)
+		vertex_array.push_back(float3(vertices[i], vertices[i + 1], vertices[i + 2]));
+
+	object->bounding_box.Enclose(&vertex_array[0], (int)num_vertices);
+
+	if (object->parent != nullptr)
+	{
+		CalculateParentBoundingBox(object->parent);
+	}
 }
 
 void Geometry::LoadBuffers()

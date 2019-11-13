@@ -6,6 +6,8 @@
 #include "ModuleScene.h"
 #include "Transform.h"
 #include "Camera.h"
+#include "ModuleMesh.h"
+
 
 GameObject::GameObject(GameObject* parent): parent(parent)
 {
@@ -70,7 +72,7 @@ void GameObject::Update()
 		}
 	}
 
-	if (App->guiManager->debug_draw)
+	if (show_bounding_box)
 	{
 		App->mesh->b_boxes.push(&bounding_box);
 	}
@@ -240,6 +242,11 @@ void GameObject::GetPropierties()
 
 			ImGui::Text("triangles: %u", num_triangles);
 			ImGui::Text("vertices: %u", num_vertices);
+			
+			if (ImGui::Checkbox("Bounding Box",&show_bounding_box))
+			{
+				(&show_bounding_box) ? true : false;
+			}
 		}
 		
 		Component* tex = nullptr;
