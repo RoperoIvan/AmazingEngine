@@ -24,7 +24,6 @@ ModuleScene::~ModuleScene()
 bool ModuleScene::Init()
 {
 	App->camera->my_camera = new Camera(nullptr);
-	App->camera->my_camera->frustum.farPlaneDistance = 1000.f;
 	current_camera = App->camera->my_camera;
 
 	return true;
