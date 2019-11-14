@@ -752,6 +752,13 @@ void GuiManager::RenderTab()
 {
 	if (ImGui::CollapsingHeader("Render"))
 	{
+		if (ImGui::DragFloat("FOV", &App->scene->current_camera->frustum.verticalFov, 0.1, 0.1));
+		{
+			App->scene->current_camera->frustum.horizontalFov = atanf(tan(App->scene->current_camera->frustum.verticalFov * 0.5) * App->window->current_aspect_ratio) * 2;
+		}
+		ImGui::DragFloat("Near-Z Plane", &App->scene->current_camera->frustum.nearPlaneDistance, 0.1, 0.0, App->scene->current_camera->frustum.farPlaneDistance);
+		ImGui::DragFloat("Far-Z Plane", &App->scene->current_camera->frustum.farPlaneDistance, 0.1);
+		ImGui::Separator();
 		ImGui::Checkbox("Frustum Culling", &frustum_culling);
 
 		if (ImGui::Checkbox("GL Depth", &App->renderer3D->gl_depth_on))

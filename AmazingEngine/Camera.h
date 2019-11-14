@@ -16,6 +16,7 @@ public:
 	int GetTextureId() { return 0; };
 	void Look(const float3 &Position);
 	float* GetViewMatrix();
+	void LoadCameraOptions();
 private:
 
 public:

@@ -23,13 +23,10 @@ ModuleScene::~ModuleScene()
 
 bool ModuleScene::Init()
 {
-	/*GameObject* test_camera = new GameObject();
-	game_objects.push_back(test_camera);*/
-	
 	App->camera->my_camera = new Camera(nullptr);
 	App->camera->my_camera->frustum.farPlaneDistance = 1000.f;
 	current_camera = App->camera->my_camera;
-	//test_camera->AddComponent(current_camera);
+
 	return true;
 }
 

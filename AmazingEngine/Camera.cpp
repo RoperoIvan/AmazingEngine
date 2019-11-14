@@ -43,3 +43,16 @@ float * Camera::GetViewMatrix()
 {
 	return (float*)static_cast<float4x4>(frustum.ViewMatrix()).Transposed().v;;
 }
+
+void Camera::LoadCameraOptions()
+{
+	float z_near = 0.f;
+	float z_far = 0.f;
+	if (ImGui::DragFloat("FOV", &frustum.verticalFov, 0, 1, 1));
+	{
+		frustum.horizontalFov = atanf(tan(frustum.verticalFov * 0.5) * window_aspect_ratio) * 2;
+	}
+	ImGui::DragFloat("Near-Z Plane", &frustum.nearPlaneDistance, 0.1, 0.0, frustum.farPlaneDistance);
+	ImGui::DragFloat("Far-Z Plane", &frustum.nearPlaneDistance, 0.1);
+
+}
