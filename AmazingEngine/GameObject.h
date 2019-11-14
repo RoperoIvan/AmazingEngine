@@ -27,6 +27,8 @@ public:
 	{
 		components.push_back(comp);
 	}
+	Component* GetComponentByType(COMPONENT_TYPE type);
+
 public:
 	std::string name;
 	GameObject* parent = nullptr;

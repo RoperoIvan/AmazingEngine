@@ -22,13 +22,10 @@ public:
 	bool Save(nlohmann::json &j) const override;
 	bool Load(nlohmann::json &j) override;
 
-	/*void Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
-	void LookAt(const vec3 &Spot);*/
 	void Move(const float3 &Movement);
 	void CameraControls(float dt);
-	float* GetViewMatrix();
 	void GoAroundGeometry(GameObject* obj);
-	std::vector<float3> LoadAABBVertex(GameObject* obj, std::vector<float3> vertices);
+
 private:
 
 	//void CalculateViewMatrix();

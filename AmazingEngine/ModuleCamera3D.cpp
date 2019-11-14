@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleCamera3D.h"
 #include "Geometry.h"
+#include "Transform.h"
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -92,11 +93,11 @@ void ModuleCamera3D::CameraControls(float dt)
 		if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 			speed = 8.0f;
 
-		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos += c_frustum->front * speed; Reference += newPos*speed;
-		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos -= c_frustum->front * speed; Reference += newPos*speed;
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos += c_frustum->front * speed; Reference += newPos * speed;
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos -= c_frustum->front * speed; Reference += newPos * speed;
 
-		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= c_frustum->WorldRight() * speed; Reference += newPos*speed;
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += c_frustum->WorldRight() * speed; Reference += newPos*speed;
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= c_frustum->WorldRight() * speed; Reference += newPos * speed;
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += c_frustum->WorldRight() * speed; Reference += newPos * speed;
 		
 		// Mouse Zoom controls
 		if (App->input->GetMouseZ() > 0)
@@ -107,6 +108,8 @@ void ModuleCamera3D::CameraControls(float dt)
 		{
 			newPos += c_frustum->front * speed * 10;
 		}
+		
+		
 		// Mouse Rotation controls
 		if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 		{
@@ -125,9 +128,8 @@ void ModuleCamera3D::CameraControls(float dt)
 				my_camera->frustum.pos = newRot - Reference;
 				my_camera->Look(Reference);
 			}
-			c_frustum->Translate(newPos);
 		}
-
+		c_frustum->Translate(newPos);
 		// Mouse motion ----------------
 
 		//if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
@@ -167,72 +169,18 @@ void ModuleCamera3D::CameraControls(float dt)
 	}
 }
 
-// -----------------------------------------------------------------
-float* ModuleCamera3D::GetViewMatrix()
-{
-	return &ViewMatrix;
-}
-
 void ModuleCamera3D::GoAroundGeometry(GameObject* obj)
 {
 	if (obj == nullptr)
 		return;
-
-	std::vector<float3> vertices;
-	if (obj->children.empty())
+	/*Transform* transformation = (Transform*)obj->GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM);
+	Reference = transformation->GetPosition();
+	my_camera->Look(Reference);*/
+	if (obj->bounding_box.IsFinite())
 	{
-		vertices = LoadAABBVertex(obj, vertices);
+		my_camera->Look(obj->bounding_box.CenterPoint());
+		Reference = obj->bounding_box.CenterPoint();
 	}
-	else
-	{
-		for (std::vector<GameObject*>::iterator iter = obj->children.begin(); iter < obj->children.end(); ++iter)
-		{
-			vertices = LoadAABBVertex((*iter), vertices);
-		}
-	}
-	//Creates an AABB 
-	//math::AABB general(float3(0, 0, 0), float3(0, 0, 0));
-	//general.Enclose(&vertices[0], vertices.size());
-
-	//Position.x = general.maxPoint.x*1.5;
-	//Position.y = general.maxPoint.y*1.5;
-	//Position.z = general.maxPoint.z*1.5;
-
-	//Reference.x = general.CenterPoint().x;
-	//Reference.y = general.CenterPoint().y;
-	//Reference.z = general.CenterPoint().z;
-
-	//LookAt(Reference);
-}
-
-std::vector<float3> ModuleCamera3D::LoadAABBVertex(GameObject * obj, std::vector<float3> vertices)
-{
-	for (std::vector < Component*>::iterator iter2 = obj->components.begin(); iter2 != obj->components.end(); ++iter2)
-	{
-		COMPONENT_TYPE type = (*iter2)->type;
-		if (type == COMPONENT_TYPE::COMPONENT_MESH)
-		{
-			//Generate AABBS for each geom in scene
-			math::AABB new_aabb(float3(0, 0, 0), float3(0, 0, 0));
-			std::vector <float3> vertex_array;
-
-			Geometry* g = dynamic_cast<Geometry*>(*iter2);
-			for (int j = 0; j < g->num_vertices * 3; j += 3)
-			{
-				vertex_array.push_back(float3(g->vertices[j], g->vertices[j + 1], g->vertices[j + 2]));
-			}
-
-			new_aabb.Enclose(&vertex_array[0], g->num_vertices);
-
-			//Stores the 8 vertices of the box in a general array
-			for (int j = 0; j < 8; j++)
-			{
-				vertices.push_back(new_aabb.CornerPoint(j));
-			}
-		}
-
-	}
-	return vertices;
 }
 bool ModuleCamera3D::Save(nlohmann::json& j) const
 {

@@ -26,6 +26,10 @@ public:
 
 	int GetTextureId() { return 0; };
 	std::string GetTexturePath() { return std::string(); };
+	float3 GetPosition()
+	{
+		return position;
+	}
 public:
 
 	math::float3 position = math::float3::zero;

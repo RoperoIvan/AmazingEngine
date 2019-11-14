@@ -322,3 +322,13 @@ void GameObject::ShowNormalsFaces(const bool& x)
 	}
 
 }
+
+Component * GameObject::GetComponentByType(COMPONENT_TYPE type)
+{
+	for (std::vector<Component*>::iterator iter = components.begin(); iter < components.end(); ++iter)
+	{
+		if ((*iter)->type == type)
+			return (*iter);
+	}
+	return false;
+}
