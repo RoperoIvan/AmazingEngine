@@ -184,7 +184,8 @@ bool ModuleMesh::LoadTextureFile(const char * file_name)
 
 bool ModuleMesh::IsCulling(Geometry * g)
 {
-	return current_camera->frustum.Contains(g->GetParentObject()->bounding_box);
+	bool ret = App->scene->current_camera->frustum.Contains(g->GetParentObject()->bounding_box);
+	return ret;
 }
 
 void ModuleMesh::ChangeTex(GameObject* object, const char* file_name, Image* texture)
@@ -281,7 +282,7 @@ void ModuleMesh::DrawFrustums()
 			glVertex3f(c_frustums.front()->CornerPoint(i + 4).x, c_frustums.front()->CornerPoint(i + 4).y, c_frustums.front()->CornerPoint(i + 4).z);
 			glVertex3f(c_frustums.front()->CornerPoint(i).x, c_frustums.front()->CornerPoint(i).y, c_frustums.front()->CornerPoint(i).z);
 		}
-		//Create the vertices that define the cubes faces that form the mesh box
+		//Create the vertices that define the cubes faces that form the frustum box
 		for (int i = 0; i <= 4; i += 4)
 		{
 			glVertex3f(c_frustums.front()->CornerPoint(i).x, c_frustums.front()->CornerPoint(i).y, c_frustums.front()->CornerPoint(i).z);
@@ -296,7 +297,7 @@ void ModuleMesh::DrawFrustums()
 			glVertex3f(c_frustums.front()->CornerPoint(i + 1).x, c_frustums.front()->CornerPoint(i + 1).y, c_frustums.front()->CornerPoint(i + 1).z);
 			glVertex3f(c_frustums.front()->CornerPoint(i + 3).x, c_frustums.front()->CornerPoint(i + 3).y, c_frustums.front()->CornerPoint(i + 3).z);
 		}
-		//We pop from the queue because we need to maintain update it for future changes in the gameobject's bounding box 
+		//We pop from the queue because we need to maintain update it for future changes in the gameobject's frustum
 		c_frustums.pop();
 	}
 }

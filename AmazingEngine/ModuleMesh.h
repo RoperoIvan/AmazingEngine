@@ -33,7 +33,6 @@ private:
 public:
 	std::queue<math::AABB*> b_boxes; //we use a queue cause we want to push and pop the bounding boxes fast // We use it only for bb drawing
 	std::queue<math::Frustum*> c_frustums; //same as bounding boxes, we'll use it only for drawing
-	Camera* current_camera = nullptr;
 };
 
 

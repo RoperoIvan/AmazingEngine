@@ -2,18 +2,18 @@
 #include "Application.h"
 #include "ImGui/imgui.h"
 
-Camera::Camera(GameObject* parent, float z_near_distance, float z_far_distance) : Component(parent, COMPONENT_TYPE::COMPONENT_CAMERA)
+Camera::Camera(GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_CAMERA)
 {
-	frustum.nearPlaneDistance = z_near_distance;
-	frustum.farPlaneDistance = z_far_distance;
+	//parent->name = "Camera " + std::to_string(App->scene->game_objects.size());
+	frustum.nearPlaneDistance = 1.f;
+	frustum.farPlaneDistance = 10.f;
 	window_aspect_ratio = App->window->current_aspect_ratio;
 	frustum.type = PerspectiveFrustum;
-	frustum.front = float3(0, 0, 1);
-	frustum.up = float3(0, 1, 0);
-	frustum.pos = float3(0, 2, -8);
+	frustum.front = float3::unitZ;
+	frustum.up = float3::unitY;
+	frustum.pos = float3::zero;
 	frustum.verticalFov = 1.0;
-	frustum.horizontalFov = math::Atan(window_aspect_ratio*math::Tan(frustum.verticalFov / 2)) * 2;
-
+	frustum.horizontalFov = atanf(tan(frustum.verticalFov * 0.5) * window_aspect_ratio) * 2;
 }
 
 Camera::~Camera()
@@ -31,3 +31,15 @@ void Camera::Update()
 	App->mesh->AddFrustumBox(&frustum);
 }
 
+void Camera::Look(const float3 & Position)
+{
+	float3 future_pos = Position - frustum.pos;
+	float3x3 dir_matrix = float3x3::LookAt(frustum.front, future_pos.Normalized(), frustum.up, float3::unitY);
+	frustum.front = dir_matrix.MulDir(frustum.front).Normalized();
+	frustum.up = dir_matrix.MulDir(frustum.up).Normalized();
+}
+
+float * Camera::GetViewMatrix()
+{
+	return (float*)static_cast<float4x4>(frustum.ViewMatrix()).Transposed().v;;
+}

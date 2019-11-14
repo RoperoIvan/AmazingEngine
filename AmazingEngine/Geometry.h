@@ -35,7 +35,7 @@ public:
 	void LoadData(aiMesh* mesh);
 	int GetTextureId() { return 0; };
 	void ActualitzateBuffer();
-
+	void DrawMesh();
 private:
 
 	void CalculateParentBoundingBox(GameObject* object);

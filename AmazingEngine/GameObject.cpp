@@ -97,7 +97,8 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 		components.push_back(component);
 		break;
 	case COMPONENT_TYPE::COMPONENT_CAMERA: // TODO: Need to change that so you can create the camera from here
-		//component = new Camera(this);
+		component = new Camera(this);
+		//App->mesh->current_camera = (Camera*)component; //TODO: Move this to a function where you choose the main camera
 		components.push_back(component);
 		break;
 	case COMPONENT_TYPE::NO_COMPONENT:
@@ -105,16 +106,6 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	default:
 		break;
 	}
-	return component;
-}
-
-Component * GameObject::CreateCamera(float z_near, float z_far)
-{
-	this->name = "Camera " + std::to_string(App->scene->game_objects.size());
-	Component* component = nullptr;
-	component = new Camera(this, z_near, z_far);
-	App->mesh->current_camera = (Camera*)component; //TODO: Move this to a function where you choose the main camera
-	components.push_back(component);
 	return component;
 }
 

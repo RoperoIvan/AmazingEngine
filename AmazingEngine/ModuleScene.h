@@ -5,6 +5,7 @@
 #include <vector>
 #include "GameObject.h"
 #include "Image.h"
+#include "Camera.h"
 
 class ModuleScene : public Module
 {
@@ -19,11 +20,9 @@ public:
 	void DrawPlane();
 	update_status PostUpdate(float dt);
 	bool CleanUp();
-	GameObject* CreateGameObject(const char* object_name, GameObject* parent);
-
 	void DeleteTexture(Image* tex);
 public:
-	
+	Camera* current_camera = nullptr;
 	uint nplane = 0;
 	int* plane = nullptr;
 	uint id = 0;

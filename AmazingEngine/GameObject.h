@@ -18,15 +18,15 @@ public:
 	void Update();
 
 	Component* CreateComponent(COMPONENT_TYPE type);
-	Component* CreateCamera(float z_near, float z_far);
 	virtual void GetHierarcy();
-
 	void GetPropierties();
-
 	void ShowPropertiesObject(GameObject* , uint&, uint&);
-
 	void ShowNormalsVertices(const bool&);
 	void ShowNormalsFaces(const bool&);
+	void AddComponent(Component* comp)
+	{
+		components.push_back(comp);
+	}
 public:
 	std::string name;
 	GameObject* parent = nullptr;

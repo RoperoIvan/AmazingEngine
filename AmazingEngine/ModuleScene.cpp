@@ -23,15 +23,20 @@ ModuleScene::~ModuleScene()
 
 bool ModuleScene::Init()
 {
-	GameObject* test_camera = new GameObject();
-	game_objects.push_back(test_camera);
-	test_camera->CreateCamera(0.1, 10);
-
+	/*GameObject* test_camera = new GameObject();
+	game_objects.push_back(test_camera);*/
+	
+	App->camera->my_camera = new Camera(nullptr);
+	App->camera->my_camera->frustum.farPlaneDistance = 1000.f;
+	current_camera = App->camera->my_camera;
+	//test_camera->AddComponent(current_camera);
 	return true;
 }
 
 bool ModuleScene::Start()
 {
+	App->camera->my_camera->frustum.pos = { 4,3,5 };
+	App->camera->my_camera->Look(float3(0, 0, 0));
 	App->mesh->LoadFile("..\\Assets\\BakerHouse.fbx");
 	return true;
 }
