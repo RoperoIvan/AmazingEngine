@@ -7,13 +7,12 @@ Camera::Camera(GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT
 	//parent->name = "Camera " + std::to_string(App->scene->game_objects.size());
 	frustum.nearPlaneDistance = 0.1f;
 	frustum.farPlaneDistance = 30.f;
-	window_aspect_ratio = App->window->current_aspect_ratio;
 	frustum.type = PerspectiveFrustum;
 	frustum.front = float3::unitZ;
 	frustum.up = float3::unitY;
 	frustum.pos = float3::zero;
 	frustum.verticalFov = 1.0;
-	frustum.horizontalFov = atanf(tan(frustum.verticalFov * 0.5) * window_aspect_ratio) * 2;
+	frustum.horizontalFov = atanf(tan(frustum.verticalFov * 0.5) * ((float)16/(float)9)) * 2;
 }
 
 Camera::~Camera()
@@ -27,7 +26,6 @@ void Camera::Disable()
 
 void Camera::Update()
 {
-	window_aspect_ratio = App->window->current_aspect_ratio;
 	App->mesh->AddFrustumBox(&frustum);
 }
 
@@ -41,7 +39,7 @@ void Camera::Look(const float3 & Position)
 
 float * Camera::GetViewMatrix()
 {
-	return (float*)static_cast<float4x4>(frustum.ViewMatrix()).Transposed().v;;
+	return (float*)static_cast<float4x4>(frustum.ViewMatrix()).Transposed().v;
 }
 
 void Camera::LoadCameraOptions()
@@ -50,7 +48,7 @@ void Camera::LoadCameraOptions()
 	float z_far = 0.f;
 	if (ImGui::DragFloat("FOV", &frustum.verticalFov, 0, 1, 1));
 	{
-		frustum.horizontalFov = atanf(tan(frustum.verticalFov * 0.5) * window_aspect_ratio) * 2;
+		frustum.horizontalFov = atanf(tan(frustum.verticalFov * 0.5) * ((float)16 / (float)9)) * 2;
 	}
 	ImGui::DragFloat("Near-Z Plane", &frustum.nearPlaneDistance, 0.1, 0.0, frustum.farPlaneDistance);
 	ImGui::DragFloat("Far-Z Plane", &frustum.nearPlaneDistance, 0.1);

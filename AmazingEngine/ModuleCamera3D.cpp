@@ -47,50 +47,56 @@ void ModuleCamera3D::Move(const float3& Movement)
 
 void ModuleCamera3D::CameraControls(float dt)
 {
+	float current_speed = speed;
 	if (!write)
 	{
 		float3 newPos(0, 0, 0);
 		//Movement controls
 		if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
-			speed = 8.0f;
+			current_speed = 2.0f;
 
-		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos += c_frustum->front * speed; Reference += newPos * speed;
-		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos -= c_frustum->front * speed; Reference += newPos * speed;
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos += c_frustum->front * current_speed; 
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos -= c_frustum->front * current_speed;
 
-		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= c_frustum->WorldRight() * speed; Reference += newPos * speed;
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += c_frustum->WorldRight() * speed; Reference += newPos * speed;
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= c_frustum->WorldRight() * current_speed;
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += c_frustum->WorldRight() * current_speed;
 		
 		// Mouse Zoom controls
 		if (App->input->GetMouseZ() > 0)
 		{
-			newPos -= c_frustum->front * speed * 10;
+			newPos -= c_frustum->front * current_speed * 10;
 		}
 		if (App->input->GetMouseZ() < 0)
 		{
-			newPos += c_frustum->front * speed * 10;
+			newPos += c_frustum->front * current_speed * 10;
 		}
+		
 		
 		
 		// Mouse Rotation controls
 		if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
 		{
-			float3 newRot(0, 0, 0);
-
 			int dx = -App->input->GetMouseXMotion();
 			int dy = -App->input->GetMouseYMotion();
-			newRot = my_camera->frustum.pos - Reference;
+			float3 newRot = my_camera->frustum.pos;
 			float Sensitivity = 0.01f;
-			if(dx != 0 && dy != 0)
+			if(dx != 0)
 			{
 				Quat Delta_x(my_camera->frustum.up, dx * Sensitivity);
+				newRot = Delta_x.Transform(newRot);			
+				my_camera->frustum.pos = newRot;
+				my_camera->Look(my_camera->frustum.front);
+			}
+			if (dy != 0)
+			{
 				Quat Delta_y(my_camera->frustum.WorldRight(), dy * Sensitivity);
-				newRot = Delta_x.Transform(newRot);
 				newRot = Delta_y.Transform(newRot);
-				my_camera->frustum.pos = newRot - Reference;
-				my_camera->Look(Reference);
+				my_camera->frustum.pos = newRot;
+				my_camera->Look(my_camera->frustum.front);
 			}
 		}
 		c_frustum->Translate(newPos);
+		//Reference += newPos;
 	}
 }
 
@@ -102,7 +108,7 @@ void ModuleCamera3D::GoAroundGeometry(GameObject* obj)
 	if (obj->bounding_box.IsFinite())
 	{
 		my_camera->Look(obj->bounding_box.CenterPoint());
-		Reference = obj->bounding_box.CenterPoint();
+		//Reference = obj->bounding_box.CenterPoint();
 	}
 }
 bool ModuleCamera3D::Save(nlohmann::json& j) const

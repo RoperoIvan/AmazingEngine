@@ -21,7 +21,6 @@ private:
 
 public:
 	math::Frustum frustum;
-	float window_aspect_ratio = 0.f;
 
 private:
 	float4x4 ViewMatrix, ViewMatrixInverse;

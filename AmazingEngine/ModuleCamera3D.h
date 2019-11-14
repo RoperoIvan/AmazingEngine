@@ -26,15 +26,10 @@ public:
 	void CameraControls(float dt);
 	void GoAroundGeometry(GameObject* obj);
 
-private:
-
-	//void CalculateViewMatrix();
-
 public:
 	Camera* my_camera = nullptr;
-	/*vec3 X, Y, Z, Position, Reference;*/
 	float3 Reference = float3::zero;
-	float speed = 0.01;
+	float speed = 0.10;
 	bool write = false;
 private:
 	Frustum* c_frustum = nullptr;
