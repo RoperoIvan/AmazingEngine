@@ -27,6 +27,9 @@ public:
 
 	void ShowNormalsVertices(const bool&);
 	void ShowNormalsFaces(const bool&);
+
+
+	void SaveMesh(FILE*);
 public:
 	std::string name;
 	GameObject* parent = nullptr;

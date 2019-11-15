@@ -331,3 +331,21 @@ void GameObject::ShowNormalsFaces(const bool& x)
 	}
 
 }
+
+void GameObject::SaveMesh(FILE* file)
+{
+	std::fputs("<GameObject> \n", file);
+	for (std::vector<Component*>::iterator comp = components.begin(); comp != components.end(); ++comp)
+	{
+		if ((*comp)->type == COMPONENT_TYPE::COMPONENT_MESH)
+			 dynamic_cast<Geometry*>(*comp)->Save(file);
+	}
+	std::fputs("</GameObject> \n", file);
+	if (children.size() > 0)
+	{
+		for (std::vector<GameObject*>::iterator iter = children.begin(); iter < children.end(); ++iter)
+		{
+			(*iter)->SaveMesh(file);		
+		}
+	}
+}

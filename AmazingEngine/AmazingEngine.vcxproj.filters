@@ -428,7 +428,7 @@
       <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="json.hpp">
-      <Filter>JSON</Filter>
+      <Filter>Documents</Filter>
     </ClInclude>
     <ClInclude Include="Application.h">
       <Filter>Modules</Filter>
@@ -490,7 +490,10 @@
       <Filter>MathGeoLib</Filter>
     </None>
     <None Include="DLL\config.json">
-      <Filter>JSON</Filter>
+      <Filter>Documents</Filter>
+    </None>
+    <None Include="DLL\Scene1231.Amazing">
+      <Filter>Documents</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -509,9 +512,6 @@
     <Filter Include="Tools">
       <UniqueIdentifier>{b5138712-eb26-47cf-8751-2097cea4b7e5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="JSON">
-      <UniqueIdentifier>{274bd92c-4c0f-4fd2-8fb7-fad05c739446}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Physfs">
       <UniqueIdentifier>{5202d10a-90b4-44c0-b219-38b939f7935b}</UniqueIdentifier>
     </Filter>
@@ -520,6 +520,9 @@
     </Filter>
     <Filter Include="GameObject">
       <UniqueIdentifier>{86eb3767-35d2-4d55-8497-f8559717624c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Documents">
+      <UniqueIdentifier>{274bd92c-4c0f-4fd2-8fb7-fad05c739446}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

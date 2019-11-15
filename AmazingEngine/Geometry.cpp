@@ -5,6 +5,8 @@
 #include "GameObject.h"
 #include "Application.h"
 #include "ModuleInput.h"
+#include <fstream>
+
 //Primitives constructor
 
 Geometry::Geometry(GameObject* parent):Component(parent, COMPONENT_TYPE::COMPONENT_MESH)
@@ -267,6 +269,23 @@ void Geometry::ActualitzateBuffer()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices * 3, vertices, GL_STATIC_DRAW);
+}
+
+void Geometry::Save(FILE* file)
+{
+	fputs("<vertices> \n", file);
+	for (int i = 0; i < num_vertices * 3; ++i)
+	{
+		fprintf(file, "%i = '%s' ",i, std::to_string(vertices[i]).c_str());
+		
+	}
+	fputs("\n</vertices>\n", file);
+	fputs("<indices>\n", file);
+	for (int i = 0; i < num_indices; ++i)
+	{
+		fprintf(file, "%i = '%s' ",i, std::to_string(indices[i]).c_str());
+	}
+	fputs("\n</indices>\n", file);
 }
 
 void Geometry::CalculateParentBoundingBox(GameObject* object)
