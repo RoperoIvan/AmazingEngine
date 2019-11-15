@@ -32,6 +32,7 @@ public:
 	void SaveMesh(FILE*);
 public:
 	std::string name;
+	int ID;
 	GameObject* parent = nullptr;
 	std::vector<GameObject*> children;
 	std::vector<Component*> components;

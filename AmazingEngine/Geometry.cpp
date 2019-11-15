@@ -276,14 +276,14 @@ void Geometry::Save(FILE* file)
 	fputs("<vertices> \n", file);
 	for (int i = 0; i < num_vertices * 3; ++i)
 	{
-		fprintf(file, "%i = '%s' ",i, std::to_string(vertices[i]).c_str());
+		fprintf(file, "%i = '%f' ",i, vertices[i]);
 		
 	}
 	fputs("\n</vertices>\n", file);
 	fputs("<indices>\n", file);
 	for (int i = 0; i < num_indices; ++i)
 	{
-		fprintf(file, "%i = '%s' ",i, std::to_string(indices[i]).c_str());
+		fprintf(file, "%i = '%u' ",i, indices[i]);
 	}
 	fputs("\n</indices>\n", file);
 }

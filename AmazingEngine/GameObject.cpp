@@ -19,6 +19,9 @@ GameObject::GameObject(GameObject* parent): parent(parent)
 			name = "GameObject " + std::to_string(App->scene->game_objects.size() + 1) + "." + std::to_string(parent->children.size() + 1);
 	}
 	bounding_box.SetNegativeInfinity();
+
+	LCG rand;
+	ID = rand.Int();
 }
 
 GameObject::~GameObject()
@@ -335,6 +338,13 @@ void GameObject::ShowNormalsFaces(const bool& x)
 void GameObject::SaveMesh(FILE* file)
 {
 	std::fputs("<GameObject> \n", file);
+
+	std::fprintf(file, "ID: %i\n", ID);
+	if (parent != nullptr)
+		std::fprintf(file, "parent ID: %i\n", parent->ID);
+	else
+		std::fprintf(file, "parent ID: %i\n", 0);
+
 	for (std::vector<Component*>::iterator comp = components.begin(); comp != components.end(); ++comp)
 	{
 		if ((*comp)->type == COMPONENT_TYPE::COMPONENT_MESH)
