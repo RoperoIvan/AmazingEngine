@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "MathGeoLib/include/MathGeoLib.h"
 
 #define MAX_MOUSE_BUTTONS 5
 
@@ -72,7 +73,6 @@ public:
 
 		return nullptr;
 	}
-
 private:
 	KEY_STATE* keyboard;
 	KEY_STATE mouse_buttons[MAX_MOUSE_BUTTONS];

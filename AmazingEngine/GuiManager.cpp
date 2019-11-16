@@ -140,6 +140,10 @@ void GuiManager::ManageUI(bool& open)
 		}
 		ImGui::EndMainMenuBar();
 	}
+	
+	if (App->scene->game_object_select)
+		show_hierachy_window = true;
+
 	//Configuration window
 	if (show_config_window)
 		ConfigurationWindow();
@@ -444,7 +448,10 @@ void GuiManager::HierarchyWindow()
 					
 				}
 			}
+			if (App->scene->game_object_select->show_inspector_window)
+				App->scene->game_object_select->GetPropierties();
 		}
+		
 		ImGui::End();
 	}
 }

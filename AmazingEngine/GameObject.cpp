@@ -330,6 +330,58 @@ void GameObject::ShowNormalsFaces(const bool& x)
 
 }
 
+void GameObject::LookForRayCollision(GameObject* &near_one, LineSegment & ray_segment, float & from_origin_dist)
+{
+	for (int i = 0; i < children.size(); ++i)
+	{
+		if(children[i] != nullptr)
+		{
+			if (children[i]->bounding_box.IsFinite())
+			{
+				if (ray_segment.Intersects(children[i]->bounding_box))
+				{
+					children[i]->LookForMeshCollision(near_one, ray_segment, from_origin_dist);
+				}
+				children[i]->LookForRayCollision(near_one, ray_segment, from_origin_dist);
+			}
+		}
+		
+	}
+
+}
+
+void GameObject::LookForMeshCollision(GameObject * &near_one, LineSegment & ray_segment, float & from_origin_dist)
+{
+	Transform* transform = (Transform*)GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM);
+	Geometry* mesh = (Geometry*)GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH);
+
+	float* vertices = (float*)((Geometry*)mesh)->vertices;
+	uint* indices = (uint*)((Geometry*)mesh)->indices;
+
+	math::Triangle triangle;
+
+	math::LineSegment segment_localized(ray_segment);
+	float4x4 inverted_m = transform->global_matrix.Transposed().Inverted();
+	segment_localized = inverted_m*segment_localized;
+
+	for (int j = 0; j < ((Geometry*)mesh)->num_indices;)
+	{
+		triangle.a.Set(&vertices[indices[j++] * 3]);
+		triangle.b.Set(&vertices[indices[j++] * 3]);
+		triangle.c.Set(&vertices[indices[j++] * 3]);
+
+		float tmp_distance;
+		if (segment_localized.Intersects(triangle, &tmp_distance, nullptr))
+		{
+			if (tmp_distance < from_origin_dist)
+			{
+				from_origin_dist = tmp_distance;
+				near_one = this;
+			}
+		}
+	}
+}
+
 Component * GameObject::GetComponentByType(COMPONENT_TYPE type)
 {
 	for (std::vector<Component*>::iterator iter = components.begin(); iter < components.end(); ++iter)

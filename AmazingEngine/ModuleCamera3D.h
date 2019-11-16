@@ -16,6 +16,7 @@ public:
 	~ModuleCamera3D();
 
 	bool Start();
+	update_status PreUpdate(float dt);
 	update_status Update(float dt);
 	bool CleanUp();
 
@@ -25,12 +26,13 @@ public:
 	void Move(const float3 &Movement);
 	void CameraControls(float dt);
 	void GoAroundGeometry(GameObject* obj);
-
+	void CatchMousePicking();
 public:
 	Camera* my_camera = nullptr;
 	float3 Reference = float3::zero;
-	float speed = 0.10;
+	float camera_speed = 0.1f;
 	bool write = false;
+	LineSegment ray_picking;
 private:
 	Frustum* c_frustum = nullptr;
 	mat4x4 ViewMatrix, ViewMatrixInverse;

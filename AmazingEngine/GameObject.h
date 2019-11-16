@@ -23,6 +23,8 @@ public:
 	void ShowPropertiesObject(GameObject* , uint&, uint&);
 	void ShowNormalsVertices(const bool&);
 	void ShowNormalsFaces(const bool&);
+	void LookForRayCollision(GameObject* &near_one, LineSegment& ray_segment, float& from_origin_dist);
+	void LookForMeshCollision(GameObject* &near_one, LineSegment& ray_segment, float& from_origin_dist);
 	void AddComponent(Component* comp)
 	{
 		components.push_back(comp);

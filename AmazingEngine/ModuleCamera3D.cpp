@@ -24,6 +24,15 @@ bool ModuleCamera3D::Start()
 	return ret;
 }
 
+update_status ModuleCamera3D::PreUpdate(float dt)
+{
+	bool ret = true;
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && !write)
+		CatchMousePicking();
+
+	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
+}
+
 // -----------------------------------------------------------------
 bool ModuleCamera3D::CleanUp()
 {
@@ -47,7 +56,7 @@ void ModuleCamera3D::Move(const float3& Movement)
 
 void ModuleCamera3D::CameraControls(float dt)
 {
-	float current_speed = speed;
+	float current_speed = camera_speed;
 	if (!write)
 	{
 		float3 newPos(0, 0, 0);
@@ -110,6 +119,30 @@ void ModuleCamera3D::GoAroundGeometry(GameObject* obj)
 		my_camera->Look(obj->bounding_box.CenterPoint());
 		//Reference = obj->bounding_box.CenterPoint();
 	}
+}
+
+void ModuleCamera3D::CatchMousePicking()
+{
+	float2 mouse_normal(App->input->GetMouseX(), App->input->GetMouseY());
+	mouse_normal.x = -(1.0f - (float(mouse_normal.x) * 2.0f) / SCREEN_WIDTH);
+	mouse_normal.y = 1.0f - (float(mouse_normal.y) * 2.0f) / SCREEN_HEIGHT;
+	ray_picking = c_frustum->UnProjectLineSegment(mouse_normal.x, mouse_normal.y);
+
+	float ray_direction = ray_picking.Length();
+	GameObject* picked_obj = nullptr;
+
+	std::vector<GameObject*>::iterator iter = App->scene->game_objects.begin();
+	for (; iter != App->scene->game_objects.end(); ++iter)
+	{
+		(*iter)->LookForRayCollision(picked_obj, ray_picking, ray_direction);
+	}
+
+	if (picked_obj)
+	{
+		App->scene->game_object_select = picked_obj;
+		App->scene->game_object_select->show_inspector_window = true;
+	}
+
 }
 bool ModuleCamera3D::Save(nlohmann::json& j) const
 {
