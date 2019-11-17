@@ -272,83 +272,6 @@ void Geometry::ActualitzateBuffer()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices * 3, vertices, GL_STATIC_DRAW);
 }
 
-void Geometry::Save(FILE* file)
-{
-	fputs("vertices: ", file);
-	for (int i = 0; i < num_vertices * 3; ++i)
-	{
-		fprintf(file, "vertex: %f ", vertices[i]);		
-	}
-	fputs(";\n", file);
-	fputs("indices: ", file);
-	for (int i = 0; i < num_indices; ++i)
-	{
-		fprintf(file, "indice: %u ", indices[i]);
-	}
-	fputs(";\n", file);
-	fputs("normals: ", file);
-	for (int i = 0; i < num_normals; ++i)
-	{
-		fprintf(file, "normal: %f ", normals[i]);
-	}
-	fputs(";\n", file);
-	fputs("face_normals: ", file);
-	for (int i = 0; i < num_face_normals/3; ++i)
-	{
-		fprintf(file, "face_normal: %f ", face_normals[i]);
-	}
-	fputs(";\n", file);
-}
-
-void Geometry::ImportNewMesh(char*& cursor)
-{
-	//vertices	
-	std::string data = App->file_system->DataValue(cursor, "vertices:", 100000, ";");
-	std::vector<float> elements;
-	while (1)
-	{
-		char* value = App->file_system->DataValue(data, "vertex:", 10, "vertex:");
-		if (value == ";") 
-			break;
-		std::stringstream convertor(value);
-		float el;
-		convertor >> el;
-		elements.push_back(el);
-	}
-	num_vertices = elements.size()/3;
-	vertices = new float[num_vertices];
-
-	for (std::vector<float>::iterator i = elements.begin(); i != elements.end(); ++i)
-	{
-		*vertices = (*i);
-		++vertices;
-	}
-
-	//indices	
-	std::string data2 = App->file_system->DataValue(cursor, "indices:", 100000, ";");
-	std::vector<uint>elements2;
-	while (1)
-	{
-		char* value = App->file_system->DataValue(data2, "indice:", 2, "indice:");
-		if (value == ";")
-			break;
-		std::stringstream convertor(value);
-		uint el;
-		convertor >> el;
-		elements2.push_back(el);
-	}
-
-	num_indices = elements2.size()/3;
-	indices = new uint[num_indices];
-	for (std::vector<uint>::iterator i = elements2.begin(); i != elements2.end(); ++i)
-	{
-		*indices = *i;
-		++indices;
-	}
-
-	LoadBuffers();
-}
-
 void Geometry::CalculateParentBoundingBox(GameObject* object)
 {
 	std::vector <float3> vertex_array;
@@ -385,3 +308,158 @@ void Geometry::LoadBuffers()
 
 }
 
+
+
+void Geometry::Save(FILE* file)
+{
+	fputs("vertices: ", file);
+	for (int i = 0; i < num_vertices * 3; ++i)
+	{
+		fprintf(file, "vertex: %f ", vertices[i]);
+	}
+	fputs(";\n", file);
+	fputs("indices: ", file);
+	for (int i = 0; i < num_indices; ++i)
+	{
+		fprintf(file, "indice: %u ", indices[i]);
+	}
+	fputs(";\n", file);
+	fputs("normals: ", file);
+	for (int i = 0; i < num_normals; ++i)
+	{
+		fprintf(file, "normal: %f ", normals[i]);
+	}
+	fputs(";\n", file);
+	fputs("face_normals: ", file);
+	for (int i = 0; i < num_face_normals; ++i)
+	{
+		fprintf(file, "face_normal: %f ", face_normals[i]);
+	}
+	fputs(";\n", file);
+
+	fputs("uv_coords: ", file);
+	for (int i = 0; i < num_coords; ++i)
+	{
+		fprintf(file, "coord: %f ", uv_coord[i]);
+	}
+	fputs(";\n", file);
+}
+
+void Geometry::ImportNewMesh(char*& cursor)
+{
+	//vertices	
+	std::string data = App->file_system->DataValue(cursor, "vertices:", 100000, ";");
+	std::vector<float> elements;
+	while (1)
+	{
+		char* value = App->file_system->DataValue(data, "vertex:", 10, "vertex:");
+		if (value == ";")
+			break;
+		std::stringstream convertor(value);
+		float el;
+		convertor >> el;
+		elements.push_back(el);
+	}
+	num_vertices = elements.size() / 3;
+	vertices = new float[num_vertices * 3];
+
+	int j = 0;
+	for (std::vector<float>::iterator i = elements.begin(); i != elements.end(); ++i)
+	{
+		vertices[j] = (*i);
+		++j;
+	}
+
+	//indices	
+	data = App->file_system->DataValue(cursor, "indices:", 100000, ";");
+	std::vector<uint>elements2;
+	while (1)
+	{
+		char* value = App->file_system->DataValue(data, "indice:", 2, "indice:");
+		if (value == ";")
+			break;
+		std::stringstream convertor(value);
+		uint el;
+		convertor >> el;
+		elements2.push_back(el);
+	}
+
+	num_indices = elements2.size();
+	indices = new uint[num_indices];
+	j = 0;
+	for (std::vector<uint>::iterator i = elements2.begin(); i != elements2.end(); ++i)
+	{
+		indices[j] = *i;
+		++j;
+	}
+
+	//normals 
+	data = App->file_system->DataValue(cursor, "normals:", 100000, ";");
+	elements.clear();
+	while (1)
+	{
+		char* value = App->file_system->DataValue(data, "normal:", 10, "normal:");
+		if (value == ";")
+			break;
+		std::stringstream convertor(value);
+		float el;
+		convertor >> el;
+		elements.push_back(el);
+	}
+	num_normals = elements.size() / 3;
+	normals = new float[num_normals * 3];
+
+	j = 0;
+	for (std::vector<float>::iterator i = elements.begin(); i != elements.end(); ++i)
+	{
+		normals[j] = (*i);
+		++j;
+	}
+
+	//face_normals
+	data = App->file_system->DataValue(cursor, "face_normals:", 100000, ";");
+	elements.clear();
+	while (1)
+	{
+		char* value = App->file_system->DataValue(data, "face_normal:", 10, "face_normal:");
+		if (value == ";")
+			break;
+		std::stringstream convertor(value);
+		float el;
+		convertor >> el;
+		elements.push_back(el);
+	}
+	num_face_normals = elements.size();
+	face_normals = new float[num_face_normals];
+
+	j = 0;
+	for (std::vector<float>::iterator i = elements.begin(); i != elements.end(); ++i)
+	{
+		face_normals[j] = (*i);
+		++j;
+	}
+
+	//uv_coords
+	data = App->file_system->DataValue(cursor, "uv_coords:", 100000, ";");
+	elements.clear();
+	while (1)
+	{
+		char* value = App->file_system->DataValue(data, "coord:", 10, "coord:");
+		if (value == ";")
+			break;
+		std::stringstream convertor(value);
+		float el;
+		convertor >> el;
+		elements.push_back(el);
+	}
+	num_coords = elements.size();
+	uv_coord = new float[num_coords];
+
+	j = 0;
+	for (std::vector<float>::iterator i = elements.begin(); i != elements.end(); ++i)
+	{
+		uv_coord[j] = (*i);
+		++j;
+	}
+	LoadBuffers();
+}

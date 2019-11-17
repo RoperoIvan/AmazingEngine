@@ -84,11 +84,9 @@ bool FileSystem::ImporScene(char* path)
 			if (parent_object != nullptr)
 				parent_object->children.push_back(new_object);
 		}
-
-
-		App->scene->game_objects.push_back(new_object);
-
 	}
+	for(std::vector<GameObject*>::iterator iter = import_objects.begin(); iter != import_objects.end(); ++iter)
+		App->scene->game_objects.push_back(*iter);
 	return true;
 }
 
@@ -102,7 +100,8 @@ char* FileSystem::DataValue(char*& cursor, std::string info, int size, char* end
 
 	while (size > 0)
 	{
-		 aux.push_back(*cursor);
+		aux.push_back(*cursor);
+
 		 if (cursor == limit)
 			 break;
 		++cursor;
@@ -117,9 +116,9 @@ char* FileSystem::DataValue(std::string& cursor, std::string info, int size, std
 {
 	if (cursor.find(info) == std::string::npos)
 		return";";
-	int pos = cursor.find(info) + sizeof(char) * (info.size() + 1);
+	int pos = cursor.find(info) + sizeof(char) * (info.size());
 
-	int final_pos = cursor.find(end, sizeof(char) * info.size()) - sizeof(char) * (end.size() + 1) ;
+	int final_pos = cursor.find(end, pos + sizeof(char) * info.size()) - sizeof(char) * (end.size()) ;
 
 	std::string value = cursor.substr(pos, final_pos);
 
