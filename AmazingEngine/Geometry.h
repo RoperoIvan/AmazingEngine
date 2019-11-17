@@ -36,6 +36,8 @@ public:
 	int GetTextureId() { return 0; };
 	void ActualitzateBuffer();
 	void Save(FILE*);
+
+	void ImportNewMesh(char* &cursor);
 private:
 
 	void CalculateParentBoundingBox(GameObject* object);

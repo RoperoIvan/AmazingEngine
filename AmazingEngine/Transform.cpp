@@ -28,11 +28,11 @@ void Transform::Disable()
 {
 }
 
-void Transform::Init(const int& x, const int& y, const int& z)
+void Transform::Init(const float& x, const float& y, const float& z)
 {
-	position[0] = x;
-	position[1] = y;
-	position[2] = z;
+	position.x = x;
+	position.y = y;
+	position.z = z;
 }
 
 bool Transform::LoadTransformation()

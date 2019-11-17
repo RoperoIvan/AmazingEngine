@@ -7,7 +7,7 @@
 #include "ModuleRenderer3D.h"
 #include "GameObject.h"
 #include "MathGeoLib/include/MathGeoLib.h"
-#include <fstream>
+#include "FileSystem.h"
 #ifdef _DEBUG
 #pragma comment (lib, "MathGeoLib/libx86/Debug/MathGeoLib.lib")
 #else
@@ -63,7 +63,12 @@ update_status ModuleScene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 	{
 		char* path = "Scene1231.Amazing";	
-		SaveScene(path);
+		App->file_system->SaveScene(path,game_objects);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+	{
+		char* path = "Scene1231.Amazing";
+		App->file_system->ImporScene(path);
 	}
 	DrawPlane();
 
@@ -140,27 +145,5 @@ void ModuleScene::DeleteTexture(Image* tex)
 			break;
 		}
 	}
-}
-
-bool ModuleScene::SaveScene(char* path)
-{
-	bool ret = true;
-	FILE* file;
-	file = std::fopen(path, "wt");
-
-	if (file == NULL)
-	{
-		SDL_GetError();
-		return false;
-	}
-	for (std::vector<GameObject*>::iterator object = game_objects.begin(); object != game_objects.end(); ++object)
-	{
-		if (*object != nullptr)
-		{
-			(*object)->SaveMesh(file);
-		}
-	}
-	std::fclose(file);
-	return ret;
 }
 

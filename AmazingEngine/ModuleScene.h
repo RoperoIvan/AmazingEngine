@@ -22,9 +22,7 @@ public:
 	GameObject* CreateGameObject(const char* object_name, GameObject* parent);
 
 	void DeleteTexture(Image* tex);
-
-	bool SaveScene(char* path);
-
+	
 public:
 	
 	uint nplane = 0;

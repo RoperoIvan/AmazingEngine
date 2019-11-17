@@ -337,25 +337,41 @@ void GameObject::ShowNormalsFaces(const bool& x)
 
 void GameObject::SaveMesh(FILE* file)
 {
-	std::fputs("<GameObject> \n", file);
+	std::fputs("GameObject:\n", file);
 
-	std::fprintf(file, "ID: %i\n", ID);
 	if (parent != nullptr)
-		std::fprintf(file, "parent ID: %i\n", parent->ID);
+		std::fprintf(file, "parentID: %i;\n", parent->ID);
 	else
-		std::fprintf(file, "parent ID: %i\n", 0);
+		std::fprintf(file, "parentID: %i;\n", 0);
 
+	std::fprintf(file, "ID: %i;\n", ID);
 	for (std::vector<Component*>::iterator comp = components.begin(); comp != components.end(); ++comp)
 	{
 		if ((*comp)->type == COMPONENT_TYPE::COMPONENT_MESH)
 			 dynamic_cast<Geometry*>(*comp)->Save(file);
 	}
-	std::fputs("</GameObject> \n", file);
+	std::fprintf(file, "//\n", ID);
 	if (children.size() > 0)
 	{
 		for (std::vector<GameObject*>::iterator iter = children.begin(); iter < children.end(); ++iter)
 		{
 			(*iter)->SaveMesh(file);		
 		}
+	}
+}
+
+void GameObject::ImportMesh(char* &cursor, char* end_object)
+{
+	//assign ID
+	std::stringstream convertor(App->file_system->DataValue(cursor, "ID:", 10));
+	convertor >> ID;
+
+	char* vertex = strstr(cursor, "vertices:");
+	if (vertex < end_object)
+	{
+		Geometry* mesh = dynamic_cast<Geometry*>(CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
+		mesh->transform = dynamic_cast<Transform*>(CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
+		mesh->texture = dynamic_cast<Image*>(CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
+		mesh->ImportNewMesh(cursor);
 	}
 }

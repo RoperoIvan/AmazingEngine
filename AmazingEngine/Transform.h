@@ -20,7 +20,7 @@ public:
 	void Update();
 	void Disable();
 
-	void Init(const int& x, const int& y, const int& z);
+	void Init(const float& x, const float& y, const float& z);
 	bool LoadTransformation();
 	void RotateObjects(GameObject* object_to_rotate);
 

@@ -9,6 +9,7 @@ Application::Application()
 	input = new ModuleInput(this);
 	renderer3D = new ModuleRenderer3D(this);
 	camera = new ModuleCamera3D(this);
+	file_system = new FileSystem(this);
 	mesh = new ModuleMesh(this);
 	guiManager = new GuiManager(this);
 	scene = new ModuleScene(this);
@@ -20,6 +21,7 @@ Application::Application()
 	AddModule(window);
 	AddModule(camera);
 	AddModule(input);
+	AddModule(file_system);
 	AddModule(mesh);
 	AddModule(scene);
 	AddModule(guiManager);

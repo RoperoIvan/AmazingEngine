@@ -4,6 +4,7 @@
 #include "Assimp/include/scene.h"
 #include "GameObject.h"
 #include "Application.h"
+#include "FileSystem.h"
 #include "ModuleInput.h"
 #include <fstream>
 
@@ -108,7 +109,8 @@ void Geometry::Update()
 {
 	if (App->guiManager->frustum_culling)
 	glPushMatrix();
-	glMultMatrixf((GLfloat*)&transform->global_matrix.Transposed());
+	if (transform->global_matrix.IsInvertible())
+		glMultMatrixf((GLfloat*)&transform->global_matrix.Transposed());
 	glPushAttrib(GL_CURRENT_BIT);
 	glColor4f(r, g, b, a);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -155,8 +157,7 @@ void Geometry::Update()
 	}
 	else
 	{
-		glPushMatrix();
-		glMultMatrixf((GLfloat*)&transform->global_matrix.Transposed());
+
 		glPushAttrib(GL_CURRENT_BIT);
 		glColor4f(r, g, b, a);
 		glEnableClientState(GL_VERTEX_ARRAY);
@@ -273,19 +274,79 @@ void Geometry::ActualitzateBuffer()
 
 void Geometry::Save(FILE* file)
 {
-	fputs("<vertices> \n", file);
+	fputs("vertices: ", file);
 	for (int i = 0; i < num_vertices * 3; ++i)
 	{
-		fprintf(file, "%i = '%f' ",i, vertices[i]);
-		
+		fprintf(file, "vertex: %f ", vertices[i]);		
 	}
-	fputs("\n</vertices>\n", file);
-	fputs("<indices>\n", file);
+	fputs(";\n", file);
+	fputs("indices: ", file);
 	for (int i = 0; i < num_indices; ++i)
 	{
-		fprintf(file, "%i = '%u' ",i, indices[i]);
+		fprintf(file, "indice: %u ", indices[i]);
 	}
-	fputs("\n</indices>\n", file);
+	fputs(";\n", file);
+	fputs("normals: ", file);
+	for (int i = 0; i < num_normals; ++i)
+	{
+		fprintf(file, "normal: %f ", normals[i]);
+	}
+	fputs(";\n", file);
+	fputs("face_normals: ", file);
+	for (int i = 0; i < num_face_normals/3; ++i)
+	{
+		fprintf(file, "face_normal: %f ", face_normals[i]);
+	}
+	fputs(";\n", file);
+}
+
+void Geometry::ImportNewMesh(char*& cursor)
+{
+	//vertices	
+	std::string data = App->file_system->DataValue(cursor, "vertices:", 100000, ";");
+	std::vector<float> elements;
+	while (1)
+	{
+		char* value = App->file_system->DataValue(data, "vertex:", 10, "vertex:");
+		if (value == ";") 
+			break;
+		std::stringstream convertor(value);
+		float el;
+		convertor >> el;
+		elements.push_back(el);
+	}
+	num_vertices = elements.size()/3;
+	vertices = new float[num_vertices];
+
+	for (std::vector<float>::iterator i = elements.begin(); i != elements.end(); ++i)
+	{
+		*vertices = (*i);
+		++vertices;
+	}
+
+	//indices	
+	std::string data2 = App->file_system->DataValue(cursor, "indices:", 100000, ";");
+	std::vector<uint>elements2;
+	while (1)
+	{
+		char* value = App->file_system->DataValue(data2, "indice:", 2, "indice:");
+		if (value == ";")
+			break;
+		std::stringstream convertor(value);
+		uint el;
+		convertor >> el;
+		elements2.push_back(el);
+	}
+
+	num_indices = elements2.size()/3;
+	indices = new uint[num_indices];
+	for (std::vector<uint>::iterator i = elements2.begin(); i != elements2.end(); ++i)
+	{
+		*indices = *i;
+		++indices;
+	}
+
+	LoadBuffers();
 }
 
 void Geometry::CalculateParentBoundingBox(GameObject* object)

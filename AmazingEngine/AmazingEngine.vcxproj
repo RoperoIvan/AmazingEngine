@@ -81,6 +81,7 @@
     <ClInclude Include="ConsoleManager.h" />
     <ClInclude Include="DevIL\include\IL\il.h" />
     <ClInclude Include="DevIL\include\IL\ilu.h" />
+    <ClInclude Include="FileSystem.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="glmath.h" />
@@ -177,6 +178,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="FileSystem.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="glmath.cpp" />

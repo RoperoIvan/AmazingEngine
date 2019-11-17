@@ -10,6 +10,7 @@
 #include "GuiManager.h"
 #include "ModuleMesh.h"
 #include "ModuleScene.h"
+#include "FileSystem.h"
 #include "Timer.h"
 #include <list>
 #include <vector>
@@ -46,6 +47,7 @@ public:
 	GuiManager* guiManager;
 	ModuleMesh* mesh;
 	ModuleScene* scene;
+	FileSystem* file_system;
 private:
 
 	Timer	ms_timer;

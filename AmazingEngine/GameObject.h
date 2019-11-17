@@ -30,6 +30,7 @@ public:
 
 
 	void SaveMesh(FILE*);
+	void ImportMesh(char* &cursor, char* end_object);
 public:
 	std::string name;
 	int ID;
