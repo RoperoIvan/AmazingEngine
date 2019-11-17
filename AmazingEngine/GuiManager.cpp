@@ -448,8 +448,12 @@ void GuiManager::HierarchyWindow()
 					
 				}
 			}
-			if (App->scene->game_object_select->show_inspector_window)
-				App->scene->game_object_select->GetPropierties();
+			if (App->scene->game_object_select)
+			{
+				if (App->scene->game_object_select->show_inspector_window)
+					App->scene->game_object_select->GetPropierties();
+			}
+			
 		}
 		
 		ImGui::End();

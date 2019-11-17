@@ -5,7 +5,7 @@
 Camera::Camera(GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_CAMERA)
 {
 	//parent->name = "Camera " + std::to_string(App->scene->game_objects.size());
-	frustum.nearPlaneDistance = 0.1f;
+	frustum.nearPlaneDistance = 1.f;
 	frustum.farPlaneDistance = 30.f;
 	frustum.type = PerspectiveFrustum;
 	frustum.front = float3::unitZ;

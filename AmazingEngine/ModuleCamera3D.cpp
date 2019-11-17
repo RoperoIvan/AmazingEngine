@@ -44,14 +44,10 @@ bool ModuleCamera3D::CleanUp()
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {
-	c_frustum = &my_camera->frustum;
 	CameraControls(dt);
+	c_frustum = &my_camera->frustum;
 
 	return UPDATE_CONTINUE;
-}
-void ModuleCamera3D::Move(const float3& Movement)
-{
-	c_frustum->Translate(Movement);
 }
 
 void ModuleCamera3D::CameraControls(float dt)
@@ -64,20 +60,20 @@ void ModuleCamera3D::CameraControls(float dt)
 		if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 			current_speed = 2.0f;
 
-		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos += c_frustum->front * current_speed; 
-		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos -= c_frustum->front * current_speed;
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos += my_camera->frustum.front * current_speed;
+		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos -= my_camera->frustum.front * current_speed;
 
-		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= c_frustum->WorldRight() * current_speed;
-		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += c_frustum->WorldRight() * current_speed;
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= my_camera->frustum.WorldRight() * current_speed;
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += my_camera->frustum.WorldRight() * current_speed;
 		
 		// Mouse Zoom controls
 		if (App->input->GetMouseZ() > 0)
 		{
-			newPos -= c_frustum->front * current_speed * 10;
+			newPos -= my_camera->frustum.front * current_speed * 10;
 		}
 		if (App->input->GetMouseZ() < 0)
 		{
-			newPos += c_frustum->front * current_speed * 10;
+			newPos += my_camera->frustum.front * current_speed * 10;
 		}
 		
 		
@@ -104,7 +100,7 @@ void ModuleCamera3D::CameraControls(float dt)
 				my_camera->Look(my_camera->frustum.front);
 			}
 		}
-		c_frustum->Translate(newPos);
+		my_camera->frustum.Translate(newPos);
 		//Reference += newPos;
 	}
 }
@@ -123,18 +119,23 @@ void ModuleCamera3D::GoAroundGeometry(GameObject* obj)
 
 void ModuleCamera3D::CatchMousePicking()
 {
-	float2 mouse_normal(App->input->GetMouseX(), App->input->GetMouseY());
-	mouse_normal.x = -(1.0f - (float(mouse_normal.x) * 2.0f) / SCREEN_WIDTH);
-	mouse_normal.y = 1.0f - (float(mouse_normal.y) * 2.0f) / SCREEN_HEIGHT;
-	ray_picking = c_frustum->UnProjectLineSegment(mouse_normal.x, mouse_normal.y);
+	//Normalize the mouse position
+	int height;
+	int width;
+	SDL_GetWindowSize(App->window->window, &width, &height);
+	float2 mouse_normal;/*(App->input->GetMouseX(), App->input->GetMouseY());*/
+	/*mouse_normal.x = (1.0f - (float(mouse_normal.x) * 2.0f) / width);
+	mouse_normal.y = -(1.0f - (float(mouse_normal.y) * 2.0f) / height);*/
+	mouse_normal.x = - 1.0 + 2.0 * App->input->GetMouseX() / width;
+	mouse_normal.y = 1.0 - 2.0 * App->input->GetMouseY() / height;
 
-	float ray_direction = ray_picking.Length();
+	//Pass the mouse position into the  ray projection of the camera frustum
+	ray_picking = my_camera->frustum.UnProjectLineSegment(mouse_normal.x, mouse_normal.y);
+	float ray_dist = ray_picking.Length();
 	GameObject* picked_obj = nullptr;
-
-	std::vector<GameObject*>::iterator iter = App->scene->game_objects.begin();
-	for (; iter != App->scene->game_objects.end(); ++iter)
+	for (std::vector<GameObject*>::iterator iter = App->scene->game_objects.begin(); iter != App->scene->game_objects.end(); ++iter)
 	{
-		(*iter)->LookForRayCollision(picked_obj, ray_picking, ray_direction);
+		(*iter)->LookForRayCollision(picked_obj, ray_picking, ray_dist);
 	}
 
 	if (picked_obj)
@@ -142,7 +143,6 @@ void ModuleCamera3D::CatchMousePicking()
 		App->scene->game_object_select = picked_obj;
 		App->scene->game_object_select->show_inspector_window = true;
 	}
-
 }
 bool ModuleCamera3D::Save(nlohmann::json& j) const
 {

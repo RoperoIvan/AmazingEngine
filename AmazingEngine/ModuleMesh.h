@@ -23,6 +23,7 @@ public:
 	bool LoadFBXFile(const char* file_name);
 	bool LoadTextureFile(const char* file_name);
 	bool IsCulling(Geometry* g);
+	bool ContainsABB(const AABB &b_box);
 	void ChangeTex(GameObject* object, const char* file_name, Image* tex = nullptr);
 	void DrawBoundingBoxes();
 	void DrawFrustums();

@@ -56,6 +56,12 @@ update_status ModuleMesh::PostUpdate(float dt)
 	if (App->guiManager->debug_draw)
 	{
 		glBegin(GL_LINES);
+		glLineWidth(0.2);
+		glColor3f(204, 255, 0.0f);
+		float3 a = App->camera->ray_picking.a;
+		float3 b = App->camera->ray_picking.b;
+		glVertex3f(a.x, a.y, a.z);
+		glVertex3f(b.x, b.y, b.z);
 		DrawFrustums();
 		DrawBoundingBoxes();
 		glEnd();
@@ -183,9 +189,29 @@ bool ModuleMesh::LoadTextureFile(const char * file_name)
 }
 
 bool ModuleMesh::IsCulling(Geometry * g)
-{
-	bool ret = App->scene->current_camera->frustum.Contains(g->GetParentObject()->bounding_box);
+{	
+	bool ret = ContainsABB(g->GetParentObject()->bounding_box);
 	return ret;
+}
+
+bool ModuleMesh::ContainsABB(const AABB & b_box)
+{
+	float3 b_corners[8];
+	b_box.GetCornerPoints(b_corners);
+
+	for (uint plane_sides = 0; plane_sides < 6; ++plane_sides)
+	{
+		int inside_corners = 8;
+		for (uint point = 0; point < 8; ++point)
+		{
+			if (App->scene->current_camera->frustum.GetPlane(plane_sides).IsOnPositiveSide(b_corners[point]))
+				--inside_corners;
+		}
+		// We dont need to know (at the moment) the exact number of corners that are in
+		if (inside_corners == 0) //We just look if some corner is inside to cull or not
+			return false;
+	}
+	return true;
 }
 
 void ModuleMesh::ChangeTex(GameObject* object, const char* file_name, Image* texture)

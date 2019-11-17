@@ -23,7 +23,6 @@ public:
 	bool Save(nlohmann::json &j) const override;
 	bool Load(nlohmann::json &j) override;
 
-	void Move(const float3 &Movement);
 	void CameraControls(float dt);
 	void GoAroundGeometry(GameObject* obj);
 	void CatchMousePicking();

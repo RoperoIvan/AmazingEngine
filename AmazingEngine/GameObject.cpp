@@ -338,7 +338,7 @@ void GameObject::LookForRayCollision(GameObject* &near_one, LineSegment & ray_se
 		{
 			if (children[i]->bounding_box.IsFinite())
 			{
-				if (ray_segment.Intersects(children[i]->bounding_box))
+				if (ray_segment.Intersects(children[i]->bounding_box))//TODO: Fix why this dont work when far away
 				{
 					children[i]->LookForMeshCollision(near_one, ray_segment, from_origin_dist);
 				}
@@ -358,17 +358,26 @@ void GameObject::LookForMeshCollision(GameObject * &near_one, LineSegment & ray_
 	float* vertices = (float*)((Geometry*)mesh)->vertices;
 	uint* indices = (uint*)((Geometry*)mesh)->indices;
 
-	math::Triangle triangle;
-
-	math::LineSegment segment_localized(ray_segment);
+	//Changin the ray into local space of the game objects
+	LineSegment segment_localized = ray_segment;
 	float4x4 inverted_m = transform->global_matrix.Transposed().Inverted();
 	segment_localized = inverted_m*segment_localized;
-
-	for (int j = 0; j < ((Geometry*)mesh)->num_indices;)
+	Triangle triangle;
+	for (int j = 0; j < ((Geometry*)mesh)->num_indices; j += 3)
 	{
-		triangle.a.Set(&vertices[indices[j++] * 3]);
-		triangle.b.Set(&vertices[indices[j++] * 3]);
-		triangle.c.Set(&vertices[indices[j++] * 3]);
+
+		triangle.a.x = vertices[indices[j]];
+		triangle.a.y = vertices[indices[j] + 1];
+		triangle.a.z = vertices[indices[j] + 2];
+
+		triangle.b.x = vertices[indices[j + 1]];
+		triangle.b.y = vertices[indices[j + 1] + 1];
+		triangle.b.z = vertices[indices[j + 1] + 2];
+
+		triangle.c.x = vertices[indices[j + 2]];
+		triangle.c.y = vertices[indices[j + 2] + 1];
+		triangle.c.z = vertices[indices[j + 2] + 2];
+
 
 		float tmp_distance;
 		if (segment_localized.Intersects(triangle, &tmp_distance, nullptr))
