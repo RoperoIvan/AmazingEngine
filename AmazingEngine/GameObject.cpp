@@ -330,7 +330,7 @@ void GameObject::ShowNormalsFaces(const bool& x)
 
 }
 
-void GameObject::LookForRayCollision(GameObject* &near_one, LineSegment & ray_segment, float & from_origin_dist)
+void GameObject::LookForRayCollision(GameObject* &near_one, LineSegment ray_segment, float & from_origin_dist, std::vector<MouseHit>& hit)
 {
 	for (int i = 0; i < children.size(); ++i)
 	{
@@ -338,11 +338,11 @@ void GameObject::LookForRayCollision(GameObject* &near_one, LineSegment & ray_se
 		{
 			if (children[i]->bounding_box.IsFinite())
 			{
-				if (ray_segment.Intersects(children[i]->bounding_box))//TODO: Fix why this dont work when far away
+				if (ray_segment.Intersects(children[i]->bounding_box))
 				{
-					children[i]->LookForMeshCollision(near_one, ray_segment, from_origin_dist);
+					children[i]->LookForMeshCollision(near_one, ray_segment, from_origin_dist, hit);
 				}
-				children[i]->LookForRayCollision(near_one, ray_segment, from_origin_dist);
+				children[i]->LookForRayCollision(near_one, ray_segment, from_origin_dist, hit);
 			}
 		}
 		
@@ -350,7 +350,7 @@ void GameObject::LookForRayCollision(GameObject* &near_one, LineSegment & ray_se
 
 }
 
-void GameObject::LookForMeshCollision(GameObject * &near_one, LineSegment & ray_segment, float & from_origin_dist)
+void GameObject::LookForMeshCollision(GameObject * &near_one, LineSegment ray_segment, float & from_origin_dist, std::vector<MouseHit>& hit)
 {
 	Transform* transform = (Transform*)GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM);
 	Geometry* mesh = (Geometry*)GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH);
@@ -363,30 +363,19 @@ void GameObject::LookForMeshCollision(GameObject * &near_one, LineSegment & ray_
 	float4x4 inverted_m = transform->global_matrix.Transposed().Inverted();
 	segment_localized = inverted_m*segment_localized;
 	Triangle triangle;
-	for (int j = 0; j < ((Geometry*)mesh)->num_indices; j += 3)
+	float tmp_distance;
+	for (int j = 0; j < ((Geometry*)mesh)->num_indices;/* j += 3*/)
 	{
+		triangle.a.Set(&vertices[indices[j++] * 3]);
+		triangle.b.Set(&vertices[indices[j++] * 3]);
+		triangle.c.Set(&vertices[indices[j++] * 3]);
 
-		triangle.a.x = vertices[indices[j]];
-		triangle.a.y = vertices[indices[j] + 1];
-		triangle.a.z = vertices[indices[j] + 2];
-
-		triangle.b.x = vertices[indices[j + 1]];
-		triangle.b.y = vertices[indices[j + 1] + 1];
-		triangle.b.z = vertices[indices[j + 1] + 2];
-
-		triangle.c.x = vertices[indices[j + 2]];
-		triangle.c.y = vertices[indices[j + 2] + 1];
-		triangle.c.z = vertices[indices[j + 2] + 2];
-
-
-		float tmp_distance;
 		if (segment_localized.Intersects(triangle, &tmp_distance, nullptr))
 		{
-			if (tmp_distance < from_origin_dist)
-			{
-				from_origin_dist = tmp_distance;
-				near_one = this;
-			}
+			MouseHit m_hit;
+			m_hit.distance = tmp_distance;
+			m_hit.object = this;
+			hit.push_back(m_hit);
 		}
 	}
 }

@@ -9,6 +9,20 @@
 
 class GameObject;
 
+struct MouseHit
+{
+	float distance = 0.f;
+	GameObject* object = nullptr;
+};
+
+struct less_than_key
+{
+	inline bool operator() (const MouseHit& struct1, const MouseHit& struct2)
+	{
+		return (struct1.distance < struct2.distance);
+	}
+};
+
 class ModuleCamera3D : public Module
 {
 public:
@@ -22,7 +36,7 @@ public:
 
 	bool Save(nlohmann::json &j) const override;
 	bool Load(nlohmann::json &j) override;
-
+	bool LittleThan(float i, float j) { return i < j; }
 	void CameraControls(float dt);
 	void GoAroundGeometry(GameObject* obj);
 	void CatchMousePicking();

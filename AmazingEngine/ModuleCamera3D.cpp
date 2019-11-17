@@ -27,7 +27,7 @@ bool ModuleCamera3D::Start()
 update_status ModuleCamera3D::PreUpdate(float dt)
 {
 	bool ret = true;
-	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && !write)
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN && !write)
 		CatchMousePicking();
 
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
@@ -123,26 +123,34 @@ void ModuleCamera3D::CatchMousePicking()
 	int height;
 	int width;
 	SDL_GetWindowSize(App->window->window, &width, &height);
-	float2 mouse_normal;/*(App->input->GetMouseX(), App->input->GetMouseY());*/
-	/*mouse_normal.x = (1.0f - (float(mouse_normal.x) * 2.0f) / width);
-	mouse_normal.y = -(1.0f - (float(mouse_normal.y) * 2.0f) / height);*/
+	float2 mouse_normal;
 	mouse_normal.x = - 1.0 + 2.0 * App->input->GetMouseX() / width;
 	mouse_normal.y = 1.0 - 2.0 * App->input->GetMouseY() / height;
 
+	//Create the list of distances and objects that we will use to select the closest gameobject that was hit
+	/*std::map<float, GameObject*> hits_objects_distance;*/
+	std::vector<MouseHit> hit;
 	//Pass the mouse position into the  ray projection of the camera frustum
 	ray_picking = my_camera->frustum.UnProjectLineSegment(mouse_normal.x, mouse_normal.y);
 	float ray_dist = ray_picking.Length();
 	GameObject* picked_obj = nullptr;
 	for (std::vector<GameObject*>::iterator iter = App->scene->game_objects.begin(); iter != App->scene->game_objects.end(); ++iter)
 	{
-		(*iter)->LookForRayCollision(picked_obj, ray_picking, ray_dist);
+		(*iter)->LookForRayCollision(picked_obj, ray_picking, ray_dist, hit);
 	}
-
-	if (picked_obj)
+	if (!hit.empty())
 	{
-		App->scene->game_object_select = picked_obj;
-		App->scene->game_object_select->show_inspector_window = true;
+		std::sort(hit.begin(), hit.end(), less_than_key());
+		std::vector<MouseHit>::iterator it = hit.begin();
+		picked_obj = (*it).object;
+		if (picked_obj)
+		{
+			App->scene->game_object_select = picked_obj;
+			App->scene->game_object_select->show_inspector_window = true;
+		}
 	}
+	
+	
 }
 bool ModuleCamera3D::Save(nlohmann::json& j) const
 {

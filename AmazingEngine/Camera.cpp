@@ -46,7 +46,7 @@ void Camera::LoadCameraOptions()
 {
 	float z_near = 0.f;
 	float z_far = 0.f;
-	if (ImGui::DragFloat("FOV", &frustum.verticalFov, 0, 1, 1));
+	if (ImGui::DragFloat("FOV", &frustum.verticalFov, 0, 1, 1))
 	{
 		frustum.horizontalFov = atanf(tan(frustum.verticalFov * 0.5) * ((float)16 / (float)9)) * 2;
 	}
