@@ -330,7 +330,7 @@ void GameObject::ShowNormalsFaces(const bool& x)
 
 }
 
-void GameObject::LookForRayCollision(GameObject* &near_one, LineSegment ray_segment, float & from_origin_dist, std::vector<MouseHit>& hit)
+void GameObject::LookForRayCollision(LineSegment ray_segment, std::vector<MouseHit>& hit)
 {
 	for (int i = 0; i < children.size(); ++i)
 	{
@@ -340,9 +340,9 @@ void GameObject::LookForRayCollision(GameObject* &near_one, LineSegment ray_segm
 			{
 				if (ray_segment.Intersects(children[i]->bounding_box))
 				{
-					children[i]->LookForMeshCollision(near_one, ray_segment, from_origin_dist, hit);
+					children[i]->LookForMeshCollision(ray_segment, hit);
 				}
-				children[i]->LookForRayCollision(near_one, ray_segment, from_origin_dist, hit);
+				children[i]->LookForRayCollision(ray_segment, hit);
 			}
 		}
 		
@@ -350,7 +350,7 @@ void GameObject::LookForRayCollision(GameObject* &near_one, LineSegment ray_segm
 
 }
 
-void GameObject::LookForMeshCollision(GameObject * &near_one, LineSegment ray_segment, float & from_origin_dist, std::vector<MouseHit>& hit)
+void GameObject::LookForMeshCollision(LineSegment ray_segment, std::vector<MouseHit>& hit)
 {
 	Transform* transform = (Transform*)GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM);
 	Geometry* mesh = (Geometry*)GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH);
@@ -362,16 +362,18 @@ void GameObject::LookForMeshCollision(GameObject * &near_one, LineSegment ray_se
 	LineSegment segment_localized = ray_segment;
 	float4x4 inverted_m = transform->global_matrix.Transposed().Inverted();
 	segment_localized = inverted_m*segment_localized;
-	Triangle triangle;
-	float tmp_distance;
-	for (int j = 0; j < ((Geometry*)mesh)->num_indices;/* j += 3*/)
+
+	for (int j = 0; j < ((Geometry*)mesh)->num_indices;)
 	{
+		Triangle triangle;
 		triangle.a.Set(&vertices[indices[j++] * 3]);
 		triangle.b.Set(&vertices[indices[j++] * 3]);
 		triangle.c.Set(&vertices[indices[j++] * 3]);
 
+		float tmp_distance;
 		if (segment_localized.Intersects(triangle, &tmp_distance, nullptr))
 		{
+			//Save all the hits
 			MouseHit m_hit;
 			m_hit.distance = tmp_distance;
 			m_hit.object = this;

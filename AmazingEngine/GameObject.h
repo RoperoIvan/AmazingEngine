@@ -25,8 +25,8 @@ public:
 	void ShowPropertiesObject(GameObject* , uint&, uint&);
 	void ShowNormalsVertices(const bool&);
 	void ShowNormalsFaces(const bool&);
-	void LookForRayCollision(GameObject* &near_one, LineSegment ray_segment, float& from_origin_dist, std::vector<MouseHit>& hit);
-	void LookForMeshCollision(GameObject* &near_one, LineSegment ray_segment, float& from_origin_dist, std::vector<MouseHit>& hit);
+	void LookForRayCollision(LineSegment ray_segment, std::vector<MouseHit>& hit);
+	void LookForMeshCollision(LineSegment ray_segment, std::vector<MouseHit>& hit);
 	void AddComponent(Component* comp)
 	{
 		components.push_back(comp);

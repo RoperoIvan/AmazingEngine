@@ -128,29 +128,28 @@ void ModuleCamera3D::CatchMousePicking()
 	mouse_normal.y = 1.0 - 2.0 * App->input->GetMouseY() / height;
 
 	//Create the list of distances and objects that we will use to select the closest gameobject that was hit
-	/*std::map<float, GameObject*> hits_objects_distance;*/
 	std::vector<MouseHit> hit;
+
 	//Pass the mouse position into the  ray projection of the camera frustum
 	ray_picking = my_camera->frustum.UnProjectLineSegment(mouse_normal.x, mouse_normal.y);
-	float ray_dist = ray_picking.Length();
-	GameObject* picked_obj = nullptr;
+
 	for (std::vector<GameObject*>::iterator iter = App->scene->game_objects.begin(); iter != App->scene->game_objects.end(); ++iter)
 	{
-		(*iter)->LookForRayCollision(picked_obj, ray_picking, ray_dist, hit);
+		(*iter)->LookForRayCollision(ray_picking, hit);
 	}
 	if (!hit.empty())
 	{
+		//We order all the hits from closer to furthest
 		std::sort(hit.begin(), hit.end(), less_than_key());
 		std::vector<MouseHit>::iterator it = hit.begin();
-		picked_obj = (*it).object;
-		if (picked_obj)
+		if ((*it).object)
 		{
-			App->scene->game_object_select = picked_obj;
+			//Assign the closest one to object_selector
+			App->scene->game_object_select = (*it).object;
 			App->scene->game_object_select->show_inspector_window = true;
 		}
+		hit.clear();
 	}
-	
-	
 }
 bool ModuleCamera3D::Save(nlohmann::json& j) const
 {
