@@ -405,6 +405,8 @@ void GameObject::SaveMesh(FILE* file)
 		std::fprintf(file, "parentID: %i;\n", 0);
 
 	std::fprintf(file, "ID: %i;\n", ID);
+
+	std::fprintf(file, "name: %s;\n", name.c_str());
 	for (std::vector<Component*>::iterator comp = components.begin(); comp != components.end(); ++comp)
 	{
 		if ((*comp)->type == COMPONENT_TYPE::COMPONENT_MESH)
@@ -426,6 +428,8 @@ void GameObject::ImportMesh(char* &cursor, char* end_object)
 	std::stringstream convertor(App->file_system->DataValue(cursor, "ID:", 10));
 	convertor >> ID;
 
+	name.assign(App->file_system->DataValue(cursor, "name:", 20));
+	name.pop_back();
 	char* vertex = strstr(cursor, "vertices:");
 	if (vertex < end_object)
 	{

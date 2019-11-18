@@ -49,6 +49,8 @@ public:
 
 	math::AABB bounding_box;
 	bool show_bounding_box = false;
+
+	bool is_static;
 };
 
 #endif
