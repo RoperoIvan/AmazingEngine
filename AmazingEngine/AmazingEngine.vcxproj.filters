@@ -182,6 +182,9 @@
     <ClCompile Include="FileSystem.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Octree.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GuiManager.h">
@@ -480,6 +483,9 @@
     </ClInclude>
     <ClInclude Include="FileSystem.h">
       <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Octree.h">
+      <Filter>Tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

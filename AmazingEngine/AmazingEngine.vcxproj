@@ -169,6 +169,7 @@
     <ClInclude Include="ModuleInput.h" />
     <ClInclude Include="ModuleScene.h" />
     <ClInclude Include="ModuleWindow.h" />
+    <ClInclude Include="Octree.h" />
     <ClInclude Include="par_shapes.h" />
     <ClInclude Include="PhysFS\include\physfs.h" />
     <ClInclude Include="Timer.h" />
@@ -233,6 +234,7 @@
     <ClCompile Include="ModuleRenderer3D.cpp" />
     <ClCompile Include="ModuleScene.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
+    <ClCompile Include="Octree.cpp" />
     <ClCompile Include="par_shapes.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Transform.cpp" />
