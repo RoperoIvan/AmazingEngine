@@ -108,63 +108,12 @@ void Geometry::DebugDraw()
 void Geometry::Update()
 {
 	if (App->guiManager->frustum_culling)
-	glPushMatrix();
-	if (transform->global_matrix.IsInvertible())
-		glMultMatrixf((GLfloat*)&transform->global_matrix.Transposed());
-	glPushAttrib(GL_CURRENT_BIT);
-	glColor4f(r, g, b, a);
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	if (texture != nullptr)
 	{
 		if (App->mesh->IsCulling(this))
 			DrawMesh();
 	}
 	else
-	{
-
-		glPushAttrib(GL_CURRENT_BIT);
-		glColor4f(r, g, b, a);
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id_indices);
-		glVertexPointer(3, GL_FLOAT, 0, NULL);
-		if (texture != nullptr)
-		{
-			if (texture->texture_id != 0 && texture->show)
-			{
-				//Bind textures
-				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-				glBindTexture(GL_TEXTURE_2D, 0);
-				glBindTexture(GL_TEXTURE_2D, texture->texture_id);
-				glBindBuffer(GL_ARRAY_BUFFER, id_coords);
-				glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-			}
-		}
-		else
-			glColor4f(r, g, b, a);
-
-		glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, NULL);
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glPopAttrib();
-
-		DebugDraw();
-
-
-	}
-	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, NULL);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glPopAttrib();
-	glPopMatrix();
-	DebugDraw();
-	DrawMesh();
+		DrawMesh();
 }
 
 void Geometry::LoadData(aiMesh* mesh)
@@ -465,4 +414,6 @@ void Geometry::ImportNewMesh(char*& cursor)
 		++j;
 	}
 	LoadBuffers();
+
+	CalculateParentBoundingBox(parent);
 }
