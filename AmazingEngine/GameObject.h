@@ -8,6 +8,8 @@
 #include "MathGeoLib/include/Geometry/AABB.h"
 
 class Geometry;
+struct MouseHit;
+struct less_than_key;
 
 class GameObject
 {
@@ -18,19 +20,19 @@ public:
 	void Update();
 
 	Component* CreateComponent(COMPONENT_TYPE type);
-	Component* CreateCamera(float z_near, float z_far);
 	virtual void GetHierarcy();
-
 	void GetPropierties();
-
 	void ShowPropertiesObject(GameObject* , uint&, uint&);
-
 	void ShowNormalsVertices(const bool&);
 	void ShowNormalsFaces(const bool&);
-
-
 	void SaveMesh(FILE*);
 	void ImportMesh(char* &cursor, char* end_object);
+
+	void LookForRayCollision(LineSegment ray_segment, std::vector<MouseHit>& hit);
+	void LookForMeshCollision(LineSegment ray_segment, std::vector<MouseHit>& hit);
+	void AddComponent(Component* comp) { components.push_back(comp); }
+	Component* GetComponentByType(COMPONENT_TYPE type);
+
 public:
 	std::string name;
 	int ID;

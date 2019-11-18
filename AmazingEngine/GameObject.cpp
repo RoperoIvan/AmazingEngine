@@ -100,7 +100,8 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 		components.push_back(component);
 		break;
 	case COMPONENT_TYPE::COMPONENT_CAMERA: // TODO: Need to change that so you can create the camera from here
-		//component = new Camera(this);
+		component = new Camera(this);
+		//App->mesh->current_camera = (Camera*)component; //TODO: Move this to a function where you choose the main camera
 		components.push_back(component);
 		break;
 	case COMPONENT_TYPE::NO_COMPONENT:
@@ -108,16 +109,6 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	default:
 		break;
 	}
-	return component;
-}
-
-Component * GameObject::CreateCamera(float z_near, float z_far)
-{
-	this->name = "Camera " + std::to_string(App->scene->game_objects.size());
-	Component* component = nullptr;
-	component = new Camera(this, z_near, z_far);
-	App->mesh->current_camera = (Camera*)component; //TODO: Move this to a function where you choose the main camera
-	components.push_back(component);
 	return component;
 }
 
@@ -236,6 +227,17 @@ void GameObject::GetPropierties()
 			}
 			++it;
 		}
+		std::vector<Component*>::iterator it2 = components.begin();
+
+		while (it != components.end())
+		{
+			if ((*it)->type == COMPONENT_TYPE::COMPONENT_CAMERA)
+			{
+				dynamic_cast<Camera*>(*it2)->LoadCameraOptions();
+				break;
+			}
+			++it;
+		}
 		if (ImGui::CollapsingHeader("Information"))
 		{
 			uint num_vertices = 0;
@@ -253,15 +255,15 @@ void GameObject::GetPropierties()
 		}
 		
 		Component* tex = nullptr;
-		std::vector<Component*>::iterator it2 = components.begin();
-		while (it2 != components.end())
+		std::vector<Component*>::iterator it3 = components.begin();
+		while (it3 != components.end())
 		{
-			if ((*it2)->type == COMPONENT_TYPE::COMPONENT_MATERIAL)
+			if ((*it3)->type == COMPONENT_TYPE::COMPONENT_MATERIAL)
 			{
-				tex = *it2;
+				tex = *it3;
 				break;
 			}
-			++it2;
+			++it3;
 		}
 		if(tex != nullptr)
 			id = tex->GetTextureId();
@@ -284,8 +286,6 @@ void GameObject::GetPropierties()
 				}
 				ImGui::Checkbox("show", &tex->show);
 				ImGui::SameLine;
-				/*if (ImGui::Button("Delete"))
-					App->scene->DeleteTexture(dynamic_cast<Image*>(tex));*/
 				ImVec2 size = { 200,200 };
 				ImGui::Image((ImTextureID)id, size);
 				ImGui::TextColored(ImVec4(255, 255, 0, 255), " Size: %i x %i", tex->tex_dimension[0], tex->tex_dimension[1]);
@@ -314,8 +314,6 @@ void GameObject::ShowPropertiesObject(GameObject* object, uint& ntriangles, uint
 			ShowPropertiesObject(*iter, ntriangles, nvertices);
 		}
 	}
-
-	
 }
 
 void GameObject::ShowNormalsVertices(const bool& x)
@@ -335,6 +333,68 @@ void GameObject::ShowNormalsFaces(const bool& x)
 
 }
 
+void GameObject::LookForRayCollision(LineSegment ray_segment, std::vector<MouseHit>& hit)
+{
+	for (int i = 0; i < children.size(); ++i)
+	{
+		if(children[i] != nullptr)
+		{
+			if (children[i]->bounding_box.IsFinite())
+			{
+				if (ray_segment.Intersects(children[i]->bounding_box))
+				{
+					children[i]->LookForMeshCollision(ray_segment, hit);
+				}
+				children[i]->LookForRayCollision(ray_segment, hit);
+			}
+		}
+		
+	}
+
+}
+
+void GameObject::LookForMeshCollision(LineSegment ray_segment, std::vector<MouseHit>& hit)
+{
+	Transform* transform = (Transform*)GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM);
+	Geometry* mesh = (Geometry*)GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH);
+
+	float* vertices = (float*)((Geometry*)mesh)->vertices;
+	uint* indices = (uint*)((Geometry*)mesh)->indices;
+
+	//Changin the ray into local space of the game objects
+	LineSegment segment_localized = ray_segment;
+	float4x4 inverted_m = transform->global_matrix.Transposed().Inverted();
+	segment_localized = inverted_m*segment_localized;
+
+	for (int j = 0; j < ((Geometry*)mesh)->num_indices;)
+	{
+		Triangle triangle;
+		triangle.a.Set(&vertices[indices[j++] * 3]);
+		triangle.b.Set(&vertices[indices[j++] * 3]);
+		triangle.c.Set(&vertices[indices[j++] * 3]);
+
+		float tmp_distance;
+		if (segment_localized.Intersects(triangle, &tmp_distance, nullptr))
+		{
+			//Save all the hits
+			MouseHit m_hit;
+			m_hit.distance = tmp_distance;
+			m_hit.object = this;
+			hit.push_back(m_hit);
+		}
+	}
+}
+
+Component * GameObject::GetComponentByType(COMPONENT_TYPE type)
+{
+	for (std::vector<Component*>::iterator iter = components.begin(); iter < components.end(); ++iter)
+	{
+		if ((*iter)->type == type)
+			return (*iter);
+	}
+	return false;
+}
+
 void GameObject::SaveMesh(FILE* file)
 {
 	std::fputs("GameObject:\n", file);
@@ -348,14 +408,14 @@ void GameObject::SaveMesh(FILE* file)
 	for (std::vector<Component*>::iterator comp = components.begin(); comp != components.end(); ++comp)
 	{
 		if ((*comp)->type == COMPONENT_TYPE::COMPONENT_MESH)
-			 dynamic_cast<Geometry*>(*comp)->Save(file);
+			dynamic_cast<Geometry*>(*comp)->Save(file);
 	}
 	std::fprintf(file, "//\n", ID);
 	if (children.size() > 0)
 	{
 		for (std::vector<GameObject*>::iterator iter = children.begin(); iter < children.end(); ++iter)
 		{
-			(*iter)->SaveMesh(file);		
+			(*iter)->SaveMesh(file);
 		}
 	}
 }

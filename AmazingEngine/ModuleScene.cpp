@@ -24,15 +24,16 @@ ModuleScene::~ModuleScene()
 
 bool ModuleScene::Init()
 {
-	GameObject* test_camera = new GameObject();
-	game_objects.push_back(test_camera);
-	test_camera->CreateCamera(0.1, 10);
+	App->camera->my_camera = new Camera(nullptr);
+	current_camera = App->camera->my_camera;
 
 	return true;
 }
 
 bool ModuleScene::Start()
 {
+	App->camera->my_camera->frustum.pos = { 3,3,3 };
+	App->camera->my_camera->Look(float3(0, 0, 0));
 	App->mesh->LoadFile("..\\Assets\\BakerHouse.fbx");
 	return true;
 }
@@ -103,7 +104,7 @@ void ModuleScene::DrawPlane()
 
 update_status ModuleScene::PostUpdate(float dt)
 {
-	game_object_select = nullptr;
+	//game_object_select = nullptr;
 	for (std::vector<GameObject*>::iterator object = game_objects.begin(); object != game_objects.end(); ++object)
 	{
 		(*object)->Update();

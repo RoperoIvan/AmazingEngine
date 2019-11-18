@@ -38,6 +38,7 @@ public:
 	void Save(FILE*);
 
 	void ImportNewMesh(char* &cursor);
+	void DrawMesh();
 private:
 
 	void CalculateParentBoundingBox(GameObject* object);

@@ -56,6 +56,12 @@ update_status ModuleMesh::PostUpdate(float dt)
 	if (App->guiManager->debug_draw)
 	{
 		glBegin(GL_LINES);
+		glLineWidth(0.2);
+		glColor3f(204, 255, 0.0f);
+		float3 a = App->camera->ray_picking.a;
+		float3 b = App->camera->ray_picking.b;
+		glVertex3f(a.x, a.y, a.z);
+		glVertex3f(b.x, b.y, b.z);
 		DrawFrustums();
 		DrawBoundingBoxes();
 		glEnd();
@@ -183,8 +189,29 @@ bool ModuleMesh::LoadTextureFile(const char * file_name)
 }
 
 bool ModuleMesh::IsCulling(Geometry * g)
+{	
+	bool ret = ContainsABB(g->GetParentObject()->bounding_box);
+	return ret;
+}
+
+bool ModuleMesh::ContainsABB(const AABB & b_box)
 {
-	return current_camera->frustum.Contains(g->GetParentObject()->bounding_box);
+	float3 b_corners[8];
+	b_box.GetCornerPoints(b_corners);
+
+	for (uint plane_sides = 0; plane_sides < 6; ++plane_sides)
+	{
+		int inside_corners = 8;
+		for (uint point = 0; point < 8; ++point)
+		{
+			if (App->scene->current_camera->frustum.GetPlane(plane_sides).IsOnPositiveSide(b_corners[point]))
+				--inside_corners;
+		}
+		// We dont need to know (at the moment) the exact number of corners that are in
+		if (inside_corners == 0) //We just look if some corner is inside to cull or not
+			return false;
+	}
+	return true;
 }
 
 void ModuleMesh::ChangeTex(GameObject* object, const char* file_name, Image* texture)
@@ -281,7 +308,7 @@ void ModuleMesh::DrawFrustums()
 			glVertex3f(c_frustums.front()->CornerPoint(i + 4).x, c_frustums.front()->CornerPoint(i + 4).y, c_frustums.front()->CornerPoint(i + 4).z);
 			glVertex3f(c_frustums.front()->CornerPoint(i).x, c_frustums.front()->CornerPoint(i).y, c_frustums.front()->CornerPoint(i).z);
 		}
-		//Create the vertices that define the cubes faces that form the mesh box
+		//Create the vertices that define the cubes faces that form the frustum box
 		for (int i = 0; i <= 4; i += 4)
 		{
 			glVertex3f(c_frustums.front()->CornerPoint(i).x, c_frustums.front()->CornerPoint(i).y, c_frustums.front()->CornerPoint(i).z);
@@ -296,7 +323,7 @@ void ModuleMesh::DrawFrustums()
 			glVertex3f(c_frustums.front()->CornerPoint(i + 1).x, c_frustums.front()->CornerPoint(i + 1).y, c_frustums.front()->CornerPoint(i + 1).z);
 			glVertex3f(c_frustums.front()->CornerPoint(i + 3).x, c_frustums.front()->CornerPoint(i + 3).y, c_frustums.front()->CornerPoint(i + 3).z);
 		}
-		//We pop from the queue because we need to maintain update it for future changes in the gameobject's bounding box 
+		//We pop from the queue because we need to maintain update it for future changes in the gameobject's frustum
 		c_frustums.pop();
 	}
 }

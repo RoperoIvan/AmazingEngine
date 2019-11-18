@@ -28,8 +28,6 @@ public:
 	float brightness = 1.0f;
 	//The surface contained by the window
 	SDL_Surface* screen_surface;
-	//Aspect ratio of the current window
-	float current_aspect_ratio = 0.f;
 };
 
 #endif // __ModuleWindow_H__
