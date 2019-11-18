@@ -27,6 +27,10 @@ bool ModuleScene::Init()
 	App->camera->my_camera = new Camera(nullptr);
 	current_camera = App->camera->my_camera;
 
+	float3 aux[8] = { float3(-100,-100,-100),float3(-100,-100,100), float3(-100,100,-100), float3(-100,100,100), float3(100,-100,-100), float3(100,-100,100), float3(100,100,-100), float3(100,100,100) };
+	AABB first;
+	first.Enclose(&aux[0], 8);
+	octree = new Octree(first, 2);
 	return true;
 }
 

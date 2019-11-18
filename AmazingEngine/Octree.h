@@ -17,6 +17,8 @@ public:
 
 	void Subdivide();
 
+	void Draw();
+
 private:
 	std::vector<GameObject*> static_objects;
 	std::vector<Octree*> childs;

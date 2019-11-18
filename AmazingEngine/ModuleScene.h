@@ -6,7 +6,7 @@
 #include "GameObject.h"
 #include "Image.h"
 #include "Camera.h"
-
+#include "Octree.h"
 class ModuleScene : public Module
 {
 public:
@@ -30,5 +30,7 @@ public:
 	std::vector<GameObject*> game_objects;
 	std::vector<Image*> textures;
 	GameObject* game_object_select = nullptr;
+
+	Octree* octree;
 };
 #endif
