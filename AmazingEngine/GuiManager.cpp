@@ -11,6 +11,7 @@
 #include "ImGui/imgui.h"
 #include"ImGui/imgui_impl_opengl3.h"
 #include "ImGui/imgui_impl_sdl.h"
+#include "ImGui/ImGuizmo.h"
 #include "SDL/include/SDL.h"
 #include "SDL/include/SDL_opengl.h"
 #include <fstream>
@@ -47,7 +48,8 @@ update_status GuiManager::PreUpdate(float dt)
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
-	ImGui::ShowDemoWindow();
+	ImGuizmo::BeginFrame();
+	//ImGui::ShowDemoWindow();
 	ManageUI(ret);
 	CheckDrop();	
 
@@ -763,10 +765,14 @@ void GuiManager::RenderTab()
 {
 	if (ImGui::CollapsingHeader("Render"))
 	{
-		if (ImGui::DragFloat("FOV", &App->scene->current_camera->frustum.verticalFov, 0.1, 0.1));
+		ImGui::Text("Editor Camera Settings");
+		if (ImGui::SliderFloat("FOV", &App->scene->current_camera->fovindegrees, 1, 360))
 		{
-			App->scene->current_camera->frustum.horizontalFov = atanf(tan(App->scene->current_camera->frustum.verticalFov * 0.5) * ((float)16 / (float)9)) * 2;
+			float2 w_size = App->window->GetWindowSettings();
+			App->scene->current_camera->frustum.verticalFov = App->scene->current_camera->frustum.nearPlaneDistance * tanf(App->scene->current_camera->fovindegrees * pi / 360.0f);
+			App->scene->current_camera->frustum.horizontalFov = App->scene->current_camera->frustum.verticalFov *  App->scene->current_camera->aspect_ratio;
 		}
+
 		ImGui::DragFloat("Near-Z Plane", &App->scene->current_camera->frustum.nearPlaneDistance, 0.1, 0.0, App->scene->current_camera->frustum.farPlaneDistance);
 		ImGui::DragFloat("Far-Z Plane", &App->scene->current_camera->frustum.farPlaneDistance, 0.1);
 		ImGui::Separator();

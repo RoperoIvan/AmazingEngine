@@ -112,3 +112,12 @@ void ModuleWindow::SetTitle(const char* title)
 	SDL_SetWindowTitle(window, title);
 }
 
+float2 ModuleWindow::GetWindowSettings()
+{
+	int height;
+	int width;
+	SDL_GetWindowSize(App->window->window, &width, &height);
+	float2 set(width, height);
+	return set;
+}
+

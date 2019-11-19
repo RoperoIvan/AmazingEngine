@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include "SDL/include/SDL.h"
+#include "MathGeoLib/include/MathGeoLib.h"
 
 class Application;
 
@@ -22,6 +23,8 @@ public:
 	bool Load(nlohmann::json &j) override;
 
 	void SetTitle(const char* title);
+
+	float2 GetWindowSettings();
 public:
 	//The window we'll be rendering to
 	SDL_Window* window;

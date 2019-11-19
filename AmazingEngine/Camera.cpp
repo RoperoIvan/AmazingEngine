@@ -11,8 +11,12 @@ Camera::Camera(GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT
 	frustum.front = float3::unitZ;
 	frustum.up = float3::unitY;
 	frustum.pos = float3::zero;
-	frustum.verticalFov = 1.0;
-	frustum.horizontalFov = atanf(tan(frustum.verticalFov * 0.5) * ((float)16/(float)9)) * 2;
+	aspect_ratio = (float)16 / (float)9;
+	int height;
+	int width;
+	SDL_GetWindowSize(App->window->window, &width, &height);
+	frustum.verticalFov = frustum.nearPlaneDistance * tanf(90 * pi / 360.0f);
+	frustum.horizontalFov = frustum.verticalFov * aspect_ratio;
 }
 
 Camera::~Camera()
@@ -45,10 +49,11 @@ float * Camera::GetViewMatrix()
 void Camera::LoadCameraOptions()
 {
 	float z_near = 0.f;
-	float z_far = 0.f;
-	if (ImGui::DragFloat("FOV", &frustum.verticalFov, 0, 1, 1))
+
+	if (ImGui::SliderFloat("FOV", &fovindegrees, 1, 360))
 	{
-		frustum.horizontalFov = atanf(tan(frustum.verticalFov * 0.5) * ((float)16 / (float)9)) * 2;
+		frustum.verticalFov = frustum.nearPlaneDistance * tanf(fovindegrees * pi / 360.0f);
+		frustum.horizontalFov = frustum.verticalFov * aspect_ratio;
 	}
 	ImGui::DragFloat("Near-Z Plane", &frustum.nearPlaneDistance, 0.1, 0.0, frustum.farPlaneDistance);
 	ImGui::DragFloat("Far-Z Plane", &frustum.nearPlaneDistance, 0.1);

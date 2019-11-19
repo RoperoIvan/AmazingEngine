@@ -56,14 +56,10 @@ update_status ModuleMesh::PostUpdate(float dt)
 	if (App->guiManager->debug_draw)
 	{
 		glBegin(GL_LINES);
-		glLineWidth(0.2);
-		glColor3f(204, 255, 0.0f);
-		float3 a = App->camera->ray_picking.a;
-		float3 b = App->camera->ray_picking.b;
-		glVertex3f(a.x, a.y, a.z);
-		glVertex3f(b.x, b.y, b.z);
+		AddFrustumBox(&App->scene->current_camera->frustum);
 		DrawFrustums();
 		DrawBoundingBoxes();
+		DrawRay();
 		glEnd();
 	}
 
@@ -326,6 +322,16 @@ void ModuleMesh::DrawFrustums()
 		//We pop from the queue because we need to maintain update it for future changes in the gameobject's frustum
 		c_frustums.pop();
 	}
+}
+
+void ModuleMesh::DrawRay()
+{
+	glLineWidth(0.2);
+	glColor3f(204, 255, 0.0f);
+	float3 a = App->camera->ray_picking.a;
+	float3 b = App->camera->ray_picking.b;
+	glVertex3f(a.x, a.y, a.z);
+	glVertex3f(b.x, b.y, b.z);
 }
 
 void ModuleMesh::AddFrustumBox(math::Frustum * c_frustum)

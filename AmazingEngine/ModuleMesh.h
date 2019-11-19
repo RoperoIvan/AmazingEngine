@@ -27,6 +27,7 @@ public:
 	void ChangeTex(GameObject* object, const char* file_name, Image* tex = nullptr);
 	void DrawBoundingBoxes();
 	void DrawFrustums();
+	void DrawRay();
 	void AddFrustumBox(math::Frustum* c_frustum);
 private:
 	float TriangleCenterAxis(const float &p1, const float &p2, const float &p3);
