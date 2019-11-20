@@ -38,7 +38,7 @@ bool ModuleScene::Init()
 bool ModuleScene::Start()
 {
 	App->camera->my_camera->frustum.pos = { 3,3,3 };
-	App->camera->my_camera->Look(float3(0, 0, 0));
+	App->camera->my_camera->Look(float3::zero);
 	App->mesh->LoadFile("..\\Assets\\BakerHouse.fbx");
 	return true;
 }

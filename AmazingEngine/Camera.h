@@ -17,10 +17,18 @@ public:
 	void Look(const float3 &Position);
 	float* GetViewMatrix();
 	void LoadCameraOptions();
+	float* GetTransformProjection()
+	{
+		float4x4 m_transpose = frustum.ProjectionMatrix();
+		m_transpose.Transpose();
+		return (float*)m_transpose.v;
+	}
 private:
 
 public:
 	math::Frustum frustum;
+	float fovindegrees = 90.f;
+	float aspect_ratio = 0.f;
 
 private:
 	float4x4 ViewMatrix, ViewMatrixInverse;

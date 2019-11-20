@@ -30,6 +30,7 @@ public:
 	{
 		return position;
 	}
+	//bool HandleGizmos();
 public:
 
 	math::float3 position = math::float3::zero;
