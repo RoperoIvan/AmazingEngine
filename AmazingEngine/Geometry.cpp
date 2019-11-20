@@ -63,8 +63,8 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 	transform = dynamic_cast<Transform*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 	texture = dynamic_cast<Image*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
 	
+	CalculateParentBoundingBox(parent);
 	LoadBuffers();
-
 }
 
 
@@ -107,13 +107,7 @@ void Geometry::DebugDraw()
 
 void Geometry::Update()
 {
-	if (App->guiManager->frustum_culling)
-	{
-		if (App->mesh->IsCulling(this))
-			DrawMesh();
-	}
-	else
-		DrawMesh();
+	
 }
 
 void Geometry::LoadData(aiMesh* mesh)
@@ -193,7 +187,8 @@ void Geometry::ActualitzateBuffer()
 void Geometry::DrawMesh()
 {
 	glPushMatrix();
-	glMultMatrixf((GLfloat*)&transform->global_matrix.Transposed());
+	if(transform != nullptr)
+		glMultMatrixf((GLfloat*)&transform->global_matrix.Transposed());
 	glPushAttrib(GL_CURRENT_BIT);
 	glColor4f(r, g, b, a);
 	glEnableClientState(GL_VERTEX_ARRAY);

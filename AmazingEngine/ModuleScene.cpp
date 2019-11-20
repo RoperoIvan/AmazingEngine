@@ -29,8 +29,9 @@ bool ModuleScene::Init()
 
 	float3 aux[8] = { float3(-100,-100,-100),float3(-100,-100,100), float3(-100,100,-100), float3(-100,100,100), float3(100,-100,-100), float3(100,-100,100), float3(100,100,-100), float3(100,100,100) };
 	AABB first;
+	first.SetNegativeInfinity();
 	first.Enclose(&aux[0], 8);
-	octree = new Octree(first, 2);
+	octree = new Octree(first, 2,4,1);
 	return true;
 }
 
@@ -44,7 +45,7 @@ bool ModuleScene::Start()
 
 update_status ModuleScene::PreUpdate(float dt)
 {
-
+	octree->Draw();
 	for (std::vector<GameObject*>::iterator object = game_objects.begin(); object != game_objects.end(); ++object)
 	{
 		if ((*object)->to_delete)
@@ -76,6 +77,26 @@ update_status ModuleScene::Update(float dt)
 		App->file_system->ImporScene(path);
 	}
 	DrawPlane();
+
+
+	if (App->guiManager->frustum_culling)
+	{
+		/*if (App->mesh->IsCulling(this))
+			DrawMesh();*/
+		std::vector<GameObject*> draw_objects;
+		App->scene->octree->Intersect(draw_objects);
+
+		for (std::vector<GameObject*>::iterator iter = draw_objects.begin(); iter != draw_objects.end(); ++iter)
+		{
+			(*iter)->Draw();
+		}
+		draw_objects.clear();
+	}
+	else
+		for (std::vector<GameObject*>::iterator iter = game_objects.begin(); iter != game_objects.end(); ++iter)
+		{
+			(*iter)->Draw();
+		}
 
 	return UPDATE_CONTINUE;
 }

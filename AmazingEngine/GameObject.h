@@ -18,6 +18,7 @@ public:
 	~GameObject();
 
 	void Update();
+	void Draw();
 
 	Component* CreateComponent(COMPONENT_TYPE type);
 	virtual void GetHierarcy();

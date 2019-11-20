@@ -3,7 +3,8 @@
 #include "Application.h"
 #include "ModuleMesh.h"
 
-Octree::Octree(AABB limits, uint max_objects_in_level):aabb(limits), max_objects(max_objects_in_level)
+Octree::Octree(AABB limits, uint max_objects_in_level, uint max_level, uint current_level)
+	:aabb(limits), max_objects(max_objects_in_level),max_levels(max_level),current_level(current_level)
 {
 }
 
@@ -38,7 +39,7 @@ void Octree::Insert(GameObject* object)
 
 	if (!is_divided)
 	{
-		if (max_objects < static_objects.size())
+		if (max_objects <= static_objects.size() && current_level <= max_levels)
 		{
 			Subdivide();
 			is_divided = true;
@@ -75,8 +76,18 @@ void Octree::Remove(GameObject* object)
 	}
 }
 
-void Octree::Intersect(GameObject*)
+void Octree::Intersect(std::vector<GameObject*>&frustum_objects)
 {
+	if (App->mesh->ContainsABB(aabb) || aabb.Contains(App->camera->my_camera->frustum))
+	{
+		//push objects inside aabb
+		for (std::vector<GameObject*>::iterator iter = static_objects.begin(); iter != static_objects.end(); ++iter)
+			frustum_objects.push_back(*iter);
+
+		if(is_divided)
+			for (std::vector<Octree*>::iterator iter = childs.begin(); iter != childs.end(); ++iter)
+				(*iter)->Intersect(frustum_objects);
+	}
 }
 
 void Octree::Subdivide()
@@ -92,9 +103,10 @@ void Octree::Subdivide()
 	aabb_points[6] = aabb.FaceCenterPoint(4);//-Z
 	aabb_points[7] = aabb.CenterPoint();
 	math::AABB new_aabb;
+	new_aabb.SetNegativeInfinity();
 	new_aabb.Enclose(&aabb_points[0], 8);
 	
-	Octree* node0 = new Octree(new_aabb,max_objects);
+	Octree* node0 = new Octree(new_aabb,max_objects,max_levels,current_level + 1);
 	childs.push_back(node0);
 
 	//2 division left-up-front
@@ -109,7 +121,7 @@ void Octree::Subdivide()
 	new_aabb.SetNegativeInfinity();
 	new_aabb.Enclose(&aabb_points[0], 8);
 
-	Octree* node1 = new Octree(new_aabb, max_objects);
+	Octree* node1 = new Octree(new_aabb, max_objects, max_levels, current_level + 1);
 	childs.push_back(node1);
 
 	//3 division right-down-front
@@ -124,7 +136,7 @@ void Octree::Subdivide()
 	new_aabb.SetNegativeInfinity();
 	new_aabb.Enclose(&aabb_points[0], 8);
 
-	Octree* node2 = new Octree(new_aabb, max_objects);
+	Octree* node2 = new Octree(new_aabb, max_objects, max_levels, current_level + 1);
 	childs.push_back(node2);
 
 	//4 division right-down-front
@@ -139,7 +151,7 @@ void Octree::Subdivide()
 	new_aabb.SetNegativeInfinity();
 	new_aabb.Enclose(&aabb_points[0], 8);
 
-	Octree* node3 = new Octree(new_aabb, max_objects);
+	Octree* node3 = new Octree(new_aabb, max_objects, max_levels, current_level + 1);
 	childs.push_back(node3);
 
 	//5 division left-down-back
@@ -154,7 +166,7 @@ void Octree::Subdivide()
 	new_aabb.SetNegativeInfinity();
 	new_aabb.Enclose(&aabb_points[0], 8);
 
-	Octree* node4 = new Octree(new_aabb, max_objects);
+	Octree* node4 = new Octree(new_aabb, max_objects, max_levels, current_level + 1);
 	childs.push_back(node4);
 
 	//6 division left-up-back
@@ -169,7 +181,7 @@ void Octree::Subdivide()
 	new_aabb.SetNegativeInfinity();
 	new_aabb.Enclose(&aabb_points[0], 8);
 
-	Octree* node5 = new Octree(new_aabb, max_objects);
+	Octree* node5 = new Octree(new_aabb, max_objects, max_levels, current_level + 1);
 	childs.push_back(node5);
 
 	//7 division right-down-back
@@ -184,7 +196,7 @@ void Octree::Subdivide()
 	new_aabb.SetNegativeInfinity();
 	new_aabb.Enclose(&aabb_points[0], 8);
 
-	Octree* node6 = new Octree(new_aabb, max_objects);
+	Octree* node6 = new Octree(new_aabb, max_objects, max_levels, current_level + 1);
 	childs.push_back(node6);
 
 	//8 division right-up-back
@@ -199,8 +211,25 @@ void Octree::Subdivide()
 	new_aabb.SetNegativeInfinity();
 	new_aabb.Enclose(&aabb_points[0], 8);
 
-	Octree* node7 = new Octree(new_aabb, max_objects);
+	Octree* node7 = new Octree(new_aabb, max_objects, max_levels, current_level + 1);
 	childs.push_back(node7);
+
+	uint i = 0;
+	while (i < static_objects.size())
+	{
+		if (static_objects[i] != nullptr)
+		{
+			for (std::vector<Octree*>::iterator it = childs.begin(); it != childs.end(); ++it)
+			{
+				if ((*it)->aabb.Contains(static_objects[i]->bounding_box))
+				{
+					(*it)->Insert(static_objects[i]);
+					
+					break;
+				}
+			}
+		}
+	}
 }
 
 void Octree::Draw()

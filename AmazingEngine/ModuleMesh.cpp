@@ -56,12 +56,12 @@ update_status ModuleMesh::PostUpdate(float dt)
 	if (App->guiManager->debug_draw)
 	{
 		glBegin(GL_LINES);
-		glLineWidth(0.2);
+		/*glLineWidth(0.2);
 		glColor3f(204, 255, 0.0f);
 		float3 a = App->camera->ray_picking.a;
 		float3 b = App->camera->ray_picking.b;
 		glVertex3f(a.x, a.y, a.z);
-		glVertex3f(b.x, b.y, b.z);
+		glVertex3f(b.x, b.y, b.z);*/
 		DrawFrustums();
 		DrawBoundingBoxes();
 		glEnd();

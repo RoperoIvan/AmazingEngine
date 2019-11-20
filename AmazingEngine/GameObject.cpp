@@ -81,6 +81,16 @@ void GameObject::Update()
 	}
 }
 
+void GameObject::Draw()
+{
+	Geometry* mesh = dynamic_cast<Geometry*>(GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH));
+	if (mesh != nullptr)
+		mesh->DrawMesh();
+
+	for (std::vector<GameObject*>::iterator iter = children.begin(); iter != children.end(); ++iter)
+		(*iter)->Draw();
+}
+
 Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 {
 	Component* component = nullptr;
@@ -180,7 +190,15 @@ void GameObject::GetPropierties()
 			if (ImGui::Checkbox("Active", &is_enable))
 				(&is_enable) ? true : false;
 
-			
+			if (ImGui::Checkbox("Static", &is_static))
+			{
+				(&is_static) ? true : false;
+				if (is_static)
+					App->scene->octree->Insert(this);
+				else
+					App->scene->octree->Remove(this);
+
+			}
 			//change name
 			ImGui::SameLine();
 			char a[100] = "";
