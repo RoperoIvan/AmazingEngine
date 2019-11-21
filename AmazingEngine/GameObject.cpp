@@ -18,8 +18,8 @@ GameObject::GameObject(GameObject* parent): parent(parent)
 		else
 			name = "GameObject " + std::to_string(App->scene->game_objects.size() + 1) + "." + std::to_string(parent->children.size() + 1);
 	}
-	bounding_box.SetNegativeInfinity();
-
+	bounding_box = new BoundingBox();
+	bounding_box->aabb.SetNegativeInfinity();
 	LCG rand;
 	ID = rand.Int();
 }
@@ -50,7 +50,9 @@ void GameObject::Update()
 	{
 		if ((*it)->to_delete)
 		{
-			components.erase(it);
+			delete(*it);
+			(*it) = nullptr;
+			it = components.erase(it);
 			break;
 		}
 		else if ((*it)->is_enable)
@@ -65,7 +67,11 @@ void GameObject::Update()
 		{
 			if ((*iter)->to_delete)
 			{
-				children.erase(iter);
+				if (*iter == App->scene->game_object_select)
+					App->scene->game_object_select = nullptr;
+				delete(*iter);
+				(*iter) = nullptr;
+				iter = children.erase(iter);
 				break;
 			}
 			else if ((*iter)->is_enable)
@@ -77,7 +83,7 @@ void GameObject::Update()
 
 	if (show_bounding_box)
 	{
-		App->mesh->b_boxes.push(&bounding_box);
+		App->mesh->b_boxes.push(&bounding_box->aabb);
 	}
 }
 
@@ -189,7 +195,7 @@ void GameObject::GetPropierties()
 			//view object
 			if (ImGui::Checkbox("Active", &is_enable))
 				(&is_enable) ? true : false;
-
+			ImGui::SameLine();
 			if (ImGui::Checkbox("Static", &is_static))
 			{
 				(&is_static) ? true : false;
@@ -200,7 +206,7 @@ void GameObject::GetPropierties()
 
 			}
 			//change name
-			ImGui::SameLine();
+			
 			char a[100] = "";
 			memcpy(a, name.c_str(),name.size());
 			
@@ -357,9 +363,9 @@ void GameObject::LookForRayCollision(LineSegment ray_segment, std::vector<MouseH
 	{
 		if(children[i] != nullptr)
 		{
-			if (children[i]->bounding_box.IsFinite())
+			if (children[i]->bounding_box->aabb.IsFinite())
 			{
-				if (ray_segment.Intersects(children[i]->bounding_box))
+				if (ray_segment.Intersects(children[i]->bounding_box->aabb))
 				{
 					children[i]->LookForMeshCollision(ray_segment, hit);
 				}
@@ -411,6 +417,20 @@ Component * GameObject::GetComponentByType(COMPONENT_TYPE type)
 			return (*iter);
 	}
 	return false;
+}
+
+void GameObject::TransformBoundingBox(math::float4x4 matrix)
+{
+	// Generate global OBB
+	if (bounding_box != nullptr)
+	{
+		bounding_box->obb.SetNegativeInfinity();
+		bounding_box->obb = bounding_box->aabb;
+		bounding_box->obb.Transform(matrix);
+		// Generate global AABB
+		bounding_box->aabb.SetNegativeInfinity();
+		bounding_box->aabb.Enclose(bounding_box->obb);
+	}
 }
 
 void GameObject::SaveMesh(FILE* file)

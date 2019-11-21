@@ -110,9 +110,9 @@ void ModuleCamera3D::GoAroundGeometry(GameObject* obj)
 	if (obj == nullptr)
 		return;
 
-	if (obj->bounding_box.IsFinite())
+	if (obj->bounding_box->aabb.IsFinite())
 	{
-		my_camera->Look(obj->bounding_box.CenterPoint());
+		my_camera->Look(obj->bounding_box->aabb.CenterPoint());
 		//Reference = obj->bounding_box.CenterPoint();
 	}
 }

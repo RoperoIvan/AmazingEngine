@@ -216,6 +216,7 @@ void Geometry::DrawMesh()
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glPopAttrib();
+	glPopMatrix();
 	DebugDraw();
 }
 
@@ -227,7 +228,7 @@ void Geometry::CalculateParentBoundingBox(GameObject* object)
 	for (int i = 0; i < num_indices * 3; i += 3)
 		vertex_array.push_back(float3(vertices[i], vertices[i + 1], vertices[i + 2]));
 
-	object->bounding_box.Enclose(&vertex_array[0], (int)num_vertices);
+	object->bounding_box->aabb.Enclose(&vertex_array[0], (int)num_vertices);
 
 	if (object->parent != nullptr)
 	{

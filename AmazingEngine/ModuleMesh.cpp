@@ -57,17 +57,11 @@ update_status ModuleMesh::PostUpdate(float dt)
 	{
 		glBegin(GL_LINES);
 
-		/*glLineWidth(0.2);
-		glColor3f(204, 255, 0.0f);
-		float3 a = App->camera->ray_picking.a;
-		float3 b = App->camera->ray_picking.b;
-		glVertex3f(a.x, a.y, a.z);
-		glVertex3f(b.x, b.y, b.z);*/
-
 		AddFrustumBox(&App->scene->current_camera->frustum);
-		DrawFrustums();
+		/*DrawFrustums();*/
 		DrawBoundingBoxes();
-		DrawRay();
+		/*DrawRay();*/
+		App->scene->octree->Draw();
 		glEnd();
 	}
 
@@ -194,7 +188,7 @@ bool ModuleMesh::LoadTextureFile(const char * file_name)
 
 bool ModuleMesh::IsCulling(Geometry * g)
 {	
-	bool ret = ContainsABB(g->GetParentObject()->bounding_box);
+	bool ret = ContainsABB(g->GetParentObject()->bounding_box->aabb);
 	return ret;
 }
 
@@ -270,7 +264,7 @@ void ModuleMesh::DrawBoundingBoxes()
 {
 	glLineWidth(0.2);
 	glColor3f(204, 255, 0.0f);
-
+	
 	while (b_boxes.empty() == false)
 	{
 		//We create the lines of the cube

@@ -2,6 +2,7 @@
 #include "Transform.h"
 #include "Globals.h"
 #include "GameObject.h"
+#include "ModuleScene.h"
 #include "Geometry.h"
 #include "par_shapes.h"
 #include "MathGeoLib/include/MathGeoLib.h"
@@ -104,6 +105,11 @@ bool Transform::LoadTransformation()
 	if (ret)
 	{
 		RotateObjects(parent);
+
+		App->scene->octree->Remove(parent);
+		App->scene->octree->Insert(parent);
+		
+
 	}
 
 	return ret;
@@ -127,6 +133,7 @@ void Transform::RotateObjects(GameObject* object_to_rotate)
 			RotateObjects(*it);
 		}
 	}
+	object_to_rotate->TransformBoundingBox(rotation_matrix);
 }
 
 //void Transform::HandleGizmos()

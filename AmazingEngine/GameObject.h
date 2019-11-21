@@ -6,10 +6,18 @@
 #include "Component.h"
 #include "Globals.h"
 #include "MathGeoLib/include/Geometry/AABB.h"
+#include "MathGeoLib/include/Geometry/OBB.h"
+
 
 class Geometry;
 struct MouseHit;
 struct less_than_key;
+
+struct BoundingBox
+{
+	AABB aabb;
+	OBB obb;
+};
 
 class GameObject
 {
@@ -34,6 +42,7 @@ public:
 	void AddComponent(Component* comp) { components.push_back(comp); }
 	Component* GetComponentByType(COMPONENT_TYPE type);
 
+	void TransformBoundingBox(math::float4x4 matrix);
 public:
 	std::string name;
 	int ID;
@@ -48,10 +57,10 @@ public:
 	bool show_vertices_normals = false;
 	bool show_face_normals = false;
 
-	math::AABB bounding_box;
+	BoundingBox* bounding_box = nullptr;
 	bool show_bounding_box = false;
 
-	bool is_static;
+	bool is_static = false;
 };
 
 #endif

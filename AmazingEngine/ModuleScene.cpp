@@ -50,7 +50,15 @@ update_status ModuleScene::PreUpdate(float dt)
 	{
 		if ((*object)->to_delete)
 		{
-			game_objects.erase(object);
+			if(*object == game_object_select)
+				game_object_select = nullptr;
+			if ((*object)->is_static)
+			{
+				octree->Remove(*object);
+			}
+			delete(*object);
+			(*object) = nullptr;
+			object = game_objects.erase(object);
 			break;
 		}
 	}
@@ -60,6 +68,7 @@ update_status ModuleScene::PreUpdate(float dt)
 
 update_status ModuleScene::Update(float dt)
 {		
+	
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT)
 	{
 		if (game_object_select != nullptr)
