@@ -60,7 +60,7 @@ public:
 	BoundingBox* bounding_box = nullptr;
 	bool show_bounding_box = false;
 
-	bool is_static = false;
+	bool is_static = true;
 };
 
 #endif

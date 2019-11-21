@@ -22,6 +22,12 @@ GameObject::GameObject(GameObject* parent): parent(parent)
 	bounding_box->aabb.SetNegativeInfinity();
 	LCG rand;
 	ID = rand.Int();
+	is_static = true;
+
+	if (is_static)
+	{
+		App->scene->octree->Insert(this);
+	}
 }
 
 GameObject::~GameObject()
@@ -362,10 +368,7 @@ void GameObject::LookForRayCollision(LineSegment ray_segment, std::vector<MouseH
 	LookForMeshCollision(ray_segment, hit);
 	for (int i = 0; i < children.size(); ++i)
 	{
-		if (ray_segment.Intersects(children[i]->bounding_box->aabb))
-		{
-			children[i]->LookForRayCollision(ray_segment, hit);
-		}
+		children[i]->LookForRayCollision(ray_segment, hit);		
 	}
 
 }

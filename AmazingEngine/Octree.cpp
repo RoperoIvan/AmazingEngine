@@ -31,7 +31,6 @@ bool Octree::Clear()
 
 void Octree::Insert(GameObject* object)
 {
-
 	if (!is_divided)
 	{
 		static_objects.push_back(object);
@@ -43,14 +42,17 @@ void Octree::Insert(GameObject* object)
 	}
 	else
 	{
+		bool is_pushed = false;
 		for (std::vector<Octree*>::iterator iter = childs.begin(); iter != childs.end(); ++iter)
 		{
-			
 			if ((*iter)->aabb.Contains(object->bounding_box->aabb))
 			{
 				(*iter)->Insert(object);
+				is_pushed = true;
 			}
 		}
+		if(!is_pushed)
+			static_objects.push_back(object);
 	}
 }
 

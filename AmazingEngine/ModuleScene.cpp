@@ -16,6 +16,7 @@
 
 ModuleScene::ModuleScene(Application* app, bool start_enable): Module(app)
 {
+
 }
 
 ModuleScene::~ModuleScene()
@@ -31,7 +32,7 @@ bool ModuleScene::Init()
 	AABB first;
 	first.SetNegativeInfinity();
 	first.Enclose(&aux[0], 8);
-	octree = new Octree(first, 2,4,1);
+	octree = new Octree(first, 2, 4, 1);
 	return true;
 }
 
@@ -89,16 +90,39 @@ update_status ModuleScene::Update(float dt)
 
 	if (App->guiManager->frustum_culling)
 	{
-		/*if (App->mesh->IsCulling(this))
-			DrawMesh();*/
-		std::vector<GameObject*> draw_objects;
-		//App->scene->octree->CollectObjects(App->camera->,draw_objects);
 
-		for (std::vector<GameObject*>::iterator iter = draw_objects.begin(); iter != draw_objects.end(); ++iter)
+		Timer frustrumTime;
+		frustrumTime.Start();
+
+		if (App->guiManager->active_octree)
 		{
-			(*iter)->Draw();
+			std::vector<GameObject*> draw_objects;
+			App->scene->octree->CollectObjects(App->camera->my_camera->frustum, draw_objects);
+
+			for (std::vector<GameObject*>::iterator iter = draw_objects.begin(); iter != draw_objects.end(); ++iter)
+			{
+				(*iter)->Draw();
+			}
+			draw_objects.clear();
+			if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)
+			{
+				float time = frustrumTime.Read();
+				LOG("Frustrum time with octree: %f", time);
+			}
 		}
-		draw_objects.clear();
+		else
+		{
+			for (std::vector<GameObject*>::iterator iter = game_objects.begin(); iter != game_objects.end(); ++iter)
+			{
+				(*iter)->Draw();
+			}
+			if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)
+			{
+				float time = frustrumTime.Read();
+				LOG("Frustrum time without octree: %f", time);
+			}
+
+		}
 	}
 	else
 		for (std::vector<GameObject*>::iterator iter = game_objects.begin(); iter != game_objects.end(); ++iter)

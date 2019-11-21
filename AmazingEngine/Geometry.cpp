@@ -225,8 +225,8 @@ void Geometry::CalculateParentBoundingBox(GameObject* object)
 	std::vector <float3> vertex_array;
 	if (vertices == nullptr)
 		return;
-	for (int i = 0; i < num_indices * 3; i += 3)
-		vertex_array.push_back(float3(vertices[i], vertices[i + 1], vertices[i + 2]));
+	for (int i = 0; i < num_vertices * 3; i += 3)
+			vertex_array.push_back(float3(vertices[i], vertices[i + 1], vertices[i + 2]));
 
 	object->bounding_box->aabb.Enclose(&vertex_array[0], (int)num_vertices);
 
