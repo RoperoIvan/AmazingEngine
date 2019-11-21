@@ -66,41 +66,55 @@ bool Transform::LoadTransformation()
 		ret = true;
 	}	
 
-	//static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
-	//static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
-	//if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
-	//	mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
-	//if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
-	//	mCurrentGizmoOperation = ImGuizmo::ROTATE;
-	//if (App->input->GetKey(SDL_SCANCODE_Y) == KEY_DOWN)
-	//	mCurrentGizmoOperation = ImGuizmo::SCALE;
+	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
+	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
+	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
+		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+		mCurrentGizmoOperation = ImGuizmo::ROTATE;
+	if (App->input->GetKey(SDL_SCANCODE_Y) == KEY_DOWN)
+		mCurrentGizmoOperation = ImGuizmo::SCALE;
+	
+	ImGuiIO& io = ImGui::GetIO();
+	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+	float4x4 view_matrix = App->camera->my_camera->frustum.ViewMatrix();
+	float4x4 proj_matrix = App->camera->my_camera->frustum.ProjectionMatrix();
+	view_matrix.Transpose();
+	proj_matrix.Transpose();
+	float4x4 trs_matrix = global_matrix;
+	ImGuizmo::Manipulate(view_matrix.ptr(), proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, trs_matrix.ptr(), NULL, NULL);
+	
+	if (ImGuizmo::IsUsing())
+	{
+		trs_matrix.Transpose();
+		float3 new_pos;
+		float3 new_scale;
+		Quat new_q;
+		trs_matrix.Decompose(new_pos, new_q, new_scale);
+		new_pos.Normalize();
 
+		/*for (int i = 0; i < 3; ++i)
+		{
+			if (new_scale[i] > 1)
+				new_scale[i] = 1.1;
+			else if (new_scale[i] < 1)
+				new_scale[i] = 0.9;
+		}*/
 
-	//ImGuiIO& io = ImGui::GetIO();
-	//ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-	//float4x4 view_matrix = App->camera->my_camera->frustum.ViewMatrix();
-	//float4x4 proj_matrix = App->camera->my_camera->frustum.ProjectionMatrix();
-	//view_matrix.Transpose();
-	//proj_matrix.Transpose();
-	//float4x4 trs_matrix = global_matrix;
-	//ImGuizmo::Manipulate(view_matrix.ptr(), proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, trs_matrix.ptr(), NULL, NULL);
+		if(mCurrentGizmoOperation == ImGuizmo::TRANSLATE)
+			rotation_matrix = math::float4x4::FromTRS(new_pos * 0.5, rot.identity, scale.one);
+		if (mCurrentGizmoOperation == ImGuizmo::SCALE)
+			rotation_matrix = math::float4x4::FromTRS(float3::zero, rot.identity, new_scale);
+		if (mCurrentGizmoOperation == ImGuizmo::ROTATE)
+		{
+			rotation_matrix = math::float4x4::FromQuat(new_q.Conjugated());
+		}
+		/*rotation_matrix = math::float4x4::FromTRS(new_pos - current_pos, rot.identity, scale.one);
 
-	//if (ImGuizmo::IsUsing())
-	//{
-	//	trs_matrix.Transpose();
-	//	float3 new_pos;
-	//	float3 new_scale;
-	//	Quat new_q;
-	//	trs_matrix.Decompose(new_pos, new_q, new_scale);
-
-	//	rotation_matrix = math::float4x4::FromTRS(new_pos, rot.identity, scale.one);
-
-	//	/*rotation_matrix = math::float4x4::FromTRS(new_pos - current_pos, rot.identity, scale.one);
-
-	//	rotation_matrix = math::float4x4::FromTRS(new_pos - current_pos, rot.identity, scale.one);
-	//	*/
-	//	ret = true;
-	//}
+		rotation_matrix = math::float4x4::FromTRS(new_pos - current_pos, rot.identity, scale.one);
+		*/
+		ret = true;
+	}
 
 	if (ret)
 	{
