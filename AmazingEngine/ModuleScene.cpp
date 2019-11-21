@@ -45,7 +45,6 @@ bool ModuleScene::Start()
 
 update_status ModuleScene::PreUpdate(float dt)
 {
-	octree->Draw();
 	for (std::vector<GameObject*>::iterator object = game_objects.begin(); object != game_objects.end(); ++object)
 	{
 		if ((*object)->to_delete)
@@ -93,7 +92,7 @@ update_status ModuleScene::Update(float dt)
 		/*if (App->mesh->IsCulling(this))
 			DrawMesh();*/
 		std::vector<GameObject*> draw_objects;
-		App->scene->octree->Intersect(draw_objects);
+		//App->scene->octree->CollectObjects(App->camera->,draw_objects);
 
 		for (std::vector<GameObject*>::iterator iter = draw_objects.begin(); iter != draw_objects.end(); ++iter)
 		{

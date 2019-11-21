@@ -807,6 +807,11 @@ void GuiManager::RenderTab()
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
+
+		else if (ImGui::Checkbox("Octree", &active_octree))
+		{
+			(&active_octree) ? true : false;
+		}
 	}
 }
 

@@ -60,8 +60,9 @@ update_status ModuleMesh::PostUpdate(float dt)
 		AddFrustumBox(&App->scene->current_camera->frustum);
 		/*DrawFrustums();*/
 		DrawBoundingBoxes();
-		/*DrawRay();*/
-		App->scene->octree->Draw();
+		DrawRay();
+		if(App->guiManager->active_octree)
+			App->scene->octree->Draw();
 		glEnd();
 	}
 

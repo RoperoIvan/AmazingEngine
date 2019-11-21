@@ -92,19 +92,7 @@ bool Octree::Remove(GameObject* object)
 	return false;
 }
 
-void Octree::Intersect(std::vector<GameObject*>&frustum_objects)
-{
-	if (App->mesh->ContainsABB(aabb) || aabb.Contains(App->camera->my_camera->frustum))
-	{
-		//push objects inside aabb
-		for (std::vector<GameObject*>::iterator iter = static_objects.begin(); iter != static_objects.end(); ++iter)
-			frustum_objects.push_back(*iter);
 
-		if(is_divided)
-			for (std::vector<Octree*>::iterator iter = childs.begin(); iter != childs.end(); ++iter)
-				(*iter)->Intersect(frustum_objects);
-	}
-}
 
 bool Octree::Resize()
 {
@@ -285,16 +273,7 @@ void Octree::Subdivide()
 
 void Octree::Draw()
 {
-	//bool draw = false;
-	//if (App->scene->game_object_select != nullptr)
-	//{
-	//	for (std::vector<GameObject*>::iterator iter = static_objects.begin(); iter != static_objects.end(); ++iter)
-	//	{
-	//		if (*iter == App->scene->game_object_select) draw = true;
-	//	}
-	//}
-	//if (draw)
-	//{
+	
 		for (int i = 0; i < 4; i++)
 		{
 			glVertex3f(aabb.CornerPoint(i + 4).x, aabb.CornerPoint(i + 4).y, aabb.CornerPoint(i + 4).z);
@@ -315,7 +294,7 @@ void Octree::Draw()
 			glVertex3f(aabb.CornerPoint(i + 1).x, aabb.CornerPoint(i + 1).y, aabb.CornerPoint(i + 1).z);
 			glVertex3f(aabb.CornerPoint(i + 3).x, aabb.CornerPoint(i + 3).y, aabb.CornerPoint(i + 3).z);
 		}
-	//}
+
 	if(is_divided)
 		for (std::vector<Octree*>::iterator iter = childs.begin(); iter != childs.end(); ++iter)
 			(*iter)->Draw();

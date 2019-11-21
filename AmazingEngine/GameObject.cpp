@@ -195,7 +195,7 @@ void GameObject::GetPropierties()
 			//view object
 			if (ImGui::Checkbox("Active", &is_enable))
 				(&is_enable) ? true : false;
-			ImGui::SameLine();
+
 			if (ImGui::Checkbox("Static", &is_static))
 			{
 				(&is_static) ? true : false;
@@ -206,7 +206,7 @@ void GameObject::GetPropierties()
 
 			}
 			//change name
-			
+	
 			char a[100] = "";
 			memcpy(a, name.c_str(),name.size());
 			
@@ -359,20 +359,13 @@ void GameObject::ShowNormalsFaces(const bool& x)
 
 void GameObject::LookForRayCollision(LineSegment ray_segment, std::vector<MouseHit>& hit)
 {
+	LookForMeshCollision(ray_segment, hit);
 	for (int i = 0; i < children.size(); ++i)
 	{
-		if(children[i] != nullptr)
+		if (ray_segment.Intersects(children[i]->bounding_box->aabb))
 		{
-			if (children[i]->bounding_box->aabb.IsFinite())
-			{
-				if (ray_segment.Intersects(children[i]->bounding_box->aabb))
-				{
-					children[i]->LookForMeshCollision(ray_segment, hit);
-				}
-				children[i]->LookForRayCollision(ray_segment, hit);
-			}
+			children[i]->LookForRayCollision(ray_segment, hit);
 		}
-		
 	}
 
 }
@@ -382,6 +375,8 @@ void GameObject::LookForMeshCollision(LineSegment ray_segment, std::vector<Mouse
 	Transform* transform = (Transform*)GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM);
 	Geometry* mesh = (Geometry*)GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH);
 
+	if (mesh == nullptr)
+		return;
 	float* vertices = (float*)((Geometry*)mesh)->vertices;
 	uint* indices = (uint*)((Geometry*)mesh)->indices;
 

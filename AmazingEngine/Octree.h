@@ -13,8 +13,9 @@ public:
 	bool Clear();
 	void Insert(GameObject*);
 	bool Remove(GameObject*);
-	void Intersect(std::vector<GameObject*>&);
 
+	template<typename TYPE>
+	void CollectObjects(const TYPE& primitive, std::vector<GameObject*>&objects);
 	bool Resize();
 	void Subdivide();
 
@@ -33,4 +34,20 @@ private:
 	Octree* parent = nullptr;
 };
 
+template<typename TYPE>
+void Octree::CollectObjects(const TYPE& primitive, std::vector<GameObject*>& objects)
+{
+	for (std::vector<GameObject*>::iterator iter = static_objects.begin(); iter != static_objects.end(); ++iter)
+	{
+		if ((*iter)->bounding_box->aabb.Intersects(primitive))
+		{
+			objects.push_back(*iter);
+		}
+	}
+	for (std::vector<Octree*>::iterator iter = childs.begin(); iter != childs.end(); ++iter)
+	{
+		if((*iter)->aabb.Intersects(primitive))
+			(*iter)->CollectObjects(primitive, objects);
+	}
+}
 #endif
