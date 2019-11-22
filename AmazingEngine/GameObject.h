@@ -18,7 +18,7 @@ public:
 	~GameObject();
 
 	void Update();
-
+	void CleanUp();
 	Component* CreateComponent(COMPONENT_TYPE type);
 	virtual void GetHierarcy();
 	void GetPropierties();
@@ -33,9 +33,9 @@ public:
 	void AddComponent(Component* comp) { components.push_back(comp); }
 	Component* GetComponentByType(COMPONENT_TYPE type);
 
-	GameObject* GameObject::FindChildByID(uint other_uid) const;
-	void GameObject::SetParent(GameObject* new_parent);
-
+	GameObject* FindChildByID(uint other_uid) const;
+	void SetParent(GameObject* new_parent);
+	void DeleteObject();
 public:
 	std::string name;
 	int ID;

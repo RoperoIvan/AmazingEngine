@@ -81,6 +81,22 @@ void GameObject::Update()
 	}
 }
 
+void GameObject::CleanUp()
+{
+	//Delete components
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); it++)
+	{
+		delete (*it);
+	}
+
+	//Delete children
+	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); it++)
+	{
+		(*it)->CleanUp();
+		delete (*it);
+	}
+}
+
 Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 {
 	Component* component = nullptr;
@@ -432,6 +448,18 @@ void GameObject::SetParent(GameObject * new_parent)
 	parent = new_parent;
 	parent->children.push_back(this);
 
+}
+
+void GameObject::DeleteObject()
+{
+	/*for (std::vector<GameObject*>::iterator it = parent->children.begin(); it != parent->children.end(); it++)
+	{
+		if (!(*it)->children.empty)
+		{
+			(*it)->DeleteObject();
+		}
+		delete (*it);
+	}*/
 }
 
 void GameObject::SaveMesh(FILE* file)

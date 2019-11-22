@@ -47,9 +47,10 @@ update_status ModuleScene::PreUpdate(float dt)
 
 	for (std::vector<GameObject*>::iterator object = game_objects.begin(); object != game_objects.end(); ++object)
 	{
-		if ((*object)->to_delete)
+		if ((*object)->to_delete) //TODO: NOSE PORQUE MIERDAS CUANDO CARGO LA SCENE NO ME BORRA TODOS LOS HIJOS SOLO EL PADRE
 		{
 			game_objects.erase(object);
+			//delete (*object);
 			break;
 		}
 	}
