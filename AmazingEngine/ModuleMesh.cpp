@@ -123,8 +123,8 @@ bool ModuleMesh::LoadFBXFile(const char * file_name)
 			//FIRST PARENT
 			GameObject* newfbx = new GameObject();
 			newfbx->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM);
-			// Use scene->mNumMeshes to iterate on scene->mMeshes array
-			int last_material_index = 0; //HACER: CAMBIA ESTO
+
+			int index_material = 0;
 			for (int i = 0; i < scene->mNumMeshes; ++i)
 			{
 				//CHILDREN
@@ -144,10 +144,10 @@ bool ModuleMesh::LoadFBXFile(const char * file_name)
 				my_geo->transform->Init(my_geo->vertices[0], my_geo->vertices[1], my_geo->vertices[2]);
 				LOG("New mesh created from %s", file_name);
 				//-----------------------------TEXTURELOAD-------------------------------------\\
+				//Get the material index to then compare if this has been loaded before
+				index_material = scene->mMeshes[i]->mMaterialIndex;
 
-				last_material_index = scene->mMeshes[i]->mMaterialIndex;
-
-				LoadMaterials(scene, game_object, file_name, last_material_index);
+				LoadMaterials(scene, game_object, file_name, index_material);
 				LOG("New material created from %s", file_name);
 
 				//------------------------------------------------------------------------------\\
@@ -482,7 +482,7 @@ GLuint ModuleMesh::LoadImages(const char * p_tex)
 		LOG("Devil Error (ilInit: %s)", iluErrorString(devilError3));
 		return 0;
 	}
-
+	//TODO: Get dimensions
 	/*tex_dimension[0] = ilGetInteger(IL_IMAGE_WIDTH);
 	tex_dimension[1] = ilGetInteger(IL_IMAGE_HEIGHT);*/
 
@@ -533,7 +533,7 @@ void ModuleMesh::LoadMaterials(const aiScene * scene, GameObject * g_object, con
 				tmp_material[last_mat_ind].second = texture_id;
 				if (texture_id == 0)
 				{
-					LOG("Warning: --------Scene missing textures");
+					LOG("No textures found in scene");
 				}
 			}
 			else
@@ -543,7 +543,7 @@ void ModuleMesh::LoadMaterials(const aiScene * scene, GameObject * g_object, con
 			}
 		}
 		else
-			LOG("It hasn't been detected a material");
+			LOG("Cannot load this material");
 
 		Image* tex = dynamic_cast<Image*>(g_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
 		tex->check_id = check_id;
@@ -552,10 +552,9 @@ void ModuleMesh::LoadMaterials(const aiScene * scene, GameObject * g_object, con
 		tex->p_tex = p_tex;
 		tex->LoadCheckerTexture();
 		dynamic_cast<Geometry*>(g_object->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH))->texture = tex;
-		//delete[] tex;
-		//App->scene->textures.push_back(tex); TODO: I think that this has no sense now
-		//g_object->texture = tex;
-		LOG("Mesh Loaded in : %i", load.Read());
+		//tex->Disable(); TODO: DELETE THIS IMAGE
+		tex->to_delete;
+		LOG("Loaded Material in : %i", load.Read());
 	}
 }
 
@@ -570,7 +569,7 @@ void ModuleMesh::ChangeTex(GameObject* object, const char* file_name, Image* tex
 				Image* tex = dynamic_cast<Image*>(*iter);
 				if (texture == nullptr)
 				{
-					tex->texture_id = tex->LoadImages(file_name);
+					tex->texture_id = LoadImages(file_name);
 					tex->tmp_id = tex->texture_id;
 					tex->p_tex.assign(file_name);
 					App->scene->textures.push_back(tex);

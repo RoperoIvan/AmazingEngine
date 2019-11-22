@@ -23,10 +23,6 @@ public:
 	void Update() override;
 
 	void Save(FILE*);
-	GLuint LoadImages(const char* p_tex);
-	GLuint GetID();
-
-	bool LoadMaterials(const aiScene* scene, std::string file_name, std::vector<std::pair<aiMaterial*, int>>& tmp_mat, int last_mat_ind);
 	int GetTextureId();
 	std::string GetTexturePath();
 	void LoadCheckerTexture();

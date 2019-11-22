@@ -36,8 +36,6 @@ public:
 	void ActualitzateBuffer();
 	void Save(FILE*);
 
-	void ImportNewMesh(char* &cursor);
-	void ImportNewMaterial(char* &cursor);
 	void DrawMesh();
 	void LoadBuffers();
 	void CalculateParentBoundingBox(GameObject* object);

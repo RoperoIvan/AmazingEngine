@@ -441,7 +441,7 @@ void GameObject::ImportMesh(char* &cursor, char* end_object)
 		Geometry* mesh = dynamic_cast<Geometry*>(CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
 		mesh->transform = dynamic_cast<Transform*>(CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 		mesh->texture = dynamic_cast<Image*>(CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
-		mesh->ImportNewMesh(cursor);
-		mesh->ImportNewMaterial(cursor);
+		//mesh->ImportNewMesh(cursor);
+		//mesh->ImportNewMaterial(cursor);
 	}
 }
