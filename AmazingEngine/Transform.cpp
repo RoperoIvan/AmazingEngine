@@ -91,26 +91,27 @@ bool Transform::LoadTransformation()
 		float3 new_scale;
 		Quat new_q;
 		trs_matrix.Decompose(new_pos, new_q, new_scale);
-		new_pos.Normalize();
-
-		/*for (int i = 0; i < 3; ++i)
+		
+		if (mCurrentGizmoOperation == ImGuizmo::TRANSLATE)
 		{
-			if (new_scale[i] > 1)
-				new_scale[i] = 1.1;
-			else if (new_scale[i] < 1)
-				new_scale[i] = 0.9;
-		}*/
-
-		if(mCurrentGizmoOperation == ImGuizmo::TRANSLATE)
+			new_pos.Normalize();
 			rotation_matrix = math::float4x4::FromTRS(new_pos * 0.5, rot.identity, scale.one);
+			position += new_pos;
+		}
 		if (mCurrentGizmoOperation == ImGuizmo::SCALE)
+		{
 			rotation_matrix = math::float4x4::FromTRS(float3::zero, rot.identity, new_scale);
+		}
 		if (mCurrentGizmoOperation == ImGuizmo::ROTATE)
 		{
-			rotation_matrix = math::float4x4::FromQuat(new_q.Conjugated());
+			float3 euler = math::RadToDeg(new_q.ToEulerXYZ());
+			rotation_matrix = math::float4x4::FromTRS(position.zero, new_q, scale.one);
+			
+			euler_angles = -euler;
 		}
+		
 		/*rotation_matrix = math::float4x4::FromTRS(new_pos - current_pos, rot.identity, scale.one);
-
+		
 		rotation_matrix = math::float4x4::FromTRS(new_pos - current_pos, rot.identity, scale.one);
 		*/
 		ret = true;
