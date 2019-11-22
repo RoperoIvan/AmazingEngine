@@ -438,7 +438,7 @@ void GuiManager::HierarchyWindow()
 							}
 						}
 								
-						if (game_object->show_inspector_window)
+						if (game_object->show_inspector_window && game_object != App->scene->game_object_select)
 						{
 							game_object->GetPropierties();
 							App->scene->game_object_select = game_object;
