@@ -171,7 +171,6 @@
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="par_shapes.h" />
-    <ClInclude Include="PhysFS\include\physfs.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Transform.h" />
   </ItemGroup>

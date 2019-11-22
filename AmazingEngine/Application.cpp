@@ -193,7 +193,7 @@ bool Application::Load()
 	std::ifstream ifs("Save.json");
 	if (!ifs.is_open())
 	{
-		LOG("Error to load file", SDL_GetError());
+		LOG("Error to load file", SDL_GetError()); //?????
 	}
 	else
 	{

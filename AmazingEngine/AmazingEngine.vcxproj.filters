@@ -442,9 +442,6 @@
     <ClInclude Include="Application.h">
       <Filter>Modules</Filter>
     </ClInclude>
-    <ClInclude Include="PhysFS\include\physfs.h">
-      <Filter>Physfs</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleMesh.h">
       <Filter>Modules</Filter>
     </ClInclude>

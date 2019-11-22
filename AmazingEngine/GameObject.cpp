@@ -412,7 +412,12 @@ void GameObject::SaveMesh(FILE* file)
 		if ((*comp)->type == COMPONENT_TYPE::COMPONENT_MESH)
 			dynamic_cast<Geometry*>(*comp)->Save(file);
 	}
-	std::fprintf(file, "//\n", ID);
+	for (std::vector<Component*>::iterator comp = components.begin(); comp != components.end(); ++comp)
+	{
+		if ((*comp)->type == COMPONENT_TYPE::COMPONENT_MATERIAL)
+			dynamic_cast<Image*>(*comp)->Save(file);
+	}
+	std::fprintf(file, "//\n");
 	if (children.size() > 0)
 	{
 		for (std::vector<GameObject*>::iterator iter = children.begin(); iter < children.end(); ++iter)
@@ -437,5 +442,6 @@ void GameObject::ImportMesh(char* &cursor, char* end_object)
 		mesh->transform = dynamic_cast<Transform*>(CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 		mesh->texture = dynamic_cast<Image*>(CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
 		mesh->ImportNewMesh(cursor);
+		mesh->ImportNewMaterial(cursor);
 	}
 }

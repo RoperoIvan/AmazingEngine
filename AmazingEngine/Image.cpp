@@ -2,7 +2,7 @@
 #include <vector>
 #include "Application.h"
 #include "ModuleScene.h"
-
+#include <experimental\filesystem>
 #include "ImGui/imgui.h"
 #include "DevIL/include/IL/il.h"
 #include "DevIL/include/IL/ilu.h"
@@ -18,7 +18,6 @@
 
 Image::Image(GameObject* parent) : Component(parent, COMPONENT_TYPE::COMPONENT_MATERIAL)
 {
-	LoadCheckerTexture();
 }
 
 Image::~Image()
@@ -42,6 +41,13 @@ void Image::Update()
 {
 }
 
+
+void Image::Save(FILE * file)
+{
+	fputs("texture_id: ", file);
+	fprintf(file, "%i", texture_id);
+	fputs(";\n", file);
+}
 
 GLuint Image::LoadImages(const char* p_tex)
 {
@@ -110,12 +116,13 @@ GLuint Image::GetID()
 	return img_id;
 }
 
-bool Image::LoadMaterials(const aiScene* scene, std::string file_name)
+bool Image::LoadMaterials(const aiScene* scene, std::string file_name, std::vector<std::pair<aiMaterial*, int>>& tmp_mat, int last_mat_ind)
 {
+
 	if (scene->mMaterials[0]->GetTextureCount(aiTextureType_DIFFUSE) > 0)
 	{
 		aiString text_path;
-		scene->mMaterials[0]->GetTexture(aiTextureType_DIFFUSE, 0, &text_path);
+		tmp_mat[last_mat_ind].first->GetTexture(aiTextureType_DIFFUSE, 0, &text_path);
 		std::string  tex = text_path.C_Str();
 		std::string  p_geo = file_name;
 
@@ -126,16 +133,35 @@ bool Image::LoadMaterials(const aiScene* scene, std::string file_name)
 		}
 		p_geo += tex;
 		p_tex = p_geo;
-		texture_id = LoadImages(p_geo.c_str());
-		tmp_id = texture_id;
-		for (std::vector<Image*>::iterator iter = App->scene->textures.begin(); iter != App->scene->textures.end(); ++iter)
+		p_tex = std::experimental::filesystem::path(tex).stem().string().c_str();
+
+		//Look for if the texture has been already loaded
+		if (tmp_mat[last_mat_ind].second == -1)
+		{
+			texture_id = LoadImages(p_geo.c_str());
+			tmp_id = texture_id;
+			//Sending texture to our texture folder inside library folder
+			App->mesh->ImportTextureToDDSFile(tex.c_str());
+			tmp_mat[last_mat_ind].second = texture_id;
+			if (texture_id == 0)
+			{
+				LOG("Warning: --------Scene missing textures");
+			}
+		}
+		else
+		{
+			texture_id = tmp_mat[last_mat_ind].second;
+			tmp_id = texture_id;
+		}
+		
+		/*for (std::vector<Image*>::iterator iter = App->scene->textures.begin(); iter != App->scene->textures.end(); ++iter)
 		{
 			if (p_geo == (*iter)->p_tex)
 			{
 				return false;
 				break;
 			}
-		}
+		}*/
 		
 	}
 	else

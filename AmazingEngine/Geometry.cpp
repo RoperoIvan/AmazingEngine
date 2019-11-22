@@ -116,74 +116,6 @@ void Geometry::Update()
 		DrawMesh();
 }
 
-void Geometry::LoadData(aiMesh* mesh)
-{
-	//Load vertex	
-	num_vertices = mesh->mNumVertices;
-	vertices = new float[num_vertices * 3];
-	memcpy(vertices, mesh->mVertices, sizeof(float) * num_vertices * 3);
-	LOG("New mesh with %d vertices", vertices);
-
-	//load index
-	if (mesh->HasFaces())
-	{	
-		num_indices = mesh->mNumFaces * 3;
-		indices = new uint[num_indices * 3];
-		for (uint j = 0; j < mesh->mNumFaces; ++j)
-		{
-			if (mesh->mFaces[j].mNumIndices != 3)
-			{
-				LOG("WARNING, geometry face with != 3 indices!");
-			}
-			else
-				memcpy(&indices[j * 3], mesh->mFaces[j].mIndices, 3 * sizeof(uint));
-		}
-		//load normals
-		if (mesh->HasNormals())
-		{
-			num_normals = mesh->mNumVertices * 3;
-			normals = new float[mesh->mNumVertices * 3];
-			memcpy(normals, mesh->mNormals, sizeof(float) * mesh->mNumVertices * 3);
-		}
-
-		num_face_normals = num_vertices * 3;
-		face_normals = new float[num_face_normals];
-		uint j = 0;
-		for (uint i = 0; i < num_vertices*3; i += 9)
-		{
-			float u[3] = { (vertices[i + 3] - vertices[i + 0]),(vertices[i + 4] - vertices[i + 1]),(vertices[i + 5] - vertices[i + 2]) };
-			float v[3] = { (vertices[i + 6] - vertices[i + 3]),(vertices[i + 7] - vertices[i + 4]),(vertices[i + 8] - vertices[i + 5]) };
-			face_normals[j] = (vertices[i] + vertices[i + 3] + vertices[i + 6])/3;
-			face_normals[j + 1] = (vertices[i + 1] + vertices[i + 4] + vertices[i + 7]) / 3;;
-			face_normals[j + 2] = (vertices[i + 2] + vertices[i + 5] + vertices[i + 8]) / 3;;
-			face_normals[j + 3] = face_normals[j] + (u[1] * v[2] - u[2] * v[1]);
-			face_normals[j + 4] = face_normals[j + 1] + (u[2] * v[0] - u[0] * v[2]);
-			face_normals[j + 5] = face_normals[j + 2] + (u[0] * v[1] - u[1] * v[0]);
-			j += 6;
-		}
-	}
-
-	if (mesh->HasTextureCoords(0))
-	{
-		num_coords = mesh->mNumVertices * 2;
-		uv_coord = new float[num_coords];
-		for (uint i = 0; i < mesh->GetNumUVChannels(); ++i)
-		{
-			for (uint k = 0; k < mesh->mNumVertices; ++k) {
-				uv_coord[k * 2] = mesh->mTextureCoords[i][k].x;
-				uv_coord[k * 2 + 1] = mesh->mTextureCoords[i][k].y;
-				/*LOG("Texture coords: %f", texture_coords[k]);*/
-			}
-		}
-	}
-
-	//Adapt bounding box to geometry-----------------
-	if (parent != nullptr)
-		CalculateParentBoundingBox(parent);
-	
-	LoadBuffers();
-}
-
 void Geometry::ActualitzateBuffer()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
@@ -193,7 +125,7 @@ void Geometry::ActualitzateBuffer()
 void Geometry::DrawMesh()
 {
 	glPushMatrix();
-	glMultMatrixf((GLfloat*)&transform->global_matrix.Transposed());
+	//glMultMatrixf((GLfloat*)&transform->global_matrix.Transposed());
 	glPushAttrib(GL_CURRENT_BIT);
 	glColor4f(r, g, b, a);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -242,6 +174,8 @@ void Geometry::CalculateParentBoundingBox(GameObject* object)
 
 void Geometry::LoadBuffers()
 {
+	//LoadBuffers
+
 	glGenBuffers(1, (uint*) & (id_vertices));
 	glBindBuffer(GL_ARRAY_BUFFER, id_vertices);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * num_vertices * 3, vertices, GL_STATIC_DRAW);
@@ -257,7 +191,6 @@ void Geometry::LoadBuffers()
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR)
 		LOG("Error Storing Indices! %s\n", gluErrorString(error));
-
 }
 
 
@@ -344,6 +277,7 @@ void Geometry::ImportNewMesh(char*& cursor)
 		indices[j] = *i;
 		++j;
 	}
+	elements2.clear();
 
 	//normals 
 	data = App->file_system->DataValue(cursor, "normals:", 100000, ";");
@@ -413,7 +347,17 @@ void Geometry::ImportNewMesh(char*& cursor)
 		uv_coord[j] = (*i);
 		++j;
 	}
-	LoadBuffers();
+	elements.clear();
 
+	LoadBuffers();
 	CalculateParentBoundingBox(parent);
+}
+
+void Geometry::ImportNewMaterial(char* &cursor)
+{
+	std::string data = App->file_system->DataValue(cursor, "texture_id:", 100000, ";");
+	std::stringstream convertor(data);
+	int el;
+	convertor >> el;
+	texture->texture_id = el;
 }
