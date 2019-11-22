@@ -422,7 +422,7 @@ void GameObject::TransformBoundingBox(math::float4x4 matrix)
 	if (bounding_box != nullptr)
 	{
 		bounding_box->obb.SetNegativeInfinity();
-		bounding_box->obb = bounding_box->aabb;
+		bounding_box->obb = bounding_box->aabb.ToOBB();
 		bounding_box->obb.Transform(matrix);
 		// Generate global AABB
 		bounding_box->aabb.SetNegativeInfinity();

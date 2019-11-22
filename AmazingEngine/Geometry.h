@@ -39,9 +39,10 @@ public:
 
 	void ImportNewMesh(char* &cursor);
 	void DrawMesh();
+	void CalculateParentBoundingBox(GameObject* object);
+
 private:
 
-	void CalculateParentBoundingBox(GameObject* object);
 	void LoadBuffers();
 public:
 	uint id_vertices = 0;  
