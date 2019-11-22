@@ -109,11 +109,6 @@ bool Transform::LoadTransformation()
 			
 			euler_angles = -euler;
 		}
-		
-		/*rotation_matrix = math::float4x4::FromTRS(new_pos - current_pos, rot.identity, scale.one);
-		
-		rotation_matrix = math::float4x4::FromTRS(new_pos - current_pos, rot.identity, scale.one);
-		*/
 		ret = true;
 	}
 

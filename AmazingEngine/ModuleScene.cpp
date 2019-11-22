@@ -61,6 +61,8 @@ update_status ModuleScene::PreUpdate(float dt)
 			object = game_objects.erase(object);
 			break;
 		}
+		if (game_object_select != *object)
+			(*object)->show_inspector_window = false;
 	}
 	
 	return UPDATE_CONTINUE;
