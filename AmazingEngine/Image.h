@@ -33,6 +33,7 @@ public:
 	int tmp_id = 0;
 	int texture_id = 0;
 	std::string p_tex;
+	//std::string name;
 };
 
 #endif

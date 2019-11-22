@@ -2,6 +2,8 @@
 #define _COMPONENT_H_
 
 #include <string>
+#include "Globals.h"
+#include "MathGeoLib/include/Algorithm/Random/LCG.h"
 
 class GameObject;
 
@@ -35,6 +37,7 @@ public:
 	bool show = true;
 	bool to_delete = false;
 	bool is_enable = true;
+	uint ID = 0;
 	int tex_dimension[2];
 	COMPONENT_TYPE type = COMPONENT_TYPE::NO_COMPONENT;
 	GameObject* parent = nullptr;

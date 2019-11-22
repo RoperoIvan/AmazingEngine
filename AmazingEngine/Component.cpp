@@ -4,6 +4,8 @@
 
 Component::Component(GameObject* parent, COMPONENT_TYPE type): parent(parent), type(type)
 {
+	LCG rand;
+	ID = rand.Int();
 }
 
 Component::~Component()

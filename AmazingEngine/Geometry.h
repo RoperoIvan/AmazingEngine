@@ -63,7 +63,7 @@ public:
 	Image* texture = nullptr;
 
 	bool is_primitive = false;
-
+	std::string name;
 
 public:
 	Transform* transform = nullptr;

@@ -33,6 +33,9 @@ public:
 	void AddComponent(Component* comp) { components.push_back(comp); }
 	Component* GetComponentByType(COMPONENT_TYPE type);
 
+	GameObject* GameObject::FindChildByID(uint other_uid) const;
+	void GameObject::SetParent(GameObject* new_parent);
+
 public:
 	std::string name;
 	int ID;

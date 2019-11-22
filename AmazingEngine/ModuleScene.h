@@ -21,7 +21,8 @@ public:
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 	void DeleteTexture(Image* tex);
-	
+	void RemoveSceneContent();
+
 public:
 	Camera* current_camera = nullptr;
 	uint nplane = 0;
