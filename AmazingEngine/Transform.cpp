@@ -143,10 +143,10 @@ void Transform::RotateObjects(GameObject* object_to_rotate)
 			RotateObjects(*it);
 		}
 	}
-	else
+	/*else
 	{
 		dynamic_cast<Geometry*>(object_to_rotate->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH))->CalculateParentBoundingBox(object_to_rotate);
-	}
+	}*/
 }
 
 //void Transform::HandleGizmos()

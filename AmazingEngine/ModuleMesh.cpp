@@ -397,6 +397,7 @@ void ModuleMesh::LoadMeshFromFormat(const char * file_name, GameObject* g_object
 	mesh->num_coords = num_coords;
 	mesh->id_coords = id_coords;
 	mesh->name = file_name;
+	mesh->transform = dynamic_cast<Transform*>(g_object->GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 	mesh->CalculateParentBoundingBox(mesh->parent);
 	mesh->LoadBuffers();
 	LOG("Loaded %s mesh successfully", file_name);
@@ -900,6 +901,8 @@ GameObject* ModuleMesh::LoadObjectFromFormat(char *& cursor)
 		transform->rot.y = rot[1];
 		transform->rot.z = rot[2];
 		transform->rot.w = rot[3];
+		transform->rotation_matrix = math::float4x4::FromTRS(transform->position, transform->rot, transform->scale);
+		transform->RotateObjects(new_obj);
 	}
 
 	uint num_meshes = 0;
@@ -929,7 +932,7 @@ GameObject* ModuleMesh::LoadObjectFromFormat(char *& cursor)
 		LoadMeshFromFormat(mesh_name, new_obj);
 		delete[] mesh_name;
 	}
-	
+	/*dynamic_cast<Geometry*>(new_obj->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH))->transform = dynamic_cast<Transform*>(new_obj->GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM));*/
 
 	
 	//UID of material - size of texture name - texture name
