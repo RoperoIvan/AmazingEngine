@@ -120,7 +120,7 @@ void Geometry::DrawMesh()
 {
 	glPushMatrix();
 	if(transform != nullptr)
-		glMultMatrixf((GLfloat*)&transform->rotation_matrix.Transposed());
+		glMultMatrixf((GLfloat*)&transform->global_matrix.Transposed());
 	glPushAttrib(GL_CURRENT_BIT);
 	glColor4f(r, g, b, a);
 	glEnableClientState(GL_VERTEX_ARRAY);

@@ -49,9 +49,6 @@ void Transform::Init(const float& x, const float& y, const float& z)
 bool Transform::LoadTransformation()
 {
 	bool ret = false;
-	float snap = 0;
-	//change name
-
 	//scale
 	if (ImGui::InputFloat3("scale", (float*)&scale, 1, ImGuiInputTextFlags_EnterReturnsTrue))
 	{		
@@ -70,7 +67,7 @@ bool Transform::LoadTransformation()
 	}	
 
 	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
-	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
+	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
 	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
 		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
@@ -79,14 +76,16 @@ bool Transform::LoadTransformation()
 		mCurrentGizmoOperation = ImGuizmo::SCALE;
 	
 	ImGuiIO& io = ImGui::GetIO();
-	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+	
+	ImGuizmo::SetRect(0,0, io.DisplaySize.x, io.DisplaySize.y);
 	float4x4 view_matrix = App->camera->my_camera->frustum.ViewMatrix();
 	float4x4 proj_matrix = App->camera->my_camera->frustum.ProjectionMatrix();
 	view_matrix.Transpose();
 	proj_matrix.Transpose();
 	float4x4 trs_matrix = global_matrix;
-	ImGuizmo::Manipulate(view_matrix.ptr(), proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, trs_matrix.ptr(), NULL, NULL);
-	
+	float3* corners = new float3[8];
+	parent->bounding_box->obb.GetCornerPoints(corners);
+	ImGuizmo::Manipulate(NULL, proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, trs_matrix.ptr(), (float*)corners , NULL);
 	if (ImGuizmo::IsUsing())
 	{
 		trs_matrix.Transpose();
@@ -120,10 +119,7 @@ bool Transform::LoadTransformation()
 
 		App->scene->octree->Remove(parent);
 		App->scene->octree->Insert(parent);
-		
-
 	}
-
 	return ret;
 }
 

@@ -44,7 +44,10 @@ GameObject::~GameObject()
 	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
 		if ((*it) != nullptr)
+		{
+			App->scene->octree->Remove(*it);
 			delete (*it);
+		}
 		(*it) = nullptr;
 	}
 	children.clear();
@@ -75,6 +78,7 @@ void GameObject::Update()
 			{
 				if (*iter == App->scene->game_object_select)
 					App->scene->game_object_select = nullptr;
+				App->scene->octree->Remove(*iter);
 				delete(*iter);
 				(*iter) = nullptr;
 				iter = children.erase(iter);

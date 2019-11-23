@@ -56,10 +56,7 @@ update_status ModuleScene::PreUpdate(float dt)
 
 			if(*object == game_object_select)
 				game_object_select = nullptr;
-			if ((*object)->is_static)
-			{
-				octree->Remove(*object);
-			}
+			octree->Remove(*object);
 			delete(*object);
 			(*object) = nullptr;
 			object = game_objects.erase(object);
