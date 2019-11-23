@@ -22,7 +22,6 @@ public:
 	void Disable() override;
 	void Update() override;
 
-	void Save(FILE*);
 	int GetTextureId();
 	std::string GetTexturePath();
 	void LoadCheckerTexture();

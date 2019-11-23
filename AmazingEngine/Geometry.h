@@ -34,7 +34,6 @@ public:
 	std::string GetTexturePath() { return std::string(); };
 	int GetTextureId() { return 0; };
 	void ActualitzateBuffer();
-	void Save(FILE*);
 
 	void DrawMesh();
 	void LoadBuffers();

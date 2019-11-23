@@ -41,14 +41,6 @@ void Image::Update()
 {
 }
 
-
-void Image::Save(FILE * file)
-{
-	fputs("texture_id: ", file);
-	fprintf(file, "%i", texture_id);
-	fputs(";\n", file);
-}
-
 int Image::GetTextureId()
 {
 	return texture_id;

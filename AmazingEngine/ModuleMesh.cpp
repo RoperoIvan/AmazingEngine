@@ -155,6 +155,7 @@ bool ModuleMesh::LoadFBXFile(const char * file_name)
 
 				//------------------------------------------------------------------------------\\
 				
+				LOG("-----------------------------------------");
 				newfbx->children.push_back(game_object);
 			}
 			App->scene->game_objects.push_back(newfbx);

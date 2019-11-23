@@ -27,8 +27,6 @@ public:
 
 	void Update();
 
-	void CleanUp();
-
 	void Draw();
 
 	Component* CreateComponent(COMPONENT_TYPE type);
@@ -37,8 +35,6 @@ public:
 	void ShowPropertiesObject(GameObject* , uint&, uint&);
 	void ShowNormalsVertices(const bool&);
 	void ShowNormalsFaces(const bool&);
-	void SaveMesh(FILE*);
-	void ImportMesh(char* &cursor, char* end_object);
 
 	void LookForRayCollision(LineSegment ray_segment, std::vector<MouseHit>& hit);
 	void LookForMeshCollision(LineSegment ray_segment, std::vector<MouseHit>& hit);
@@ -47,8 +43,6 @@ public:
 
 	GameObject* FindChildByID(uint other_uid) const;
 	void SetParent(GameObject* new_parent);
-	void DeleteObject();
-
 	void TransformBoundingBox(math::float4x4 matrix);
 
 public:
