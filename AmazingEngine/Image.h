@@ -30,7 +30,7 @@ public:
 	//std::string GetTexturePath();
 	//void LoadCheckerTexture();
 	//int SetTextureId(int id);
-	void SetTexture(ResourceMaterial* t)
+	void SetTexture(ResourceMaterial* t) //TODO: REMEMBER TO USE THIS!!
 	{
 		if (r_texture)
 			r_texture->DecreaseInstancies();

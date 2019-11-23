@@ -298,8 +298,12 @@ void GameObject::GetPropierties()
 			}
 			++it3;
 		}
-		if(tex != nullptr)
-			id = tex->GetTextureId();
+		if (tex != nullptr)
+		{
+			Image* im = dynamic_cast<Image*>(tex);
+			id = im->r_texture->texture_id;
+
+		}
 
 		if (id != 0)
 		{
