@@ -26,7 +26,7 @@ void Transform::Enable()
 void Transform::Update()
 {
 	global_matrix.Decompose(position, rot, scale);
-	euler_angles = rot.ToEulerXYZ();
+	euler_angles = math::RadToDeg(rot.ToEulerXYZ());
 	if (transform_now)
 	{
 		RotateObjects(parent);
@@ -49,6 +49,7 @@ void Transform::Init(const float& x, const float& y, const float& z)
 bool Transform::LoadTransformation()
 {
 	bool ret = false;
+	float snap = 0;
 	//change name
 
 	//scale
@@ -69,7 +70,7 @@ bool Transform::LoadTransformation()
 	}	
 
 	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
-	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
+	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
 	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
 		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
 	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
@@ -89,19 +90,23 @@ bool Transform::LoadTransformation()
 	if (ImGuizmo::IsUsing())
 	{
 		trs_matrix.Transpose();
-		trs_matrix.Decompose(position, rot, scale);
+		float3 new_pos;
+		float3 new_scale;
+		Quat new_q;
+		trs_matrix.Decompose(new_pos, new_q, new_scale);
 		
 		if (mCurrentGizmoOperation == ImGuizmo::TRANSLATE)
 		{
-
+			position = new_pos;
 		}
 		if (mCurrentGizmoOperation == ImGuizmo::SCALE)
 		{
-
+			scale = new_scale;
 		}
 		
 		if (mCurrentGizmoOperation == ImGuizmo::ROTATE)
 		{
+			rot = new_q.Conjugated();
 			float3 euler = math::RadToDeg(rot.ToEulerXYZ());
 			euler_angles = -euler;
 		}
