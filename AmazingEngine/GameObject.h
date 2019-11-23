@@ -26,6 +26,9 @@ public:
 	~GameObject();
 
 	void Update();
+
+	void CleanUp();
+
 	void Draw();
 
 	Component* CreateComponent(COMPONENT_TYPE type);
@@ -42,7 +45,12 @@ public:
 	void AddComponent(Component* comp) { components.push_back(comp); }
 	Component* GetComponentByType(COMPONENT_TYPE type);
 
+	GameObject* FindChildByID(uint other_uid) const;
+	void SetParent(GameObject* new_parent);
+	void DeleteObject();
+
 	void TransformBoundingBox(math::float4x4 matrix);
+
 public:
 	std::string name;
 	int ID;

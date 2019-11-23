@@ -32,18 +32,14 @@ public:
 
 	void Update() override;
 	std::string GetTexturePath() { return std::string(); };
-	void LoadData(aiMesh* mesh);
 	int GetTextureId() { return 0; };
 	void ActualitzateBuffer();
 	void Save(FILE*);
 
-	void ImportNewMesh(char* &cursor);
 	void DrawMesh();
+	void LoadBuffers();
 	void CalculateParentBoundingBox(GameObject* object);
 
-private:
-
-	void LoadBuffers();
 public:
 	uint id_vertices = 0;  
 	uint num_vertices = 0;
@@ -57,7 +53,7 @@ public:
 	int par_num_indices = 0;
 	uint num_face_normals = 0;
 	float* face_normals = nullptr;
-
+	int mesh_id;
 	uint id_coords = 0;
 	uint num_coords = 0;
 	float* uv_coord = nullptr;
@@ -67,7 +63,7 @@ public:
 	Image* texture = nullptr;
 
 	bool is_primitive = false;
-
+	std::string name;
 
 public:
 	Transform* transform = nullptr;

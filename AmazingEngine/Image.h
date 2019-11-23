@@ -6,10 +6,12 @@
 #include "glew/include/GL/glew.h"
 #include <gl/GL.h>
 #include <string>
+#include <vector>
 #include "par_shapes.h"
 
 struct aiScene;
 struct aiMesh;
+struct aiMaterial;
 
 class Image : public Component
 {
@@ -20,11 +22,7 @@ public:
 	void Disable() override;
 	void Update() override;
 
-
-	GLuint LoadImages(const char* p_tex);
-	GLuint GetID();
-
-	bool LoadMaterials(const aiScene* scene, std::string file_name);
+	void Save(FILE*);
 	int GetTextureId();
 	std::string GetTexturePath();
 	void LoadCheckerTexture();
@@ -35,6 +33,7 @@ public:
 	int tmp_id = 0;
 	int texture_id = 0;
 	std::string p_tex;
+	//std::string name;
 };
 
 #endif

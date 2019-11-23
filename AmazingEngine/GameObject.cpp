@@ -93,6 +93,21 @@ void GameObject::Update()
 	}
 }
 
+void GameObject::CleanUp()
+{
+	//Delete components
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); it++)
+	{
+		delete (*it);
+	}
+
+	//Delete children
+	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); it++)
+	{
+		(*it)->CleanUp();
+		delete (*it);
+	}
+}
 void GameObject::Draw()
 {
 	Geometry* mesh = dynamic_cast<Geometry*>(GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH));
@@ -416,6 +431,56 @@ Component * GameObject::GetComponentByType(COMPONENT_TYPE type)
 	return false;
 }
 
+GameObject * GameObject::FindChildByID(uint other_id) const
+{
+		GameObject* ret = nullptr;
+
+		if (ID == other_id)
+		{
+			ret = (GameObject*)this;
+		}
+
+		else for (int i = 0; i < children.size(); i++)
+		{
+			ret = children[i]->FindChildByID(other_id);
+			if (ret != nullptr)
+				break;
+		}
+
+
+		return ret;
+}
+
+void GameObject::SetParent(GameObject * new_parent)
+{
+	if (parent)
+	{//Delete this object from the old parent childrens	
+		for (std::vector<GameObject*>::iterator it = parent->children.begin(); it != parent->children.end(); it++)
+		{
+			if ((*it) == this)
+			{
+				parent->children.erase(it);
+				break;
+			}
+		}
+	}
+
+	parent = new_parent;
+	parent->children.push_back(this);
+
+}
+
+void GameObject::DeleteObject()
+{
+	/*for (std::vector<GameObject*>::iterator it = parent->children.begin(); it != parent->children.end(); it++)
+	{
+		if (!(*it)->children.empty)
+		{
+			(*it)->DeleteObject();
+		}
+		delete (*it);
+	}*/
+}
 void GameObject::TransformBoundingBox(math::float4x4 matrix)
 {
 	// Generate global OBB
@@ -447,7 +512,12 @@ void GameObject::SaveMesh(FILE* file)
 		if ((*comp)->type == COMPONENT_TYPE::COMPONENT_MESH)
 			dynamic_cast<Geometry*>(*comp)->Save(file);
 	}
-	std::fprintf(file, "//\n", ID);
+	for (std::vector<Component*>::iterator comp = components.begin(); comp != components.end(); ++comp)
+	{
+		if ((*comp)->type == COMPONENT_TYPE::COMPONENT_MATERIAL)
+			dynamic_cast<Image*>(*comp)->Save(file);
+	}
+	std::fprintf(file, "//\n");
 	if (children.size() > 0)
 	{
 		for (std::vector<GameObject*>::iterator iter = children.begin(); iter < children.end(); ++iter)
@@ -471,6 +541,7 @@ void GameObject::ImportMesh(char* &cursor, char* end_object)
 		Geometry* mesh = dynamic_cast<Geometry*>(CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
 		mesh->transform = dynamic_cast<Transform*>(CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 		mesh->texture = dynamic_cast<Image*>(CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
-		mesh->ImportNewMesh(cursor);
+		//mesh->ImportNewMesh(cursor);
+		//mesh->ImportNewMaterial(cursor);
 	}
 }

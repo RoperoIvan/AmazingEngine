@@ -33,6 +33,7 @@ bool ModuleScene::Init()
 	first.SetNegativeInfinity();
 	first.Enclose(&aux[0], 8);
 	octree = new Octree(first, 2, 4, 1);
+
 	return true;
 }
 
@@ -48,8 +49,11 @@ update_status ModuleScene::PreUpdate(float dt)
 {
 	for (std::vector<GameObject*>::iterator object = game_objects.begin(); object != game_objects.end(); ++object)
 	{
-		if ((*object)->to_delete)
+		if ((*object)->to_delete) //TODO: NOSE PORQUE MIERDAS CUANDO CARGO LA SCENE NO ME BORRA TODOS LOS HIJOS SOLO EL PADRE
 		{
+			//game_objects.erase(object);
+			//delete (*object);
+
 			if(*object == game_object_select)
 				game_object_select = nullptr;
 			if ((*object)->is_static)
@@ -79,13 +83,15 @@ update_status ModuleScene::Update(float dt)
 
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 	{
-		char* path = "Scene1231.Amazing";	
-		App->file_system->SaveScene(path,game_objects);
+		char* path = "Scene1231";	
+		//App->file_system->SaveScene(path,game_objects);
+		App->mesh->SaveCurrentScene(path);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
 	{
-		char* path = "Scene1231.Amazing";
-		App->file_system->ImporScene(path);
+		char* path = "Scene1231";
+		//App->file_system->ImporScene(path);
+		App->mesh->LoadSceneFromFormat(path);
 	}
 	DrawPlane();
 
@@ -192,6 +198,9 @@ bool ModuleScene::CleanUp()
 	}
 	textures.clear();
 
+	octree->Clear();
+	octree = nullptr;
+
 	return true;
 }
 
@@ -205,5 +214,14 @@ void ModuleScene::DeleteTexture(Image* tex)
 			break;
 		}
 	}
+}
+
+void ModuleScene::RemoveSceneContent()
+{
+	CleanUp();
+	float3 aux[8] = { float3(-100,-100,-100),float3(-100,-100,100), float3(-100,100,-100), float3(-100,100,100), float3(100,-100,-100), float3(100,-100,100), float3(100,100,-100), float3(100,100,100) };
+	AABB first;
+	first.Enclose(&aux[0], 8);
+	octree = new Octree(first, 2,4,1);
 }
 
