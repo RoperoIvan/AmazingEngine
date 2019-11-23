@@ -391,7 +391,10 @@ void GuiManager::CreatePrimitives(par_shapes_mesh* p_mesh, Primitives prim, floa
 	GameObject* game_object = new GameObject();
 	Geometry* geo = dynamic_cast<Geometry*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
 	geo->CreatePrimitive(p_mesh,col[0], col[1], col[2], col[3]);
-	App->scene->game_objects.push_back(game_object);
+	if (App->scene->game_object_select != nullptr)
+		App->scene->game_object_select->children.push_back(game_object);	
+	else
+		App->scene->game_objects.push_back(game_object);
 	game_object->is_static = true;
 	App->scene->octree->Insert(game_object);
 	//App->camera->GoAroundGeometry(&App->scene->game_objects);

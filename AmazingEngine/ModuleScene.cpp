@@ -116,7 +116,9 @@ update_status ModuleScene::Update(float dt)
 	}
 	DrawPlane();
 
-
+	if(game_object_select != nullptr)
+		if (game_object_select->show_inspector_window == false)
+			game_object_select = nullptr;
 	if (App->guiManager->frustum_culling)
 	{
 
