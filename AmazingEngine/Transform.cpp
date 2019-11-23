@@ -25,6 +25,14 @@ void Transform::Enable()
 
 void Transform::Update()
 {
+	global_matrix.Decompose(position, rot, scale);
+	euler_angles = rot.ToEulerXYZ();
+	if (transform_now)
+	{
+		RotateObjects(parent);
+		transform_now = false;
+	}
+
 }
 
 void Transform::Disable()
@@ -42,27 +50,21 @@ bool Transform::LoadTransformation()
 {
 	bool ret = false;
 	//change name
-	math::float3 current_pos = position;
-	math::float3 current_angles = euler_angles;
+
 	//scale
 	if (ImGui::InputFloat3("scale", (float*)&scale, 1, ImGuiInputTextFlags_EnterReturnsTrue))
-	{
-		
-		rotation_matrix = math::float4x4::FromTRS(position.zero, rot.identity, scale);
-		ret = true;
-		
+	{		
+		ret = true;		
 	}
 	//position
 	if (ImGui::InputFloat3("position", (float*)&position,1,ImGuiInputTextFlags_EnterReturnsTrue))
 	{		
-		rotation_matrix = math::float4x4::FromTRS(position - current_pos, rot.identity, scale.one);
 		ret = true;
 	}
 	//rotation
 	if (ImGui::InputFloat3("rotation", (float*)&euler_angles, 1, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-		rot = math::Quat::FromEulerXYZ(math::DegToRad(euler_angles - current_angles).x, math::DegToRad(euler_angles - current_angles).y, math::DegToRad(euler_angles - current_angles).z);
-		rotation_matrix = math::float4x4::FromTRS(position.zero, rot, scale.one);
+		rot = math::Quat::FromEulerXYZ(math::DegToRad(euler_angles).x, math::DegToRad(euler_angles).y, math::DegToRad(euler_angles).z);
 		ret = true;
 	}	
 
@@ -87,26 +89,20 @@ bool Transform::LoadTransformation()
 	if (ImGuizmo::IsUsing())
 	{
 		trs_matrix.Transpose();
-		float3 new_pos;
-		float3 new_scale;
-		Quat new_q;
-		trs_matrix.Decompose(new_pos, new_q, new_scale);
+		trs_matrix.Decompose(position, rot, scale);
 		
 		if (mCurrentGizmoOperation == ImGuizmo::TRANSLATE)
 		{
-			new_pos.Normalize();
-			rotation_matrix = math::float4x4::FromTRS(new_pos * 0.5, rot.identity, scale.one);
-			position += new_pos;
+
 		}
 		if (mCurrentGizmoOperation == ImGuizmo::SCALE)
 		{
-			rotation_matrix = math::float4x4::FromTRS(float3::zero, rot.identity, new_scale);
+
 		}
+		
 		if (mCurrentGizmoOperation == ImGuizmo::ROTATE)
 		{
-			float3 euler = math::RadToDeg(new_q.ToEulerXYZ());
-			rotation_matrix = math::float4x4::FromTRS(position.zero, new_q, scale.one);
-			
+			float3 euler = math::RadToDeg(rot.ToEulerXYZ());
 			euler_angles = -euler;
 		}
 		ret = true;
@@ -114,7 +110,8 @@ bool Transform::LoadTransformation()
 
 	if (ret)
 	{
-		RotateObjects(parent);
+		rotation_matrix = math::float4x4::FromTRS(position, rot, scale);
+		transform_now = true;
 
 		App->scene->octree->Remove(parent);
 		App->scene->octree->Insert(parent);
@@ -127,13 +124,13 @@ bool Transform::LoadTransformation()
 
 void Transform::RotateObjects(GameObject* object_to_rotate)
 {
+	parent->TransformBoundingBox(global_matrix.Inverted());
 	for (std::vector<Component*>::iterator component_iterator = object_to_rotate->components.begin(); component_iterator != object_to_rotate->components.end(); ++component_iterator)
 	{
 		if ((*component_iterator)->type == COMPONENT_TYPE::COMPONENT_TRANSFORM)
 		{
 			Transform* mesh = dynamic_cast<Transform*>(*component_iterator);
-			mesh->global_matrix = mesh->global_matrix * rotation_matrix;
-
+			mesh->global_matrix = float4x4::identity * rotation_matrix;
 		}
 	}
 	if (object_to_rotate->children.size() > 0)
@@ -143,10 +140,7 @@ void Transform::RotateObjects(GameObject* object_to_rotate)
 			RotateObjects(*it);
 		}
 	}
-	else
-	{
-		dynamic_cast<Geometry*>(object_to_rotate->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH))->CalculateParentBoundingBox(object_to_rotate);
-	}
+	parent->TransformBoundingBox(global_matrix);
 }
 
 //void Transform::HandleGizmos()

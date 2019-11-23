@@ -40,6 +40,9 @@ public:
 
 	math::float4x4 rotation_matrix = math::float4x4::identity;
 	math::float4x4 global_matrix = math::float4x4::identity;
+	math::float4x4 final_matrix = math::float4x4::identity;
+private:
+	bool transform_now = false;
 };
 
 

@@ -120,7 +120,7 @@ void Geometry::DrawMesh()
 {
 	glPushMatrix();
 	if(transform != nullptr)
-		glMultMatrixf((GLfloat*)&transform->global_matrix.Transposed());
+		glMultMatrixf((GLfloat*)&transform->rotation_matrix.Transposed());
 	glPushAttrib(GL_CURRENT_BIT);
 	glColor4f(r, g, b, a);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -161,7 +161,8 @@ void Geometry::CalculateParentBoundingBox(GameObject* object)
 			vertex_array.push_back(float3(vertices[i], vertices[i + 1], vertices[i + 2]));
 
 	object->bounding_box->aabb.Enclose(&vertex_array[0], (int)num_vertices);
-
+	object->bounding_box->obb.SetNegativeInfinity();
+	object->bounding_box->obb = object->bounding_box->aabb.ToOBB();
 	if (object->parent != nullptr)
 	{
 		CalculateParentBoundingBox(object->parent);
