@@ -141,6 +141,7 @@ void Transform::RotateObjects(GameObject* object_to_rotate)
 		}
 	}
 	parent->TransformBoundingBox(global_matrix);
+
 }
 
 //void Transform::HandleGizmos()
