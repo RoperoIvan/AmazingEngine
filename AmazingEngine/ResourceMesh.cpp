@@ -59,12 +59,12 @@ void ResourceMesh::DrawMesh()
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 	if (texture != nullptr)
 	{
-		if (texture->texture_id != 0 && texture->show)
+		if (texture->r_texture->texture_id != 0 && texture->show)
 		{
 			//Bind textures
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 			glBindTexture(GL_TEXTURE_2D, 0);
-			glBindTexture(GL_TEXTURE_2D, texture->texture_id);
+			glBindTexture(GL_TEXTURE_2D, texture->r_texture->texture_id);
 			glBindBuffer(GL_ARRAY_BUFFER, id_coords);
 			glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 		}

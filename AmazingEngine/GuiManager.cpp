@@ -484,7 +484,7 @@ void GuiManager::TexturesWindow()
 							break;
 						}
 						ImVec2 size = { 200,200 };
-						int id = App->scene->textures[i]->texture_id;
+						int id = App->scene->textures[i]->r_texture->texture_id;
 						ImGui::Image((ImTextureID)id, size);
 						ImGui::TextColored(ImVec4(0, 0, 255, 255), "%i x %i", (int)size.x, (int)size.y);
 						ImGui::TreePop();

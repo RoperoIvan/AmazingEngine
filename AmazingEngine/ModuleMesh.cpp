@@ -532,7 +532,7 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, Game
 	if (mat != nullptr)
 	{
 		size += sizeof(uint);
-		size += mat->p_tex.length();
+		size += mat->r_texture->p_tex.length();
 	}
 
 	//Camera
@@ -667,13 +667,13 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, Game
 
 	if (mat != nullptr)
 	{
-		uint texture_name_size = mat->p_tex.length();
+		uint texture_name_size = mat->r_texture->p_tex.length();
 		size_of = sizeof(uint);
 		memcpy(cursor, &texture_name_size, size_of);
 		cursor += size_of;
 
 		size_of = texture_name_size;
-		memcpy(cursor, mat->p_tex.data(), size_of);
+		memcpy(cursor, mat->r_texture->p_tex.data(), size_of);
 		cursor += size_of;
 	}
 
@@ -982,12 +982,15 @@ GameObject* ModuleMesh::LoadObjectFromFormat(char *& cursor)
 
 
 		//new_obj->CreateComponent_Material(texture_ID, text_name, mat_id);
+		ResourceMaterial* r_mat = (ResourceMaterial*)App->resource_manager->CreateResource(Resource::MATERIAL);
+		//t->SetData(texture_ID, std::experimental::filesystem::path(text_name).stem().string().c_str());
 		Image* material = dynamic_cast<Image*>(new_obj->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
-		material->texture_id = texture_ID;
-		material->tmp_id = material->texture_id;
-		material->p_tex = text_name;
+		material->r_texture = r_mat;
+		material->r_texture->texture_id = texture_ID;
+		material->r_texture->tmp_id = material->r_texture->texture_id;
+		material->r_texture->p_tex = text_name;
 		material->ID = mat_id;
-		material->LoadCheckerTexture();
+		material->r_texture->LoadCheckerTexture();
 		dynamic_cast<Geometry*>(new_obj->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH))->r_mesh->texture = material;
 		delete[] text_name;
 	}
@@ -1148,14 +1151,15 @@ void ModuleMesh::LoadMaterials(const aiScene * scene, GameObject * g_object, con
 		}
 		else
 			LOG("Cannot load this material");
-
+		ResourceMaterial* r_mat = (ResourceMaterial*)App->resource_manager->CreateResource(Resource::MATERIAL);
 		Image* tex = dynamic_cast<Image*>(g_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
-		tex->check_id = check_id;
-		tex->tmp_id = tmp_id;
-		tex->texture_id = texture_id;
-		tex->p_tex = p_tex;
+		tex->r_texture = r_mat;
+		tex->r_texture->check_id = check_id;
+		tex->r_texture->tmp_id = tmp_id;
+		tex->r_texture->texture_id = texture_id;
+		tex->r_texture->p_tex = p_tex;
 		//tex->name = std::experimental::filesystem::path(p_tex).stem().string().c_str();
-		tex->LoadCheckerTexture();
+		tex->r_texture->LoadCheckerTexture();
 		dynamic_cast<Geometry*>(g_object->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH))->r_mesh->texture = tex;
 		//tex->Disable(); TODO: DELETE THIS IMAGE
 		tex->to_delete;
@@ -1174,9 +1178,9 @@ void ModuleMesh::ChangeTex(GameObject* object, const char* file_name, Image* tex
 				Image* tex = dynamic_cast<Image*>(*iter);
 				if (texture == nullptr)
 				{
-					tex->texture_id = LoadImages(file_name);
-					tex->tmp_id = tex->texture_id;
-					tex->p_tex.assign(file_name);
+					tex->r_texture->texture_id = LoadImages(file_name);
+					tex->r_texture->tmp_id = tex->r_texture->texture_id;
+					tex->r_texture->p_tex.assign(file_name);
 					App->scene->textures.push_back(tex);
 				}
 				else

@@ -306,15 +306,15 @@ void GameObject::GetPropierties()
 			if (ImGui::CollapsingHeader("Material"))
 			{
 				Image* img = dynamic_cast<Image*>(tex);
-				if (ImGui::Checkbox("Checker Texture", &img->show_checker_tex))
+				if (ImGui::Checkbox("Checker Texture", &img->r_texture->show_checker_tex))
 				{
-					if (img->show_checker_tex)
+					if (img->r_texture->show_checker_tex)
 					{
-						img->SetTextureId(img->check_id);
+						img->r_texture->SetTextureId(img->r_texture->check_id);
 					}
 					else
 					{
-						img->SetTextureId(img->tmp_id);
+						img->r_texture->SetTextureId(img->r_texture->tmp_id);
 					}
 				}
 				ImGui::Checkbox("show", &tex->show);
