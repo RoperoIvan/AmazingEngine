@@ -3,8 +3,7 @@
 
 #include "Module.h"
 #include <map>
-
-class Resource;
+#include "Resource.h"
 
 class ModuleResourceManager : public Module
 {
@@ -13,8 +12,9 @@ public:
 	~ModuleResourceManager();
 
 	bool Init(const nlohmann::json* config_data);
-
+	bool CleanUp();
 	Resource* GetResource(uint id);
+	Resource* CreateResource(Resource::TYPE type);	
 
 private:
 

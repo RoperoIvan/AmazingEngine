@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include "par_shapes.h"
+#include "ResourceMaterial.h"
 
 struct aiScene;
 struct aiMesh;
@@ -26,12 +27,21 @@ public:
 	std::string GetTexturePath();
 	void LoadCheckerTexture();
 	int SetTextureId(int id);
+	void SetTexture(ResourceMaterial* t)
+	{
+		if (texture)
+			texture->DecreaseInstancies();
+		texture = t;
+		if (texture)
+			texture->IncreaseInstancies();
+	}
 public:
 	bool show_checker_tex = false;
 	uint check_id = 0;
 	int tmp_id = 0;
 	int texture_id = 0;
 	std::string p_tex;
+	ResourceMaterial* texture = nullptr;
 	//std::string name;
 };
 

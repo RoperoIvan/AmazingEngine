@@ -85,7 +85,7 @@ bool Transform::LoadTransformation()
 	float4x4 trs_matrix = global_matrix;
 	float3* corners = new float3[8];
 	parent->bounding_box->obb.GetCornerPoints(corners);
-	ImGuizmo::Manipulate(NULL, proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, trs_matrix.ptr(), (float*)corners , NULL);
+	ImGuizmo::Manipulate(view_matrix.ptr(), proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, trs_matrix.ptr(), (float*)corners , NULL);
 	if (ImGuizmo::IsUsing())
 	{
 		trs_matrix.Transpose();

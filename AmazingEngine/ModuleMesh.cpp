@@ -12,6 +12,8 @@
 #include "DevIL/include/IL/ilut.h"
 #include "GameObject.h"
 #include "ModuleScene.h"
+#include "ModuleResourceManager.h"
+#include "ResourceMesh.h"
 
 #pragma comment(lib, "DevIL/libx86/ILU.lib")
 #pragma comment(lib, "DevIL/libx86/DevIL.lib")
@@ -143,8 +145,8 @@ bool ModuleMesh::LoadFBXFile(const char * file_name)
 
 				//--------------------------TRANSFORMATION-----------------------------------\\
 
-				my_geo->transform = dynamic_cast<Transform*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
-				my_geo->transform->Init(my_geo->vertices[0], my_geo->vertices[1], my_geo->vertices[2]);
+				my_geo->r_mesh->transform = dynamic_cast<Transform*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
+				my_geo->r_mesh->transform->Init(my_geo->r_mesh->vertices[0], my_geo->r_mesh->vertices[1], my_geo->r_mesh->vertices[2]);
 				LOG("New mesh created from %s", file_name);
 				//-----------------------------TEXTURELOAD-------------------------------------\\
 				//Get the material index to then compare if this has been loaded before
@@ -385,22 +387,14 @@ void ModuleMesh::LoadMeshFromFormat(const char * file_name, GameObject* g_object
 	delete[] data;
 
 	//Finally fill the new component with all the variables that we previously saved in our file 
+	ResourceMesh* resource_mesh = (ResourceMesh*)App->resource_manager->CreateResource(Resource::MESH);
+	resource_mesh->SetData(vert, ind, num_vert, num_ind, normals, texture_coord, num_coords, num_face_normals, id_coords);
 	Geometry* mesh;
 	mesh = dynamic_cast<Geometry*>(g_object->CreateComponent(COMPONENT_TYPE::COMPONENT_MESH));
-	mesh->vertices = vert;
-	mesh->indices = ind;
-	mesh->num_vertices = num_vert;
-	mesh->num_indices = num_ind;
-	mesh->normals = normals;
-	mesh->uv_coord = texture_coord;
-	mesh->num_coords = num_coords;
-	mesh->num_face_normals = num_face_normals;
-	mesh->num_coords = num_coords;
-	mesh->id_coords = id_coords;
-	mesh->name = file_name;
-	mesh->transform = dynamic_cast<Transform*>(g_object->GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM));
-	mesh->CalculateParentBoundingBox(mesh->parent);
-	mesh->LoadBuffers();
+	mesh->r_mesh = resource_mesh;
+	mesh->r_mesh->transform = dynamic_cast<Transform*>(g_object->GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM));
+	mesh->r_mesh->CalculateParentBoundingBox(mesh->parent);
+	mesh->r_mesh->LoadBuffers();
 	LOG("Loaded %s mesh successfully", file_name);
 }
 
@@ -994,7 +988,7 @@ GameObject* ModuleMesh::LoadObjectFromFormat(char *& cursor)
 		material->p_tex = text_name;
 		material->ID = mat_id;
 		material->LoadCheckerTexture();
-		dynamic_cast<Geometry*>(new_obj->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH))->texture = material;
+		dynamic_cast<Geometry*>(new_obj->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH))->r_mesh->texture = material;
 		delete[] text_name;
 	}
 
@@ -1162,7 +1156,7 @@ void ModuleMesh::LoadMaterials(const aiScene * scene, GameObject * g_object, con
 		tex->p_tex = p_tex;
 		//tex->name = std::experimental::filesystem::path(p_tex).stem().string().c_str();
 		tex->LoadCheckerTexture();
-		dynamic_cast<Geometry*>(g_object->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH))->texture = tex;
+		dynamic_cast<Geometry*>(g_object->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH))->r_mesh->texture = tex;
 		//tex->Disable(); TODO: DELETE THIS IMAGE
 		tex->to_delete;
 		LOG("Loaded Material in : %i", load.Read());
@@ -1195,7 +1189,7 @@ void ModuleMesh::ChangeTex(GameObject* object, const char* file_name, Image* tex
 					if ((*it)->type == COMPONENT_TYPE::COMPONENT_MESH)
 					{
 						Geometry* mesh = dynamic_cast<Geometry*>(*it);
-						mesh->texture = tex;
+						mesh->r_mesh->texture = tex;
 						break;
 					}
 				}

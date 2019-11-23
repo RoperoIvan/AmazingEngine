@@ -34,6 +34,17 @@ public:
 		return instancies > 0;
 	}
 
+	void IncreaseInstancies()
+	{
+		instancies++;
+	}
+
+	void DecreaseInstancies()
+	{
+		if (instancies>0)
+			instancies--;
+	}
+
 protected:
 	TYPE type = TYPE::NONE;
 	uint UID = 0;

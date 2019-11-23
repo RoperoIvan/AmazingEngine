@@ -101,7 +101,7 @@ void GameObject::Draw()
 {
 	Geometry* mesh = dynamic_cast<Geometry*>(GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH));
 	if (mesh != nullptr)
-		mesh->DrawMesh();
+		mesh->r_mesh->DrawMesh();
 
 	for (std::vector<GameObject*>::iterator iter = children.begin(); iter != children.end(); ++iter)
 		(*iter)->Draw();
@@ -336,8 +336,8 @@ void GameObject::ShowPropertiesObject(GameObject* object, uint& ntriangles, uint
 	{
 		if ((*it)->type == COMPONENT_TYPE::COMPONENT_MESH)
 		{
-			ntriangles += dynamic_cast<Geometry*>(*it)->num_indices / 3;
-			nvertices += dynamic_cast<Geometry*>(*it)->num_vertices;
+			ntriangles += dynamic_cast<Geometry*>(*it)->r_mesh->num_indices / 3;
+			nvertices += dynamic_cast<Geometry*>(*it)->r_mesh->num_vertices;
 		}
 	}
 	if(!children.empty())
@@ -383,15 +383,15 @@ void GameObject::LookForMeshCollision(LineSegment ray_segment, std::vector<Mouse
 
 	if (mesh == nullptr)
 		return;
-	float* vertices = (float*)((Geometry*)mesh)->vertices;
-	uint* indices = (uint*)((Geometry*)mesh)->indices;
+	float* vertices = (float*)((Geometry*)mesh)->r_mesh->vertices;
+	uint* indices = (uint*)((Geometry*)mesh)->r_mesh->indices;
 
 	//Changin the ray into local space of the game objects
 	LineSegment segment_localized = ray_segment;
 	float4x4 inverted_m = transform->global_matrix.Transposed().Inverted();
 	segment_localized = inverted_m*segment_localized;
 
-	for (int j = 0; j < ((Geometry*)mesh)->num_indices;)
+	for (int j = 0; j < ((Geometry*)mesh)->r_mesh->num_indices;)
 	{
 		Triangle triangle;
 		triangle.a.Set(&vertices[indices[j++] * 3]);
