@@ -31,6 +31,14 @@ void Camera::Disable()
 void Camera::Update()
 {
 	App->mesh->AddFrustumBox(&frustum);
+	if ((App->motor_state == ENGINE_STATE::PLAY || App->motor_state == ENGINE_STATE::EXECUTE) && camera_active)
+	{
+		if (App->scene->current_camera != this)
+		{
+			App->scene->current_camera->camera_active = false;
+			App->scene->current_camera = this;
+		}
+	}
 }
 
 void Camera::Look(const float3 & Position)
@@ -61,12 +69,5 @@ void Camera::LoadCameraOptions()
 	if (ImGui::Checkbox("Game Camera", &camera_active))
 		(&camera_active) ? true:false;
 
-	if ((App->motor_state == MOTOR_STATE::PLAY || App->motor_state == MOTOR_STATE::EXECUTE) && camera_active)
-	{
-		if (App->scene->current_camera != this)
-		{
-			App->scene->current_camera->camera_active = false;
-			App->scene->current_camera = this;
-		}
-	}
+	
 }

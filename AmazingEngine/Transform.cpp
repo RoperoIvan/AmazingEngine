@@ -50,7 +50,7 @@ bool Transform::LoadTransformation()
 {
 	bool ret = false;
 	//scale
-	if (App->motor_state == MOTOR_STATE::PLAY)
+	if (App->motor_state == ENGINE_STATE::PLAY)
 	{
 		ImGui::InputFloat3("scale", (float*)&scale, 1, ImGuiInputTextFlags_None);
 		ImGui::InputFloat3("position", (float*)&position, 1, ImGuiInputTextFlags_None);

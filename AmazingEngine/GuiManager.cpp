@@ -110,6 +110,7 @@ void GuiManager::ManageUI(bool& open)
 		{
 			if (ImGui::MenuItem("Console")) show_console_window = true;
 			if (ImGui::MenuItem("Settings")) show_config_window = true;
+			if (ImGui::MenuItem("Execute")) App->motor_state = ENGINE_STATE::EXECUTE;
 			if (ImGui::MenuItem("Exit")) open = false;
 
 			ImGui::EndMenu();
@@ -126,6 +127,7 @@ void GuiManager::ManageUI(bool& open)
 
 			ImGui::EndMenu();
 		}
+		
 		if (ImGui::BeginMenu("Help"))
 		{
 			if (ImGui::MenuItem("Documentation"))
@@ -189,7 +191,7 @@ void GuiManager::WindowPlay()
 				App->mesh->SaveCurrentScene(path);
 
 				App->game_time.Start();
-				App->motor_state = MOTOR_STATE::PLAY;
+				App->motor_state = ENGINE_STATE::PLAY;
 			}
 		}
 		else if (App->game_time.GetState() == TIMER_STATE::PAUSE)
@@ -211,22 +213,22 @@ void GuiManager::WindowPlay()
 				App->mesh->LoadSceneFromFormat(path);
 				std::remove("../Library/Scenes/SaveScene.Amazing");
 				App->game_time.Stop(TIMER_STATE::STOP);
-				App->motor_state = MOTOR_STATE::EDIT;
+				App->motor_state = ENGINE_STATE::EDIT;
 				App->scene->current_camera = App->camera->my_camera;
 			}
 			ImGui::SameLine();
-			if (App->motor_state == MOTOR_STATE::EDITINPLAY)
+			if (App->motor_state == ENGINE_STATE::EDITINPLAY)
 			{
 				if (ImGui::Button("Game"))
 				{
-					App->motor_state = MOTOR_STATE::PLAY;
+					App->motor_state = ENGINE_STATE::PLAY;
 				}
 			}
 			else
 			{
 				if (ImGui::Button("Edit"))
 				{
-					App->motor_state = MOTOR_STATE::EDITINPLAY;
+					App->motor_state = ENGINE_STATE::EDITINPLAY;
 					App->scene->current_camera = App->camera->my_camera;
 				}
 			}

@@ -15,7 +15,7 @@
 #include <list>
 #include <vector>
 
-enum class MOTOR_STATE
+enum class ENGINE_STATE
 {
 	PLAY,
 	EDIT,
@@ -86,7 +86,7 @@ public:
 	float					 dtGame = 0.f;
 	uint16_t				 framerate_cap_game = 0u;
 
-	MOTOR_STATE				 motor_state = MOTOR_STATE::EDIT;
+	ENGINE_STATE				 motor_state = ENGINE_STATE::EDIT;
 
 	bool					 do_iteration = false;
 public:
