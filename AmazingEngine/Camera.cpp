@@ -58,4 +58,15 @@ void Camera::LoadCameraOptions()
 	ImGui::DragFloat("Near-Z Plane", &frustum.nearPlaneDistance, 0.1, 0.0, frustum.farPlaneDistance);
 	ImGui::DragFloat("Far-Z Plane", &frustum.nearPlaneDistance, 0.1);
 
+	if (ImGui::Checkbox("Game Camera", &camera_active))
+		(&camera_active) ? true:false;
+
+	if ((App->motor_state == MOTOR_STATE::PLAY || App->motor_state == MOTOR_STATE::EXECUTE) && camera_active)
+	{
+		if (App->scene->current_camera != this)
+		{
+			App->scene->current_camera->camera_active = false;
+			App->scene->current_camera = this;
+		}
+	}
 }

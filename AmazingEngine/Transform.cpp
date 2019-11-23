@@ -86,8 +86,8 @@ bool Transform::LoadTransformation()
 		ImGuiIO& io = ImGui::GetIO();
 
 		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-		float4x4 view_matrix = App->camera->my_camera->frustum.ViewMatrix();
-		float4x4 proj_matrix = App->camera->my_camera->frustum.ProjectionMatrix();
+		float4x4 view_matrix = App->scene->current_camera->frustum.ViewMatrix();
+		float4x4 proj_matrix = App->scene->current_camera->frustum.ProjectionMatrix();
 		view_matrix.Transpose();
 		proj_matrix.Transpose();
 		float4x4 trs_matrix = global_matrix;

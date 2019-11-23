@@ -29,7 +29,7 @@ public:
 	math::Frustum frustum;
 	float fovindegrees = 90.f;
 	float aspect_ratio = 0.f;
-
+	bool camera_active = false;
 private:
 	float4x4 ViewMatrix, ViewMatrixInverse;
 };

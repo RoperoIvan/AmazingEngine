@@ -14,6 +14,7 @@ public:
 	~ModuleScene();
 
 	bool Init();
+	void CreateCamera();
 	bool Start();
 	update_status PreUpdate(float dt);
 	update_status GameUpdate(float game_dt);

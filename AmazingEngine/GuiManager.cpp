@@ -212,6 +212,7 @@ void GuiManager::WindowPlay()
 				std::remove("../Library/Scenes/SaveScene.Amazing");
 				App->game_time.Stop(TIMER_STATE::STOP);
 				App->motor_state = MOTOR_STATE::EDIT;
+				App->scene->current_camera = App->camera->my_camera;
 			}
 			ImGui::SameLine();
 			if (App->motor_state == MOTOR_STATE::EDITINPLAY)
@@ -226,6 +227,7 @@ void GuiManager::WindowPlay()
 				if (ImGui::Button("Edit"))
 				{
 					App->motor_state = MOTOR_STATE::EDITINPLAY;
+					App->scene->current_camera = App->camera->my_camera;
 				}
 			}
 		}

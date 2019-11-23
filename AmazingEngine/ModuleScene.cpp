@@ -34,8 +34,10 @@ bool ModuleScene::Init()
 	first.Enclose(&aux[0], 8);
 	octree = new Octree(first, 2, 4, 1);
 
+	CreateCamera();
 	return true;
 }
+
 
 bool ModuleScene::Start()
 {
@@ -244,3 +246,12 @@ void ModuleScene::RemoveSceneContent()
 	octree = new Octree(first, 2,4,1);
 }
 
+
+void ModuleScene::CreateCamera()
+{
+	GameObject* camera = new GameObject();
+	Geometry* mesh = (Geometry*)camera->CreateComponent(COMPONENT_TYPE(COMPONENT_TYPE::COMPONENT_MESH));
+	(Transform*)camera->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM);
+	camera->CreateComponent(COMPONENT_TYPE::COMPONENT_CAMERA);
+	game_objects.push_back(camera);
+}

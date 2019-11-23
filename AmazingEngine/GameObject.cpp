@@ -249,6 +249,7 @@ void GameObject::GetPropierties()
 			}
 		}
 
+
 		std::vector<Component*>::iterator it = components.begin();
 		int id = 0;
 		while (it != components.end())
@@ -263,14 +264,14 @@ void GameObject::GetPropierties()
 		
 		std::vector<Component*>::iterator it2 = components.begin();
 
-		while (it != components.end())
+		while (it2 != components.end())
 		{
-			if ((*it)->type == COMPONENT_TYPE::COMPONENT_CAMERA)
+			if ((*it2)->type == COMPONENT_TYPE::COMPONENT_CAMERA)
 			{
 				dynamic_cast<Camera*>(*it2)->LoadCameraOptions();
 				break;
 			}
-			++it;
+			++it2;
 		}
 		if (ImGui::CollapsingHeader("Information"))
 		{
