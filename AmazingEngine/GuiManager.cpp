@@ -209,7 +209,7 @@ void GuiManager::WindowPlay()
 			{
 				char* path = "SaveScene";
 				App->mesh->LoadSceneFromFormat(path);
-
+				std::remove("../Library/Scenes/SaveScene.Amazing");
 				App->game_time.Stop(TIMER_STATE::STOP);
 				App->motor_state = MOTOR_STATE::EDIT;
 			}
