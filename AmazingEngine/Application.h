@@ -7,6 +7,7 @@
 #include "ModuleInput.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleCamera3D.h"
+#include "ModuleResourceManager.h"
 #include "GuiManager.h"
 #include "ModuleMesh.h"
 #include "ModuleScene.h"
@@ -44,6 +45,7 @@ public:
 	ModuleInput* input;
 	ModuleRenderer3D* renderer3D;
 	ModuleCamera3D* camera;
+	ModuleResourceManager* resource_manager;
 	GuiManager* guiManager;
 	ModuleMesh* mesh;
 	ModuleScene* scene;

@@ -10,6 +10,7 @@ Application::Application()
 	renderer3D = new ModuleRenderer3D(this);
 	camera = new ModuleCamera3D(this);
 	file_system = new FileSystem(this);
+	resource_manager = new ModuleResourceManager(this);
 	mesh = new ModuleMesh(this);
 	guiManager = new GuiManager(this);
 	scene = new ModuleScene(this);
@@ -21,6 +22,7 @@ Application::Application()
 	AddModule(window);
 	AddModule(camera);
 	AddModule(input);
+	AddModule(resource_manager);
 	AddModule(file_system);
 	AddModule(mesh);
 	AddModule(scene);

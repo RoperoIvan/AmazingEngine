@@ -495,9 +495,9 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, Game
 	//DATA ORDER: 
 	// UID of obj - size of name - name -
 	// UID of parent
-	//  UID of transform - pos - scale - rot 
-	//  num of meshes - [UID of mesh - mesh name size - mesh name]
-	//  UID of material - size of texture name - texture name
+	// UID of transform - pos - scale - rot 
+	// num of meshes - [UID of mesh - mesh name size - mesh name]
+	// UID of material - size of texture name - texture name
 	//UID of camera - near dist - far dist
 
 	//STORE SIZE-------------------------------------------------------------------
@@ -531,13 +531,6 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, Game
 		size += sizeof(uint); //size of mesh name
 		size += sizeof(char) * meshes->name.length(); //mesh name
 	}
-	//size += sizeof(uint); 
-	//for (int i = 0; i < meshes.size(); i++)
-	//{
-	//	size += sizeof(uint); //UID
-	//	size += sizeof(uint); //size of mesh name
-	//	size += sizeof(char) * ((ComponentMesh*)(meshes[i]))->name.length(); //mesh name
-	//}
 
 	//Material
 	size += sizeof(uint);

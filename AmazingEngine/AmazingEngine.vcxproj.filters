@@ -185,6 +185,18 @@
     <ClCompile Include="Octree.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
+    <ClCompile Include="Resource.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceMesh.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceMaterial.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleResourceManager.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GuiManager.h">
@@ -484,6 +496,18 @@
     <ClInclude Include="Octree.h">
       <Filter>Tools</Filter>
     </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceMesh.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceMaterial.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleResourceManager.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="MathGeoLib\include\Geometry\KDTree.inl">
@@ -538,6 +562,9 @@
     </Filter>
     <Filter Include="ImGuizmo">
       <UniqueIdentifier>{ec6e7191-150c-4b2d-a6c8-19782bb0d970}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{78b1f9d6-99c6-4922-ab6c-d0f6f1020385}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
