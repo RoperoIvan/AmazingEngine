@@ -67,6 +67,7 @@ private:
 	bool resizable = false;
 	bool borderless = false;
 	bool full_desktop = false;
+
 	std::vector<float> fps_log;
 	std::vector<float> ms_log;
 	std::vector<float> vram_log;
@@ -82,5 +83,7 @@ public:
 
 	bool debug_draw = false;
 	bool frustum_culling = false;
+	bool active_octree = true;
+
 };
 #endif

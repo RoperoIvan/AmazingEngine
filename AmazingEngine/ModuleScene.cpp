@@ -16,6 +16,7 @@
 
 ModuleScene::ModuleScene(Application* app, bool start_enable): Module(app)
 {
+
 }
 
 ModuleScene::~ModuleScene()
@@ -29,8 +30,10 @@ bool ModuleScene::Init()
 
 	float3 aux[8] = { float3(-100,-100,-100),float3(-100,-100,100), float3(-100,100,-100), float3(-100,100,100), float3(100,-100,-100), float3(100,-100,100), float3(100,100,-100), float3(100,100,100) };
 	AABB first;
+	first.SetNegativeInfinity();
 	first.Enclose(&aux[0], 8);
-	octree = new Octree(first, 2);
+	octree = new Octree(first, 2, 4, 1);
+
 	return true;
 }
 
@@ -44,15 +47,26 @@ bool ModuleScene::Start()
 
 update_status ModuleScene::PreUpdate(float dt)
 {
-
 	for (std::vector<GameObject*>::iterator object = game_objects.begin(); object != game_objects.end(); ++object)
 	{
 		if ((*object)->to_delete) //TODO: NOSE PORQUE MIERDAS CUANDO CARGO LA SCENE NO ME BORRA TODOS LOS HIJOS SOLO EL PADRE
 		{
-			game_objects.erase(object);
+			//game_objects.erase(object);
 			//delete (*object);
+
+			if(*object == game_object_select)
+				game_object_select = nullptr;
+			if ((*object)->is_static)
+			{
+				octree->Remove(*object);
+			}
+			delete(*object);
+			(*object) = nullptr;
+			object = game_objects.erase(object);
 			break;
 		}
+		if (game_object_select != *object)
+			(*object)->show_inspector_window = false;
 	}
 	
 	return UPDATE_CONTINUE;
@@ -60,6 +74,7 @@ update_status ModuleScene::PreUpdate(float dt)
 
 update_status ModuleScene::Update(float dt)
 {		
+	
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT)
 	{
 		if (game_object_select != nullptr)
@@ -79,6 +94,49 @@ update_status ModuleScene::Update(float dt)
 		App->mesh->LoadSceneFromFormat(path);
 	}
 	DrawPlane();
+
+
+	if (App->guiManager->frustum_culling)
+	{
+
+		Timer frustrumTime;
+		frustrumTime.Start();
+
+		if (App->guiManager->active_octree)
+		{
+			std::vector<GameObject*> draw_objects;
+			App->scene->octree->CollectObjects(App->camera->my_camera->frustum, draw_objects);
+
+			for (std::vector<GameObject*>::iterator iter = draw_objects.begin(); iter != draw_objects.end(); ++iter)
+			{
+				(*iter)->Draw();
+			}
+			draw_objects.clear();
+			if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)
+			{
+				float time = frustrumTime.Read();
+				LOG("Frustrum time with octree: %f", time);
+			}
+		}
+		else
+		{
+			for (std::vector<GameObject*>::iterator iter = game_objects.begin(); iter != game_objects.end(); ++iter)
+			{
+				(*iter)->Draw();
+			}
+			if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)
+			{
+				float time = frustrumTime.Read();
+				LOG("Frustrum time without octree: %f", time);
+			}
+
+		}
+	}
+	else
+		for (std::vector<GameObject*>::iterator iter = game_objects.begin(); iter != game_objects.end(); ++iter)
+		{
+			(*iter)->Draw();
+		}
 
 	return UPDATE_CONTINUE;
 }
@@ -164,6 +222,6 @@ void ModuleScene::RemoveSceneContent()
 	float3 aux[8] = { float3(-100,-100,-100),float3(-100,-100,100), float3(-100,100,-100), float3(-100,100,100), float3(100,-100,-100), float3(100,-100,100), float3(100,100,-100), float3(100,100,100) };
 	AABB first;
 	first.Enclose(&aux[0], 8);
-	octree = new Octree(first, 2);
+	octree = new Octree(first, 2,4,1);
 }
 

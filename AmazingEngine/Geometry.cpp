@@ -63,8 +63,8 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 	transform = dynamic_cast<Transform*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 	texture = dynamic_cast<Image*>(parent->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
 	
+	CalculateParentBoundingBox(parent);
 	LoadBuffers();
-
 }
 
 
@@ -107,13 +107,7 @@ void Geometry::DebugDraw()
 
 void Geometry::Update()
 {
-	if (App->guiManager->frustum_culling)
-	{
-		if (App->mesh->IsCulling(this))
-			DrawMesh();
-	}
-	else
-		DrawMesh();
+	
 }
 
 void Geometry::ActualitzateBuffer()
@@ -125,7 +119,8 @@ void Geometry::ActualitzateBuffer()
 void Geometry::DrawMesh()
 {
 	glPushMatrix();
-	//glMultMatrixf((GLfloat*)&transform->global_matrix.Transposed());
+	if(transform != nullptr)
+		glMultMatrixf((GLfloat*)&transform->global_matrix.Transposed());
 	glPushAttrib(GL_CURRENT_BIT);
 	glColor4f(r, g, b, a);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -153,6 +148,7 @@ void Geometry::DrawMesh()
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glPopAttrib();
+	glPopMatrix();
 	DebugDraw();
 }
 
@@ -161,10 +157,10 @@ void Geometry::CalculateParentBoundingBox(GameObject* object)
 	std::vector <float3> vertex_array;
 	if (vertices == nullptr)
 		return;
-	for (int i = 0; i < num_indices * 3; i += 3)
-		vertex_array.push_back(float3(vertices[i], vertices[i + 1], vertices[i + 2]));
+	for (int i = 0; i < num_vertices * 3; i += 3)
+			vertex_array.push_back(float3(vertices[i], vertices[i + 1], vertices[i + 2]));
 
-	object->bounding_box.Enclose(&vertex_array[0], (int)num_vertices);
+	object->bounding_box->aabb.Enclose(&vertex_array[0], (int)num_vertices);
 
 	if (object->parent != nullptr)
 	{

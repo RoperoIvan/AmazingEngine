@@ -18,10 +18,16 @@ GameObject::GameObject(GameObject* parent): parent(parent)
 		else
 			name = "GameObject " + std::to_string(App->scene->game_objects.size() + 1) + "." + std::to_string(parent->children.size() + 1);
 	}
-	bounding_box.SetNegativeInfinity();
-
+	bounding_box = new BoundingBox();
+	bounding_box->aabb.SetNegativeInfinity();
 	LCG rand;
 	ID = rand.Int();
+	is_static = true;
+
+	if (is_static)
+	{
+		App->scene->octree->Insert(this);
+	}
 }
 
 GameObject::~GameObject()
@@ -50,7 +56,9 @@ void GameObject::Update()
 	{
 		if ((*it)->to_delete)
 		{
-			components.erase(it);
+			delete(*it);
+			(*it) = nullptr;
+			it = components.erase(it);
 			break;
 		}
 		else if ((*it)->is_enable)
@@ -65,7 +73,11 @@ void GameObject::Update()
 		{
 			if ((*iter)->to_delete)
 			{
-				children.erase(iter);
+				if (*iter == App->scene->game_object_select)
+					App->scene->game_object_select = nullptr;
+				delete(*iter);
+				(*iter) = nullptr;
+				iter = children.erase(iter);
 				break;
 			}
 			else if ((*iter)->is_enable)
@@ -77,7 +89,7 @@ void GameObject::Update()
 
 	if (show_bounding_box)
 	{
-		App->mesh->b_boxes.push(&bounding_box);
+		App->mesh->b_boxes.push(&bounding_box->aabb);
 	}
 }
 
@@ -95,6 +107,15 @@ void GameObject::CleanUp()
 		(*it)->CleanUp();
 		delete (*it);
 	}
+}
+void GameObject::Draw()
+{
+	Geometry* mesh = dynamic_cast<Geometry*>(GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH));
+	if (mesh != nullptr)
+		mesh->DrawMesh();
+
+	for (std::vector<GameObject*>::iterator iter = children.begin(); iter != children.end(); ++iter)
+		(*iter)->Draw();
 }
 
 Component* GameObject::CreateComponent(COMPONENT_TYPE type)
@@ -176,14 +197,13 @@ void GameObject::GetHierarcy()
 		
 		if (game_object->show_inspector_window)
 		{
-			game_object->GetPropierties();
+			App->scene->game_object_select = game_object;
 		}
 	}
 }
 
 void GameObject::GetPropierties()
 {
-	App->scene->game_object_select = this;
 	if (ImGui::Begin("Inspector", &show_inspector_window))
 	{
 		if (ImGui::CollapsingHeader("Properties"))
@@ -196,9 +216,17 @@ void GameObject::GetPropierties()
 			if (ImGui::Checkbox("Active", &is_enable))
 				(&is_enable) ? true : false;
 
-			
+			if (ImGui::Checkbox("Static", &is_static))
+			{
+				(&is_static) ? true : false;
+				if (is_static)
+					App->scene->octree->Insert(this);
+				else
+					App->scene->octree->Remove(this);
+
+			}
 			//change name
-			ImGui::SameLine();
+	
 			char a[100] = "";
 			memcpy(a, name.c_str(),name.size());
 			
@@ -351,20 +379,10 @@ void GameObject::ShowNormalsFaces(const bool& x)
 
 void GameObject::LookForRayCollision(LineSegment ray_segment, std::vector<MouseHit>& hit)
 {
+	LookForMeshCollision(ray_segment, hit);
 	for (int i = 0; i < children.size(); ++i)
 	{
-		if(children[i] != nullptr)
-		{
-			if (children[i]->bounding_box.IsFinite())
-			{
-				if (ray_segment.Intersects(children[i]->bounding_box))
-				{
-					children[i]->LookForMeshCollision(ray_segment, hit);
-				}
-				children[i]->LookForRayCollision(ray_segment, hit);
-			}
-		}
-		
+		children[i]->LookForRayCollision(ray_segment, hit);		
 	}
 
 }
@@ -374,6 +392,8 @@ void GameObject::LookForMeshCollision(LineSegment ray_segment, std::vector<Mouse
 	Transform* transform = (Transform*)GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM);
 	Geometry* mesh = (Geometry*)GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH);
 
+	if (mesh == nullptr)
+		return;
 	float* vertices = (float*)((Geometry*)mesh)->vertices;
 	uint* indices = (uint*)((Geometry*)mesh)->indices;
 
@@ -460,6 +480,19 @@ void GameObject::DeleteObject()
 		}
 		delete (*it);
 	}*/
+}
+void GameObject::TransformBoundingBox(math::float4x4 matrix)
+{
+	// Generate global OBB
+	if (bounding_box != nullptr)
+	{
+		bounding_box->obb.SetNegativeInfinity();
+		bounding_box->obb = bounding_box->aabb.ToOBB();
+		bounding_box->obb.Transform(matrix);
+		// Generate global AABB
+		bounding_box->aabb.SetNegativeInfinity();
+		bounding_box->aabb.Enclose(bounding_box->obb);
+	}
 }
 
 void GameObject::SaveMesh(FILE* file)

@@ -110,9 +110,9 @@ void ModuleCamera3D::GoAroundGeometry(GameObject* obj)
 	if (obj == nullptr)
 		return;
 
-	if (obj->bounding_box.IsFinite())
+	if (obj->bounding_box->aabb.IsFinite())
 	{
-		my_camera->Look(obj->bounding_box.CenterPoint());
+		my_camera->Look(obj->bounding_box->aabb.CenterPoint());
 		//Reference = obj->bounding_box.CenterPoint();
 	}
 }
@@ -124,18 +124,38 @@ void ModuleCamera3D::CatchMousePicking()
 	int width;
 	SDL_GetWindowSize(App->window->window, &width, &height);
 	float2 mouse_normal;
-	mouse_normal.x = - 1.0 + 2.0 * App->input->GetMouseX() / width;
+	mouse_normal.x = -1.0 + 2.0 * App->input->GetMouseX() / width;
 	mouse_normal.y = 1.0 - 2.0 * App->input->GetMouseY() / height;
 
 	//Create the list of distances and objects that we will use to select the closest gameobject that was hit
 	std::vector<MouseHit> hit;
 
 	//Pass the mouse position into the  ray projection of the camera frustum
+	Timer whithoutOctree;
+	whithoutOctree.Start();
 	ray_picking = my_camera->frustum.UnProjectLineSegment(mouse_normal.x, mouse_normal.y);
 
-	for (std::vector<GameObject*>::iterator iter = App->scene->game_objects.begin(); iter != App->scene->game_objects.end(); ++iter)
+	if (!App->guiManager->active_octree)
+	{
+		for (std::vector<GameObject*>::iterator iter = App->scene->game_objects.begin(); iter != App->scene->game_objects.end(); ++iter)
+		{
+			(*iter)->LookForRayCollision(ray_picking, hit);
+		}
+		float time = whithoutOctree.Read();
+		LOG("Collect ray objects without octree %f", time);
+		////with octree
+	}
+	else
+	{
+	
+	std::vector<GameObject*>objects_picked;
+	App->scene->octree->CollectObjects(ray_picking, objects_picked);
+	for (std::vector<GameObject*>::iterator iter = objects_picked.begin(); iter != objects_picked.end(); ++iter)
 	{
 		(*iter)->LookForRayCollision(ray_picking, hit);
+	}
+	float time = whithoutOctree.Read();
+	LOG("Collect ray objects with octree %f", time);
 	}
 	if (!hit.empty())
 	{
