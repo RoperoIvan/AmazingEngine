@@ -178,13 +178,16 @@ void GuiManager::ManageUI(bool& open)
 void GuiManager::WindowPlay()
 {
 	ImGui::SetNextWindowPos(ImVec2(400, 5), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(ImVec2(200, 50), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(210, 90), ImGuiCond_FirstUseEver);
 	if (ImGui::Begin(" "))
 	{
 		if (App->game_time.GetState() == TIMER_STATE::STOP)
 		{
 			if (ImGui::Button("Play"))
 			{
+				char* path = "SaveScene";
+				App->mesh->SaveCurrentScene(path);
+
 				App->game_time.Start();
 				App->motor_state = MOTOR_STATE::PLAY;
 			}
@@ -204,6 +207,9 @@ void GuiManager::WindowPlay()
 			ImGui::SameLine();
 			if (ImGui::Button("Stop"))
 			{
+				char* path = "SaveScene";
+				App->mesh->LoadSceneFromFormat(path);
+
 				App->game_time.Stop(TIMER_STATE::STOP);
 				App->motor_state = MOTOR_STATE::EDIT;
 			}
@@ -222,7 +228,11 @@ void GuiManager::WindowPlay()
 					App->motor_state = MOTOR_STATE::EDITINPLAY;
 				}
 			}
-
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Step"))
+		{
+			App->do_iteration = true;
 		}
 		static float dt_vel = 1.0f;
 		ImGui::SliderFloat("velocity", &dt_vel, 0.1, 2);
@@ -254,7 +264,7 @@ void GuiManager::ConfigurationWindow()
 //Window about info of the creators
 void GuiManager::AboutWindow()
 {
-	ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowPos(ImVec2(700, 20), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(550, 680), ImGuiCond_FirstUseEver);
 
 	if (ImGui::Begin("About us", &show_about_window))

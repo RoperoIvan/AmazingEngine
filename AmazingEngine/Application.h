@@ -88,6 +88,7 @@ public:
 
 	MOTOR_STATE				 motor_state = MOTOR_STATE::EDIT;
 
+	bool					 do_iteration = false;
 public:
 
 	Application();

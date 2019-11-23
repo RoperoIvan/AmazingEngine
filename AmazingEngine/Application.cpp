@@ -102,11 +102,19 @@ void Application::PrepareUpdate()
 	last_sec_frame_count++;
 	dt = 1.0f / framerate_cap;
 
-	dtGame = 1.0f / framerate_cap_game;
 	if (game_time.GetState() == TIMER_STATE::PAUSE)
 		dtGame = 0;
-	ms_timer.Start();
+	else
+		dtGame = 1.0f / framerate_cap_game;
 
+	if (do_iteration)
+	{
+		dtGame = 1.0f / framerate_cap_game;
+		do_iteration = false;
+		game_time.SetState(TIMER_STATE::PAUSE);
+	}
+	
+	ms_timer.Start();
 }
 
 // ---------------------------------------------
@@ -150,7 +158,7 @@ update_status Application::Update()
 	for (std::list<Module*>::iterator item = list_modules.begin(); item != list_modules.end() && ret == UPDATE_CONTINUE; ++item)
 	{
 		if (motor_state == MOTOR_STATE::EXECUTE)
-			ret = (*item)->GameUpdate(dt);
+			ret = (*item)->GameUpdate(dtGame);
 		else
 			ret = (*item)->Update(dt);
 	}
@@ -159,6 +167,12 @@ update_status Application::Update()
 	{
 		ret = (*item)->PostUpdate(dt);
 	}
+
+	if (input->GetKey(SDL_SCANCODE_F7))
+		motor_state = MOTOR_STATE::EXECUTE;
+
+	if (input->GetKey(SDL_SCANCODE_F8))
+		motor_state = MOTOR_STATE::EDIT;
 
 	FinishUpdate();
 	return ret;
