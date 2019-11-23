@@ -15,6 +15,17 @@
 #include <list>
 #include <vector>
 
+enum class MOTOR_STATE
+{
+	PLAY,
+	EDIT,
+	EDITINPLAY,
+	EXECUTE
+};
+//play-> play in a editor
+//edit-> editor
+//edit in play-> edit in game time
+//execute-> play
 struct HardwareSpecs
 {
 public:
@@ -49,7 +60,6 @@ public:
 	ModuleScene* scene;
 	FileSystem* file_system;
 private:
-
 	Timer	ms_timer;
 	uint last_frame_ms;
 	uint frame_ms;
@@ -58,6 +68,7 @@ public:
 	bool					is_console;
 	Timer					ptimer;
 	Timer					ms_time;
+
 	uint					frame_count = 0u;
 	Timer					startup_time;
 	Timer					last_sec_frame_time;
@@ -69,6 +80,14 @@ public:
 	float					dt;
 	uint					maxFrames = 60u;
 	std::list<uint>		lastFrames[100];
+
+	Timer					 real_time;
+	Timer					 game_time;
+	float					 dtGame = 0.f;
+	uint16_t				 framerate_cap_game = 0u;
+
+	MOTOR_STATE				 motor_state = MOTOR_STATE::EDIT;
+
 public:
 
 	Application();

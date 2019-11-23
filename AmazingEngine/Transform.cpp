@@ -50,75 +50,84 @@ bool Transform::LoadTransformation()
 {
 	bool ret = false;
 	//scale
-	if (ImGui::InputFloat3("scale", (float*)&scale, 1, ImGuiInputTextFlags_EnterReturnsTrue))
-	{		
-		ret = true;		
-	}
-	//position
-	if (ImGui::InputFloat3("position", (float*)&position,1,ImGuiInputTextFlags_EnterReturnsTrue))
-	{		
-		ret = true;
-	}
-	//rotation
-	if (ImGui::InputFloat3("rotation", (float*)&euler_angles, 1, ImGuiInputTextFlags_EnterReturnsTrue))
+	if (App->motor_state == MOTOR_STATE::PLAY)
 	{
-		rot = math::Quat::FromEulerXYZ(math::DegToRad(euler_angles).x, math::DegToRad(euler_angles).y, math::DegToRad(euler_angles).z);
-		ret = true;
-	}	
-
-	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
-	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
-	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
-		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
-	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
-		mCurrentGizmoOperation = ImGuizmo::ROTATE;
-	if (App->input->GetKey(SDL_SCANCODE_Y) == KEY_DOWN)
-		mCurrentGizmoOperation = ImGuizmo::SCALE;
-	
-	ImGuiIO& io = ImGui::GetIO();
-	
-	ImGuizmo::SetRect(0,0, io.DisplaySize.x, io.DisplaySize.y);
-	float4x4 view_matrix = App->camera->my_camera->frustum.ViewMatrix();
-	float4x4 proj_matrix = App->camera->my_camera->frustum.ProjectionMatrix();
-	view_matrix.Transpose();
-	proj_matrix.Transpose();
-	float4x4 trs_matrix = global_matrix;
-	float3* corners = new float3[8];
-	parent->bounding_box->obb.GetCornerPoints(corners);
-	ImGuizmo::Manipulate(NULL, proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, trs_matrix.ptr(), (float*)corners , NULL);
-	if (ImGuizmo::IsUsing())
-	{
-		trs_matrix.Transpose();
-		float3 new_pos;
-		float3 new_scale;
-		Quat new_q;
-		trs_matrix.Decompose(new_pos, new_q, new_scale);
-		
-		if (mCurrentGizmoOperation == ImGuizmo::TRANSLATE)
-		{
-			position = new_pos;
-		}
-		if (mCurrentGizmoOperation == ImGuizmo::SCALE)
-		{
-			scale = new_scale;
-		}
-		
-		if (mCurrentGizmoOperation == ImGuizmo::ROTATE)
-		{
-			rot = new_q.Conjugated();
-			float3 euler = math::RadToDeg(rot.ToEulerXYZ());
-			euler_angles = -euler;
-		}
-		ret = true;
+		ImGui::InputFloat3("scale", (float*)&scale, 1, ImGuiInputTextFlags_None);
+		ImGui::InputFloat3("position", (float*)&position, 1, ImGuiInputTextFlags_None);
+		ImGui::InputFloat3("rotation", (float*)&euler_angles, 1, ImGuiInputTextFlags_None);
 	}
-
-	if (ret)
+	else
 	{
-		rotation_matrix = math::float4x4::FromTRS(position, rot, scale);
-		transform_now = true;
+		if (ImGui::InputFloat3("scale", (float*)&scale, 1, ImGuiInputTextFlags_EnterReturnsTrue))
+		{
+			ret = true;
+		}
+		//position
+		if (ImGui::InputFloat3("position", (float*)&position, 1, ImGuiInputTextFlags_EnterReturnsTrue))
+		{
+			ret = true;
+		}
+		//rotation
+		if (ImGui::InputFloat3("rotation", (float*)&euler_angles, 1, ImGuiInputTextFlags_EnterReturnsTrue))
+		{
+			rot = math::Quat::FromEulerXYZ(math::DegToRad(euler_angles).x, math::DegToRad(euler_angles).y, math::DegToRad(euler_angles).z);
+			ret = true;
+		}
 
-		App->scene->octree->Remove(parent);
-		App->scene->octree->Insert(parent);
+		static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
+		static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
+		if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
+			mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+		if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+			mCurrentGizmoOperation = ImGuizmo::ROTATE;
+		if (App->input->GetKey(SDL_SCANCODE_Y) == KEY_DOWN)
+			mCurrentGizmoOperation = ImGuizmo::SCALE;
+
+		ImGuiIO& io = ImGui::GetIO();
+
+		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+		float4x4 view_matrix = App->camera->my_camera->frustum.ViewMatrix();
+		float4x4 proj_matrix = App->camera->my_camera->frustum.ProjectionMatrix();
+		view_matrix.Transpose();
+		proj_matrix.Transpose();
+		float4x4 trs_matrix = global_matrix;
+		float3* corners = new float3[8];
+		parent->bounding_box->obb.GetCornerPoints(corners);
+		ImGuizmo::Manipulate(view_matrix.ptr(), proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, trs_matrix.ptr(), (float*)corners, NULL);
+		if (ImGuizmo::IsUsing())
+		{
+			trs_matrix.Transpose();
+			float3 new_pos;
+			float3 new_scale;
+			Quat new_q;
+			trs_matrix.Decompose(new_pos, new_q, new_scale);
+
+			if (mCurrentGizmoOperation == ImGuizmo::TRANSLATE)
+			{
+				position = new_pos;
+			}
+			if (mCurrentGizmoOperation == ImGuizmo::SCALE)
+			{
+				scale = new_scale;
+			}
+
+			if (mCurrentGizmoOperation == ImGuizmo::ROTATE)
+			{
+				rot = new_q.Conjugated();
+				float3 euler = math::RadToDeg(rot.ToEulerXYZ());
+				euler_angles = -euler;
+			}
+			ret = true;
+		}
+
+		if (ret)
+		{
+			rotation_matrix = math::float4x4::FromTRS(position, rot, scale);
+			transform_now = true;
+
+			App->scene->octree->Remove(parent);
+			App->scene->octree->Insert(parent);
+		}
 	}
 	return ret;
 }

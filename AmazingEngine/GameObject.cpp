@@ -251,7 +251,7 @@ void GameObject::GetPropierties()
 
 		std::vector<Component*>::iterator it = components.begin();
 		int id = 0;
-		while ( it != components.end())
+		while (it != components.end())
 		{
 			if ((*it)->type == COMPONENT_TYPE::COMPONENT_TRANSFORM)
 			{
@@ -260,6 +260,7 @@ void GameObject::GetPropierties()
 			}
 			++it;
 		}
+		
 		std::vector<Component*>::iterator it2 = components.begin();
 
 		while (it != components.end())

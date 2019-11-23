@@ -50,7 +50,6 @@ update_status GuiManager::PreUpdate(float dt)
 	ImGui::NewFrame();
 	ImGuizmo::BeginFrame();
 	//ImGui::ShowDemoWindow();
-	ManageUI(ret);
 	CheckDrop();	
 
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
@@ -58,12 +57,15 @@ update_status GuiManager::PreUpdate(float dt)
 
 update_status GuiManager::Update(float dt)
 {
+	bool ret = true;
+	ManageUI(ret);
+
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
 		debug_draw = !debug_draw;
 	}
 
-	return UPDATE_CONTINUE;
+	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
 }
 
 update_status GuiManager::PostUpdate(float dt)
@@ -170,6 +172,64 @@ void GuiManager::ManageUI(bool& open)
 	if (show_textures_window)
 		TexturesWindow();
 
+	WindowPlay();
+}
+
+void GuiManager::WindowPlay()
+{
+	ImGui::SetNextWindowPos(ImVec2(400, 5), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(200, 50), ImGuiCond_FirstUseEver);
+	if (ImGui::Begin(" "))
+	{
+		if (App->game_time.GetState() == TIMER_STATE::STOP)
+		{
+			if (ImGui::Button("Play"))
+			{
+				App->game_time.Start();
+				App->motor_state = MOTOR_STATE::PLAY;
+			}
+		}
+		else if (App->game_time.GetState() == TIMER_STATE::PAUSE)
+		{
+			if (ImGui::Button("Resume"))
+				App->game_time.Resume();
+		}
+		else if (App->game_time.GetState() == TIMER_STATE::START)
+		{
+			ImGui::SameLine();
+			if (ImGui::Button("Pause"))
+			{
+				App->game_time.Stop(TIMER_STATE::PAUSE);
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Stop"))
+			{
+				App->game_time.Stop(TIMER_STATE::STOP);
+				App->motor_state = MOTOR_STATE::EDIT;
+			}
+			ImGui::SameLine();
+			if (App->motor_state == MOTOR_STATE::EDITINPLAY)
+			{
+				if (ImGui::Button("Game"))
+				{
+					App->motor_state = MOTOR_STATE::PLAY;
+				}
+			}
+			else
+			{
+				if (ImGui::Button("Edit"))
+				{
+					App->motor_state = MOTOR_STATE::EDITINPLAY;
+				}
+			}
+
+		}
+		static float dt_vel = 1.0f;
+		ImGui::SliderFloat("velocity", &dt_vel, 0.1, 2);
+		App->dtGame *= dt_vel;
+
+	}
+	ImGui::End();
 }
 
 // Settings of the engine tab
@@ -440,7 +500,6 @@ void GuiManager::HierarchyWindow()
 								
 						if (game_object->show_inspector_window && game_object != App->scene->game_object_select)
 						{
-							game_object->GetPropierties();
 							App->scene->game_object_select = game_object;
 						}
 						if (node_open)

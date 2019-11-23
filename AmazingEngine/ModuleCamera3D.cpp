@@ -44,7 +44,8 @@ bool ModuleCamera3D::CleanUp()
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {
-	CameraControls(dt);
+	if(App->motor_state != MOTOR_STATE::PLAY)
+		CameraControls(dt);
 	c_frustum = &my_camera->frustum;
 
 	return UPDATE_CONTINUE;

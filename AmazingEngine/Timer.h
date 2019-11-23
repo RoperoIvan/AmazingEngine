@@ -4,6 +4,13 @@
 #include "Globals.h"
 #include "SDL\include\SDL.h"
 
+enum class TIMER_STATE
+{
+	START,
+	STOP,
+	PAUSE
+};
+
 class Timer
 {
 public:
@@ -12,8 +19,11 @@ public:
 	Timer();
 
 	void Start();
-	void Stop();
+	void Stop(TIMER_STATE state = TIMER_STATE::STOP);
+	void Resume();
+	void SetState(TIMER_STATE state);
 
+	TIMER_STATE GetState();
 	Uint32 Read();
 
 private:
@@ -21,6 +31,8 @@ private:
 	bool	running;
 	Uint32	started_at;
 	Uint32	stopped_at;
+	Uint32	time_in_pause;
+	TIMER_STATE state;
 };
 
 #endif //__TIMER_H__

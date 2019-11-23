@@ -16,6 +16,7 @@ public:
 	bool Init();
 	bool Start();
 	update_status PreUpdate(float dt);
+	update_status GameUpdate(float game_dt);
 	update_status Update(float dt);
 	void DrawPlane();
 	update_status PostUpdate(float dt);

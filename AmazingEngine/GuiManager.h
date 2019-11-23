@@ -34,6 +34,8 @@ public:
 
 	void ManageUI(bool& open);
 
+	void WindowPlay();
+
 	//Windows in the main bar
 	void AboutWindow();
 	void ConfigurationWindow();

@@ -40,6 +40,11 @@ public:
 		return UPDATE_CONTINUE;
 	}
 
+	virtual update_status GameUpdate(float game_dt)
+	{
+		return UPDATE_CONTINUE;
+	}
+
 	virtual update_status PostUpdate(float dt)
 	{
 		return UPDATE_CONTINUE;

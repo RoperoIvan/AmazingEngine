@@ -69,6 +69,28 @@ update_status ModuleScene::PreUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
+update_status ModuleScene::GameUpdate(float game_dt)
+{
+	//frustrum and octree actived
+	Timer frustrumTime;
+	frustrumTime.Start();
+
+	std::vector<GameObject*> draw_objects;
+	App->scene->octree->CollectObjects(App->camera->my_camera->frustum, draw_objects);
+
+	for (std::vector<GameObject*>::iterator iter = draw_objects.begin(); iter != draw_objects.end(); ++iter)
+	{
+		(*iter)->Draw();
+	}
+	draw_objects.clear();
+	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)
+	{
+		float time = frustrumTime.Read();
+		LOG("Frustrum time with octree: %f", time);
+	}
+	return UPDATE_CONTINUE;
+}
+
 update_status ModuleScene::Update(float dt)
 {		
 	

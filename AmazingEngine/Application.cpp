@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iomanip>
 
+
 Application::Application()
 {
 	window = new ModuleWindow(this);
@@ -50,6 +51,7 @@ bool Application::Init()
 	//Console is functioning;
 	is_console = true;
 
+	game_time.Stop();
 	// Call Init() in all modules
 
 	for(std::list<Module*>::iterator item = list_modules.begin(); item != list_modules.end() && ret == true; ++item)
@@ -100,6 +102,9 @@ void Application::PrepareUpdate()
 	last_sec_frame_count++;
 	dt = 1.0f / framerate_cap;
 
+	dtGame = 1.0f / framerate_cap_game;
+	if (game_time.GetState() == TIMER_STATE::PAUSE)
+		dtGame = 0;
 	ms_timer.Start();
 
 }
@@ -136,14 +141,18 @@ update_status Application::Update()
 	update_status ret = UPDATE_CONTINUE;
 	PrepareUpdate();
 	
+	
 	for (std::list<Module*>::iterator item = list_modules.begin(); item != list_modules.end() && ret == UPDATE_CONTINUE; ++item)
 	{
-		ret = (*item)->PreUpdate(dt);
+			ret = (*item)->PreUpdate(dt);
 	}
 
 	for (std::list<Module*>::iterator item = list_modules.begin(); item != list_modules.end() && ret == UPDATE_CONTINUE; ++item)
 	{
-		ret = (*item)->Update(dt);
+		if (motor_state == MOTOR_STATE::EXECUTE)
+			ret = (*item)->GameUpdate(dt);
+		else
+			ret = (*item)->Update(dt);
 	}
 
 	for (std::list<Module*>::iterator item = list_modules.begin(); item != list_modules.end() && ret == UPDATE_CONTINUE; ++item)
