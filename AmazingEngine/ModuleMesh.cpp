@@ -1014,14 +1014,17 @@ GameObject* ModuleMesh::LoadObjectFromFormat(char *& cursor)
 		}
 
 		//Create the material component and prepare it to be used
-		Image* material = dynamic_cast<Image*>(new_obj->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
-		material->texture_id = texture_ID;
-		material->tmp_id = material->texture_id;
-		material->p_tex = text_name;
-		material->ID = mat_id;
-		material->LoadCheckerTexture();
-		dynamic_cast<Geometry*>(new_obj->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH))->texture = material;
-		delete[] text_name;
+		if (dynamic_cast<Geometry*>(new_obj->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH))->par_num_indices == 0)
+		{
+			Image* material = dynamic_cast<Image*>(new_obj->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
+			material->texture_id = texture_ID;
+			material->tmp_id = material->texture_id;
+			material->p_tex = text_name;
+			material->ID = mat_id;
+			material->LoadCheckerTexture();
+			dynamic_cast<Geometry*>(new_obj->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH))->texture = material;
+			delete[] text_name;
+		}				
 	}
 
 	//camera ID

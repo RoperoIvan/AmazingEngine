@@ -124,15 +124,13 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	case COMPONENT_TYPE::COMPONENT_MESH:
 		component = new Geometry(this);
 		components.push_back(component);
-		//App->camera->GoAroundGeometry(&App->scene->game_objects);
 		break;
 	case COMPONENT_TYPE::COMPONENT_MATERIAL:
 		component = new Image(this);
 		components.push_back(component);
 		break;
-	case COMPONENT_TYPE::COMPONENT_CAMERA: // TODO: Need to change that so you can create the camera from here
+	case COMPONENT_TYPE::COMPONENT_CAMERA:
 		component = new Camera(this);
-		//App->mesh->current_camera = (Camera*)component; //TODO: Move this to a function where you choose the main camera
 		components.push_back(component);
 		break;
 	case COMPONENT_TYPE::NO_COMPONENT:

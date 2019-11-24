@@ -60,9 +60,9 @@ private:
 
 	bool show_config_window = false;
 	bool show_about_window = false;
-	bool show_console_window = false;
+	bool show_console_window = true;
 	bool show_primitives_window = false;
-	bool show_hierachy_window = false;
+	bool show_hierachy_window = true;
 	bool show_textures_window = false;
 
 	bool fullscreen = false;
