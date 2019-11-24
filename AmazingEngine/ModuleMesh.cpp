@@ -474,7 +474,7 @@ bool ModuleMesh::SaveCurrentScene(const char * s_name)
 	file_path += s_name;
 	file_path += ".Amazing";
 
-	//Write all to new file
+	//Create the file
 	std::ofstream new_file(file_path.c_str(), std::ofstream::binary);
 
 	if (new_file.good())
@@ -484,7 +484,7 @@ bool ModuleMesh::SaveCurrentScene(const char * s_name)
 	}
 	delete[] data;
 
-	LOG("Saved Scene %s to Library", s_name);
+	LOG("Saved Scene %s to Library folder", s_name);
 
 
 	return ret;
@@ -493,14 +493,14 @@ bool ModuleMesh::SaveCurrentScene(const char * s_name)
 uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, GameObject * g_object)
 {
 	//DATA ORDER: 
-	// UID of obj - size of name - name -
-	// UID of parent
-	//  UID of transform - pos - scale - rot 
-	//  num of meshes - [UID of mesh - mesh name size - mesh name]
-	//  UID of material - size of texture name - texture name
-	//UID of camera - near dist - far dist
+	// ID of obj - size of name - name -
+	// ID of parent
+	// ID of transform - pos - scale - rot 
+	// num of meshes - ID of mesh - mesh name size - mesh name
+	// ID of material - size of texture name - texture name
+	// ID of camera - near dist - far dist
 
-	//STORE SIZE-------------------------------------------------------------------
+	//Calculate total size of data needed
 	uint size = 1;
 
 	size += sizeof(uint);
@@ -508,10 +508,10 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, Game
 	size += sizeof(uint);
 	size += name.size();
 
-	//UID parent
+	//ID parent
 	size += sizeof(uint);
 
-	//Transform
+	//Transform component
 	Transform* transform = dynamic_cast<Transform*>(g_object->GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 
 	size += sizeof(uint);
@@ -521,25 +521,18 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, Game
 	}
 
 
-	//Meshes
-	Geometry* meshes = dynamic_cast<Geometry*>(g_object->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH));
+	//Mesh component
+	Geometry* mesh = dynamic_cast<Geometry*>(g_object->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH));
 
 	size += sizeof(uint);//num of meshes
-	if (meshes != nullptr)
+	if (mesh != nullptr)
 	{
-		size += sizeof(uint); //UID
+		size += sizeof(uint); //ID
 		size += sizeof(uint); //size of mesh name
-		size += sizeof(char) * meshes->name.length(); //mesh name
+		size += sizeof(char) * mesh->name.length(); //mesh name
 	}
-	//size += sizeof(uint); 
-	//for (int i = 0; i < meshes.size(); i++)
-	//{
-	//	size += sizeof(uint); //UID
-	//	size += sizeof(uint); //size of mesh name
-	//	size += sizeof(char) * ((ComponentMesh*)(meshes[i]))->name.length(); //mesh name
-	//}
 
-	//Material
+	//Material component
 	size += sizeof(uint);
 	Image* mat = dynamic_cast<Image*>(g_object->GetComponentByType(COMPONENT_TYPE::COMPONENT_MATERIAL));
 	if (mat != nullptr)
@@ -548,7 +541,7 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, Game
 		size += mat->p_tex.length();
 	}
 
-	//Camera
+	//Camera component
 	size += sizeof(uint);
 	Camera* cam = dynamic_cast<Camera*>(g_object->GetComponentByType(COMPONENT_TYPE::COMPONENT_CAMERA));
 	if (cam != nullptr)
@@ -556,31 +549,31 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, Game
 		size += sizeof(float) * 2; //near distance= 1float + far distance= 1float
 	}
 
-	//COPY DATA------------------------------------------------------
+	//Now store data in memory
 	char* data = new char[size];
 	char* cursor = data;
 	uint size_of = 0;
 
 
-	//Copy UID
+	//ID
 	size_of = sizeof(uint);
 	uint objID = g_object->ID;
 	memcpy(cursor, &objID, size_of);
 	cursor += size_of;
 
-	//Copy name size
+	//object name size
 	size_of = sizeof(uint);
 	uint name_size[] = { -1 };
 	name_size[0] = name.size();
 	memcpy(cursor, name_size, size_of);
 	cursor += size_of;
 
-	//Copy name
+	//object name
 	size_of = name_size[0];
 	memcpy(cursor, name.data(), size_of);
 	cursor += size_of;
 
-	//Copy UID of parent
+	//ID of parent
 	uint parentID = 0;
 	if(g_object->parent)
 		parentID = g_object->parent->ID;
@@ -588,18 +581,17 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, Game
 	memcpy(cursor, &parentID, size_of);
 	cursor += size_of;
 
-	//Copy UID of transform
-
+	//ID of transform
 	uint transformID = 0;
 	if (transform != nullptr)
 		transformID = transform->ID;
 	size_of = sizeof(uint);
 	memcpy(cursor, &transformID, size_of);
 	cursor += size_of;
-
-	//Copy pos
+	
 	if (transform != nullptr)
 	{
+		//position
 		math::float3 pos = transform->position;
 		size_of = sizeof(float);
 		memcpy(cursor, &pos.x, size_of);
@@ -610,7 +602,7 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, Game
 		cursor += size_of;
 
 
-		//Copy scale
+		//scale
 		math::float3 scale = transform->scale;
 		memcpy(cursor, &scale.x, size_of);
 		cursor += size_of;
@@ -619,8 +611,7 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, Game
 		memcpy(cursor, &scale.z, size_of);
 		cursor += size_of;
 
-
-		//Copy rot
+		//rot
 		math::Quat rot = transform->rot;
 		size_of = sizeof(float);
 		memcpy(cursor, &rot.x, size_of);
@@ -636,11 +627,9 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, Game
 		cursor += size_of;
 	}
 
-	uint num_of_meshes = 0;
+	uint num_of_meshes = 0;		
 	
-		//copy mesh UID
-	
-	if (meshes != nullptr)
+	if (mesh != nullptr)
 	{	
 		num_of_meshes = 1;
 	}
@@ -648,28 +637,28 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, Game
 	memcpy(cursor, &num_of_meshes, size_of);
 	cursor += size_of;
 
-	if (meshes != nullptr)
+	if (mesh != nullptr)
 	{
+		//mesh ID
 		uint meshID = 0;
-		meshID = meshes->ID;
+		meshID = mesh->ID;
 		size_of = sizeof(uint);
 		memcpy(cursor, &meshID, size_of);
 		cursor += size_of;
 
-		//copy mesh name size
-		uint size_of_name = meshes->name.length();
+		//mesh name size
+		uint size_of_name = mesh->name.length();
 		size_of = sizeof(uint);
 		memcpy(cursor, &size_of_name, size_of);
 		cursor += size_of;
 
-		//copy mesh name
+		//mesh name
 		size_of = size_of_name;
-		memcpy(cursor, meshes->name.data(), size_of);
+		memcpy(cursor, mesh->name.data(), size_of);
 		cursor += size_of;
 	}
 		
-
-	//copy material & texture
+	//material ID
 	uint matID = 0;
 	if (mat != nullptr)
 		matID = mat->ID;
@@ -680,17 +669,19 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, Game
 
 	if (mat != nullptr)
 	{
+		//texture name size
 		uint texture_name_size = mat->p_tex.length();
 		size_of = sizeof(uint);
 		memcpy(cursor, &texture_name_size, size_of);
 		cursor += size_of;
 
+		//texture name
 		size_of = texture_name_size;
 		memcpy(cursor, mat->p_tex.data(), size_of);
 		cursor += size_of;
 	}
 
-	//copy cam settings
+	//camera ID
 	uint camID = 0;
 	if (cam != nullptr)
 		camID = cam->ID;
@@ -701,6 +692,7 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, Game
 
 	if (cam != nullptr)
 	{
+		//near and far plane
 		float n_distance = cam->frustum.nearPlaneDistance;
 		float f_distance = cam->frustum.farPlaneDistance;
 		size_of = sizeof(float);
@@ -709,16 +701,13 @@ uint ModuleMesh::SaveGameObjects(std::list<std::pair<char*, uint>> &buffer, Game
 		memcpy(cursor, &f_distance, size_of);
 		cursor += size_of;
 	}
-
-
-
+	//add in our buffer the sieze and data
 	data[size - 1] = '\0';
 	std::pair<char*, uint> pair_of_data;
 	buffer.push_back(pair_of_data);
 	buffer.back().first = data;
 	buffer.back().second = size;
-
-	//Load children 
+ 
 	std::vector<GameObject*> children = g_object->children;
 	for (int i = 0; i < children.size(); i++)
 	{
@@ -737,14 +726,12 @@ GameObject * ModuleMesh::LoadSceneFromFormat(const char * s_name)
 		return nullptr;
 	}
 
-	//Clean Current Scene
+	//Reset the scene
 	App->scene->RemoveSceneContent();
 
-
-	//Get data from buffer---------------
 	//DATA ORDER: tag - num objects - [object]
 
-	//Get tag and check that its a scene
+	//Look if what we are loading is a correct scene saved
 	char* cursor = data;
 	uint tag[] = { -1 };
 	uint size_of = sizeof(uint);
@@ -757,20 +744,20 @@ GameObject * ModuleMesh::LoadSceneFromFormat(const char * s_name)
 	}
 	cursor += size_of;
 
-	//Load Num of OBJ
+	//num obj
 	uint nums_objects[] = { -1 };
 	size_of = sizeof(uint);
 	memcpy(nums_objects, cursor, size_of);
 	cursor += size_of;
 
-	//Load all obj 
+	//Load back the data saved before to the obj
 	std::vector<GameObject*> objects_in_scene;
 	for (int i = 0; i < nums_objects[0]; i++)
 	{
 		objects_in_scene.push_back(LoadObjectFromFormat(cursor));
 	}
 
-	//Set all parents properly
+	//Arrange the game objects in parents and childs
 	for (uint i = 0; i < objects_in_scene.size(); ++i)
 	{
 		if (tmp_parent_ids[i] == 0)
@@ -786,40 +773,15 @@ GameObject * ModuleMesh::LoadSceneFromFormat(const char * s_name)
 			if (parent != nullptr)
 			{
 				objects_in_scene[i]->SetParent(parent);
-				//parent->children.push_back(objects_in_scene[i]);
 				break;
 			}
-		}
-		/*if(parent != nullptr && parent->parent == nullptr)*/
-			
+		}		
 	}
 	for (uint i = 0; i < objects_in_scene.size(); ++i)
 	{
 		if(objects_in_scene[i]->parent == nullptr)
 			App->scene->game_objects.push_back(objects_in_scene[i]);
 	}
-	/*std::vector<GameObject*> objects_in_scene = App->scene->root->GetChildrens();
-	for (int i = 0; i < objects_in_scene.size(); i++)
-	{
-		if (tmp_parent_ids[i] == 0)
-			continue;
-
-
-		for (int j = 0; j < objects_in_scene.size(); j++)
-		{
-			if (objects_in_scene[j] == objects_in_scene[i])
-				continue;
-
-			GameObject* parent = objects_in_scene[j]->FindChildByID(tmp_parent_ids[i]);
-
-			if (parent != nullptr)
-			{
-				objects_in_scene[i]->SetParent(parent);
-				break;
-			}
-		}
-	}
-*/
 
 	delete[] data;
 	LOG("Loading scene %s", s_name);
@@ -829,44 +791,47 @@ GameObject * ModuleMesh::LoadSceneFromFormat(const char * s_name)
 
 GameObject* ModuleMesh::LoadObjectFromFormat(char *& cursor)
 {
-	//DATA ORDER: UID of obj - size of name - name -
-	// UID of parent
-	//  UID of transform - pos - scale - rot 
-	//  num of meshes - [UID of mesh - mesh name size - mesh name]
-	//  UID of material - size of texture name - texture name
-	// UID of camera - near distance - far distance
+	//ORDER FOR LOADING THE OBJECT DATA
+	// ID of obj - size of name - name -
+	// ID of parent
+	// ID of transform - pos - scale - rot 
+	// num of meshes - ID of mesh - mesh name size - mesh name
+	// ID of material - size of texture name - texture name
+	// ID of camera - near distance - far distance
+	
+	//obj ID
 	uint object_id = 0 ;
-
 	uint size_of = sizeof(uint);
 	memcpy(&object_id, cursor, size_of);
 	cursor += size_of;
 
+	//obj name size
 	uint size_of_name;
 	size_of = sizeof(uint);
 	memcpy(&size_of_name, cursor, size_of);
 	cursor += size_of;
 
+	//obj name
 	char* obj_name = new char[size_of_name + 1];
-
 	size_of = size_of_name;
 	memcpy(obj_name, cursor, size_of);
 	cursor += size_of;
 	obj_name[size_of_name] = '\0';
 
-
+	//create the new obj and delete the now loaded name char
 	GameObject* new_obj = new GameObject();
 	new_obj->name = obj_name;
 	new_obj->ID = object_id;
-	//App->scene->CreateGameObject(obj_name, App->scene->root, object_id);
 	delete[] obj_name;
 
+	//parent id
 	uint parent_id = 0 ;
 	size_of = sizeof(uint);
 	memcpy(&parent_id, cursor, size_of);
 	cursor += size_of;
 	tmp_parent_ids.push_back(parent_id);
 
-
+	//transform ID
 	uint transform_id =  0 ;
 	size_of = sizeof(uint);
 	memcpy(&transform_id, cursor, size_of);
@@ -875,21 +840,25 @@ GameObject* ModuleMesh::LoadObjectFromFormat(char *& cursor)
 
 	if (transform_id != 0)
 	{
+		//pos
 		float pos[] = { 0, 0, 0 };
 		size_of = sizeof(float) * 3;
 		memcpy(pos, cursor, size_of);
 		cursor += size_of;
 
+		//scale
 		float scale[] = { 1, 1, 1 };
 		size_of = sizeof(float) * 3;
 		memcpy(scale, cursor, size_of);
 		cursor += size_of;
 
+		//rot
 		float rot[] = { 0, 0, 0 , 1 };
 		size_of = sizeof(float) * 4; ////????
 		memcpy(rot, cursor, size_of);
 		cursor += size_of;
 
+		//create the transform component and prepare it to be used
 		Transform* transform = dynamic_cast<Transform*>(new_obj->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
 		transform->ID = transform_id;
 		transform->position.x = pos[0];
@@ -906,37 +875,40 @@ GameObject* ModuleMesh::LoadObjectFromFormat(char *& cursor)
 		transform->RotateObjects(new_obj);
 	}
 
-	uint num_meshes = 0;
+	// num mesh
+	uint num_mesh = 0;
 	size_of = sizeof(uint);
-	memcpy(&num_meshes, cursor, size_of);
+	memcpy(&num_mesh, cursor, size_of);
 	cursor += size_of;
-	if (num_meshes != 0)
+
+	if (num_mesh != 0)
 	{
+		//mesh ID
 		uint mesh_id = 0;
 		size_of = sizeof(uint);
 		memcpy(&mesh_id, cursor, size_of);
 		cursor += size_of;
 
+		//mesh name size
 		uint mesh_name_size = 0;
 		size_of = sizeof(uint);
 		memcpy(&mesh_name_size, cursor, size_of);
 		cursor += size_of;
 
+		//mesh name
 		char* mesh_name = new char[mesh_name_size + 1];
-
 		size_of = mesh_name_size;
 		memcpy(mesh_name, cursor, size_of);
 		cursor += size_of;
 
 		mesh_name[mesh_name_size] = '\0';
 
-		LoadMeshFromFormat(mesh_name, new_obj);
+		//load and prepare the mesh to be used and delete char data
+		LoadMeshFromFormat(mesh_name, new_obj);//???
 		delete[] mesh_name;
 	}
-	/*dynamic_cast<Geometry*>(new_obj->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH))->transform = dynamic_cast<Transform*>(new_obj->GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM));*/
 
-	
-	//UID of material - size of texture name - texture name
+	//ID of material
 	uint mat_id = 0;
 	size_of = sizeof(uint);
 	memcpy(&mat_id, cursor, size_of);
@@ -944,35 +916,36 @@ GameObject* ModuleMesh::LoadObjectFromFormat(char *& cursor)
 
 	if (mat_id != 0)
 	{
+		//size texture name
 		uint text_name_size = 0;
 		size_of = sizeof(uint);
 		memcpy(&text_name_size, cursor, size_of);
 		cursor += size_of;
 
+		//texture name
 		char* text_name = new char[text_name_size + 1];
-
 		size_of = text_name_size;
 		memcpy(text_name, cursor, size_of);
 		cursor += size_of;
 
 		text_name[text_name_size] = '\0';
 
-		bool loaded = false;
+		bool is_loaded = false;
 		uint texture_ID = -1;
-		//Check if texture already loaded and, if not, load it
+		//Now we look for repeted texture use and only assign a new one if needed, if not assign the correct one
 		for (std::vector<std::pair<std::string, int>>::iterator it = tmp_textures.begin(); it != tmp_textures.end(); it++)
 		{
 			if ((*it).first.compare(text_name) == 0)
 			{
-				loaded = true;
+				is_loaded = true;
 				texture_ID = (*it).second;
 				break;
 			}
 		}
 
-		if (loaded == false)
+		if (is_loaded == false)
 		{
-			//Construct path to texture
+			//Find texture path
 			std::string path;
 			#if _DEBUG
 			path = "../Library/";
@@ -986,15 +959,14 @@ GameObject* ModuleMesh::LoadObjectFromFormat(char *& cursor)
 
 			texture_ID = LoadImages(path.c_str(), true);
 
-			//Save the texture in the already-loaded vector
+			//Save the new texture in our bank of textures
 			std::pair<std::string, int> text;
 			text.first = text_name;
 			text.second = texture_ID;
 			tmp_textures.push_back(text);
 		}
 
-
-		//new_obj->CreateComponent_Material(texture_ID, text_name, mat_id);
+		//Create the material component and prepare it to be used
 		Image* material = dynamic_cast<Image*>(new_obj->CreateComponent(COMPONENT_TYPE::COMPONENT_MATERIAL));
 		material->texture_id = texture_ID;
 		material->tmp_id = material->texture_id;
@@ -1005,7 +977,7 @@ GameObject* ModuleMesh::LoadObjectFromFormat(char *& cursor)
 		delete[] text_name;
 	}
 
-	//UID of camera - near dist - far dist
+	//camera ID
 	uint cam_id = 0;
 	size_of = sizeof(uint);
 	memcpy(&cam_id, cursor, size_of);
@@ -1013,16 +985,15 @@ GameObject* ModuleMesh::LoadObjectFromFormat(char *& cursor)
 
 	if (cam_id != 0)
 	{
+		//near dist and far dist
 		float n_dist = 0, f_dist = 0;
-
 		size_of = sizeof(float);
-
 		memcpy(&n_dist, cursor, size_of);
 		cursor += size_of;
 		memcpy(&f_dist, cursor, size_of);
 		cursor += size_of;
 
-		//new_obj->CreateComponent_Camera(n_dist, f_dist, false ,cam_id);
+		//Create the camera component and prepare it to be used
 		Camera* camera = dynamic_cast<Camera*>(new_obj->CreateComponent(COMPONENT_TYPE::COMPONENT_CAMERA));
 		camera->frustum.nearPlaneDistance = n_dist;
 		camera->frustum.farPlaneDistance = f_dist;
@@ -1118,7 +1089,6 @@ void ModuleMesh::LoadMaterials(const aiScene * scene, GameObject * g_object, con
 	int mat_id = 0;
 	if (!tmp_material.empty())
 	{
-		//tex->LoadMaterials(scene, file_name, tmp_material, last_mat_ind);
 		uint check_id = 0;
 		int tmp_id = 0;
 		int texture_id = 0;
@@ -1167,10 +1137,8 @@ void ModuleMesh::LoadMaterials(const aiScene * scene, GameObject * g_object, con
 		tex->tmp_id = tmp_id;
 		tex->texture_id = texture_id;
 		tex->p_tex = p_tex;
-		//tex->name = std::experimental::filesystem::path(p_tex).stem().string().c_str();
 		tex->LoadCheckerTexture();
 		dynamic_cast<Geometry*>(g_object->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH))->texture = tex;
-		//tex->Disable(); TODO: DELETE THIS IMAGE
 		tex->to_delete;
 		LOG("Loaded Material in : %i", load.Read());
 	}
