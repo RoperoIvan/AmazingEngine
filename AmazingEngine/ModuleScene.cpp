@@ -43,7 +43,7 @@ bool ModuleScene::Start()
 {
 	App->camera->my_camera->frustum.pos = { 3,3,3 };
 	App->camera->my_camera->Look(float3::zero);
-	App->mesh->LoadFile("..\\Assets\\BakerHouse.fbx");
+	App->mesh->LoadFile("Assets\\street\\Street environment_V01.fbx");
 	return true;
 }
 
@@ -51,11 +51,8 @@ update_status ModuleScene::PreUpdate(float dt)
 {
 	for (std::vector<GameObject*>::iterator object = game_objects.begin(); object != game_objects.end(); ++object)
 	{
-		if ((*object)->to_delete) 
+		if ((*object)->to_delete)
 		{
-			//game_objects.erase(object);
-			//delete (*object);
-
 			if(*object == game_object_select)
 				game_object_select = nullptr;
 			octree->Remove(*object);
@@ -105,13 +102,11 @@ update_status ModuleScene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
 	{
 		char* path = "Scene1231";	
-		//App->file_system->SaveScene(path,game_objects);
 		App->mesh->SaveCurrentScene(path);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
 	{
 		char* path = "Scene1231";
-		//App->file_system->ImporScene(path);
 		App->mesh->LoadSceneFromFormat(path);
 	}
 	DrawPlane();

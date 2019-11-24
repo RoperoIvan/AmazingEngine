@@ -375,6 +375,7 @@ void GameObject::LookForMeshCollision(LineSegment ray_segment, MouseHit& hit)
 
 	if (mesh == nullptr)
 		return;
+
 	float* vertices = (float*)((Geometry*)mesh)->vertices;
 	uint* indices = (uint*)((Geometry*)mesh)->indices;
 

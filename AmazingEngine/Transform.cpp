@@ -44,6 +44,8 @@ void Transform::Init(const float& x, const float& y, const float& z)
 	position.x = x;
 	position.y = y;
 	position.z = z;
+	rotation_matrix = math::float4x4::FromTRS(position, rot, scale);
+	RotateObjects(parent);
 }
 
 bool Transform::LoadTransformation()

@@ -1027,7 +1027,11 @@ GLuint ModuleMesh::LoadImages(const char * p_tex, bool loading_scene)
 {
 	ILuint img_id = GetID();
 
+	ilutRenderer(ILUT_OPENGL);
+
 	//load from path
+	//ilLoad(IL_TGA, p_tex);
+	//const char* hola = "C:\\Users\\ivan_\\OneDrive\\Documentos\\GitHub\\AmazingEngine\\AmazingEngine\\Assets\\street\\building 01_c.tga";
 	ilLoadImage(p_tex);
 
 	ILuint devilError1 = ilGetError();
@@ -1061,7 +1065,7 @@ GLuint ModuleMesh::LoadImages(const char * p_tex, bool loading_scene)
 
 	//Send texture to GPU
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glGenTextures(1, &img_id);
+	//glGenTextures(1, &img_id);
 	glBindTexture(GL_TEXTURE_2D, img_id);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -1069,7 +1073,7 @@ GLuint ModuleMesh::LoadImages(const char * p_tex, bool loading_scene)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT),
 		0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
-
+	glBindTexture(GL_TEXTURE_2D, 0);
 	ILuint devilError3 = ilGetError();
 	if (devilError3 != IL_NO_ERROR)
 	{
@@ -1103,16 +1107,25 @@ void ModuleMesh::LoadMaterials(const aiScene * scene, GameObject * g_object, con
 		{
 			aiString text_path;
 			tmp_material[last_mat_ind].first->GetTexture(aiTextureType_DIFFUSE, 0, &text_path);
+			if (text_path.length == 0)
+				return;
+
 			std::string  tex = text_path.C_Str();
 			std::string  p_geo = file_name;
+			
+			std::reverse(tex.begin(), tex.end());
 
+			while (tex.back() == '.' || tex.back() == '\\')
+			{
+				tex.pop_back();
+			}
+			std::reverse(tex.begin(), tex.end());
 			//We change the name of the fbx for the texture name, with this made we have the general path
 			while (p_geo.back() != '\\')
 			{
 				p_geo.pop_back();
 			}
 			p_geo += tex;
-			p_tex = p_geo;
 			p_tex = std::experimental::filesystem::path(tex).stem().string().c_str();
 
 			//Look for if the texture has been already loaded
