@@ -10,6 +10,8 @@
 #include <queue>
 #include "MathGeoLib/include/Geometry/AABB.h"
 
+struct aiNode;
+
 class ModuleMesh : public Module
 {
 public:
@@ -23,6 +25,8 @@ public:
 	//GENERAL LOADING
 	bool LoadFile(const char* file_name);
 	bool LoadFBXFile(const char* file_name);
+
+	void LoadObjects(aiNode* node, const aiScene* scene, const char*& file_name, GameObject*& parent);
 	
 	//MOUSE PICKING
 	bool IsCulling(Geometry* g);

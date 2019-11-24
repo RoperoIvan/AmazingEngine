@@ -21,6 +21,7 @@ public:
 	void Disable();
 
 	void Init(const float& x, const float& y, const float& z);
+	void Init(float4x4 r);
 	bool LoadTransformation();
 	void RotateObjects(GameObject* object_to_rotate);
 

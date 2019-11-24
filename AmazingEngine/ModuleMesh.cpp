@@ -124,42 +124,11 @@ bool ModuleMesh::LoadFBXFile(const char * file_name)
 		}
 		if (scene->HasMeshes())
 		{
-			//FIRST PARENT
 			GameObject* newfbx = new GameObject();
-			newfbx->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM);
-
-			int index_material = 0;
-			for (int i = 0; i < scene->mNumMeshes; ++i)
-			{
-				//CHILDREN
-				GameObject* game_object = new GameObject(newfbx);
-
-				//-----------------------------MESHLOAD--------------------------------------\\
-				//FILLING COMPONENT MESH
-				std::string g_name = LoadData(scene->mMeshes[i]);
-				//LOADING TO OUR FORMAT
-				LoadMeshFromFormat(g_name.c_str(), game_object);
-				Geometry* my_geo = dynamic_cast<Geometry*>(game_object->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH));
-
-				//--------------------------TRANSFORMATION-----------------------------------\\
-
-				my_geo->transform = dynamic_cast<Transform*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
-				my_geo->transform->Init(my_geo->vertices[0], my_geo->vertices[1], my_geo->vertices[2]);
-				LOG("New mesh created from %s", file_name);
-				//-----------------------------TEXTURELOAD-------------------------------------\\
-				//Get the material index to then compare if this has been loaded before
-				index_material = scene->mMeshes[i]->mMaterialIndex;
-
-				LoadMaterials(scene, game_object, file_name, index_material);
-				LOG("New material created from %s", file_name);
-
-				//------------------------------------------------------------------------------\\
-				
-				LOG("-----------------------------------------");
-				newfbx->children.push_back(game_object);
-			}
+			LoadObjects(scene->mRootNode, scene, file_name, newfbx);
 			App->scene->game_objects.push_back(newfbx);
 		}
+			
 		aiReleaseImport(scene);
 		tmp_material.clear();
 	}
@@ -169,6 +138,57 @@ bool ModuleMesh::LoadFBXFile(const char * file_name)
 	rand_id = 0;
 
 	return ret;
+}
+
+void ModuleMesh::LoadObjects(aiNode* node, const aiScene* scene, const char*& file_name, GameObject*& parent)
+{
+	//FIRST PARENT
+	parent->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM);
+
+	int index_material = 0;
+	for (uint k = 0; k < node->mNumMeshes; ++k)
+	{
+		//CHILDREN
+		GameObject* game_object = new GameObject(parent);
+
+		//-----------------------------MESHLOAD--------------------------------------\\
+						//FILLING COMPONENT MESH
+		std::string g_name = LoadData(scene->mMeshes[node->mMeshes[k]]);
+		//LOADING TO OUR FORMAT
+		LoadMeshFromFormat(g_name.c_str(), game_object);
+		Geometry* my_geo = dynamic_cast<Geometry*>(game_object->GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH));
+
+		//--------------------------TRANSFORMATION-----------------------------------\\
+
+		my_geo->transform = dynamic_cast<Transform*>(game_object->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM));
+		aiVector3D ai_location;
+		aiVector3D ai_scale;
+		aiQuaternion ai_rotation;
+		node->mTransformation.Decompose(ai_scale,ai_rotation,ai_location);
+		float4x4 rot_matrix = math::float4x4::FromTRS(float3(ai_location[0], ai_location[1], ai_location[2]),
+			Quat(ai_rotation.x, ai_rotation.y, ai_rotation.z, ai_rotation.w),
+			float3(ai_scale[0], ai_scale[1], ai_scale[2]));
+		my_geo->transform->Init(rot_matrix);
+		LOG("New mesh created from %s", file_name);
+
+		//-----------------------------TEXTURELOAD-------------------------------------\\
+						//Get the material index to then compare if this has been loaded before
+		index_material = scene->mMeshes[node->mMeshes[k]]->mMaterialIndex;
+
+		LoadMaterials(scene, game_object, file_name, index_material);
+		LOG("New material created from %s", file_name);
+
+		//------------------------------------------------------------------------------\\
+						
+		LOG("-----------------------------------------");
+		parent->children.push_back(game_object);
+	}
+	//------------------------------CHILDRENS---------------------------------------\\
+		
+	for (uint i = 0; i < node->mNumChildren; ++i)
+	{
+		LoadObjects(node->mChildren[i], scene, file_name, parent);
+	}
 }
 
 void ModuleMesh::ImportTextureToDDSFile(const char * file_name) const

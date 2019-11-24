@@ -43,7 +43,7 @@ bool ModuleScene::Start()
 {
 	App->camera->my_camera->frustum.pos = { 3,3,3 };
 	App->camera->my_camera->Look(float3::zero);
-	App->mesh->LoadFile("Assets\\street\\Street environment_V01.fbx");
+	App->mesh->LoadFile("..\\Assets\\street\\Street environment_V01.fbx");
 	return true;
 }
 

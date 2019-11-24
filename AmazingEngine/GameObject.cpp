@@ -32,25 +32,30 @@ GameObject::GameObject(GameObject* parent): parent(parent)
 
 GameObject::~GameObject()
 {
-	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
+	if (!components.empty())
 	{
-		(*it)->Disable();
-		if ((*it) != nullptr)
-			delete (*it);
-		(*it) = nullptr;
-	}
-	components.clear();
-
-	for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
-	{
-		if ((*it) != nullptr)
+		for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); ++it)
 		{
-			App->scene->octree->Remove(*it);
-			delete (*it);
+			(*it)->Disable();
+			if ((*it) != nullptr)
+				delete (*it);
+			(*it) = nullptr;
 		}
-		(*it) = nullptr;
+		components.clear();
 	}
-	children.clear();
+	if (!children.empty())
+	{
+		for (std::vector<GameObject*>::iterator it = children.begin(); it != children.end(); ++it)
+		{
+			if ((*it) != nullptr)
+			{
+				App->scene->octree->Remove(*it);
+				delete (*it);
+			}
+			(*it) = nullptr;
+		}
+		children.clear();
+	}
 }
 
 void GameObject::Update()

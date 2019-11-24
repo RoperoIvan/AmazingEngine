@@ -48,6 +48,12 @@ void Transform::Init(const float& x, const float& y, const float& z)
 	RotateObjects(parent);
 }
 
+void Transform::Init(float4x4 r)
+{
+	rotation_matrix = r;
+	RotateObjects(parent);
+}
+
 bool Transform::LoadTransformation()
 {
 	bool ret = false;
