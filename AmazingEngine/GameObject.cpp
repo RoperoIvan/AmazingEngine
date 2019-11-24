@@ -385,6 +385,7 @@ void GameObject::LookForMeshCollision(LineSegment ray_segment, std::vector<Mouse
 
 	if (mesh == nullptr)
 		return;
+
 	float* vertices = (float*)((Geometry*)mesh)->vertices;
 	uint* indices = (uint*)((Geometry*)mesh)->indices;
 
@@ -393,12 +394,12 @@ void GameObject::LookForMeshCollision(LineSegment ray_segment, std::vector<Mouse
 	float4x4 inverted_m = transform->global_matrix.Transposed().Inverted();
 	segment_localized = inverted_m*segment_localized;
 
-	for (int j = 0; j < ((Geometry*)mesh)->num_indices;)
+	for (int j = 0; j < ((Geometry*)mesh)->num_indices; ++j)
 	{
 		Triangle triangle;
-		triangle.a.Set(&vertices[indices[j++] * 3]);
-		triangle.b.Set(&vertices[indices[j++] * 3]);
-		triangle.c.Set(&vertices[indices[j++] * 3]);
+		triangle.a.Set(&vertices[indices[j] * 1]);
+		triangle.b.Set(&vertices[indices[j] * 2]);
+		triangle.c.Set(&vertices[indices[j] * 3]);
 
 		float tmp_distance;
 		if (segment_localized.Intersects(triangle, &tmp_distance, nullptr))
