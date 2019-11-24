@@ -166,6 +166,7 @@ bool ModuleMesh::LoadFBXFile(const char * file_name)
 	else
 		LOG("Error loading scene %s", file_name);
 
+	rand_id = 0;
 
 	return ret;
 }
@@ -420,6 +421,11 @@ std::string ModuleMesh::RandomName(aiMesh * mesh)
 	{
 		name = "GameObject";
 		name += "_mesh_";
+		name += std::to_string(rand_id);
+		rand_id++;
+	}
+	else
+	{
 		name += std::to_string(rand_id);
 		rand_id++;
 	}
@@ -854,7 +860,7 @@ GameObject* ModuleMesh::LoadObjectFromFormat(char *& cursor)
 
 		//rot
 		float rot[] = { 0, 0, 0 , 1 };
-		size_of = sizeof(float) * 4; ////????
+		size_of = sizeof(float) * 4;
 		memcpy(rot, cursor, size_of);
 		cursor += size_of;
 
