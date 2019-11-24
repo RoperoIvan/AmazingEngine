@@ -34,11 +34,12 @@ void Geometry::Disable()
 
 void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, float col2, float col3)
 {
+	name = "Primitive";
 	num_vertices = p_mesh->npoints;
 	par_num_indices = p_mesh->ntriangles;
 	num_indices = p_mesh->ntriangles * 3;
 	num_coords = p_mesh->npoints * 2;
-
+	
 	vertices = new float[num_vertices*3];
 	indices = new uint[num_indices];
 	normals = new float[num_vertices*3];
@@ -65,6 +66,8 @@ void Geometry::CreatePrimitive(par_shapes_mesh* p_mesh, float col0, float col1, 
 	
 	CalculateParentBoundingBox(parent);
 	LoadBuffers();
+	App->file_system->SaveMeshToFormat(name.c_str(), num_coords, num_indices, vertices, indices, normals, num_normals, num_face_normals, uv_coord, num_coords, id_coords);
+	App->mesh->LoadMeshFromFormat(parent->name.c_str(), parent);
 }
 
 
