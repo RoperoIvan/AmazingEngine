@@ -368,17 +368,7 @@ void GameObject::ShowNormalsFaces(const bool& x)
 
 }
 
-void GameObject::LookForRayCollision(LineSegment ray_segment, std::vector<MouseHit>& hit)
-{
-	LookForMeshCollision(ray_segment, hit);
-	for (int i = 0; i < children.size(); ++i)
-	{
-		children[i]->LookForRayCollision(ray_segment, hit);		
-	}
-
-}
-
-void GameObject::LookForMeshCollision(LineSegment ray_segment, std::vector<MouseHit>& hit)
+void GameObject::LookForMeshCollision(LineSegment ray_segment, MouseHit& hit)
 {
 	Transform* transform = (Transform*)GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM);
 	Geometry* mesh = (Geometry*)GetComponentByType(COMPONENT_TYPE::COMPONENT_MESH);
@@ -393,21 +383,18 @@ void GameObject::LookForMeshCollision(LineSegment ray_segment, std::vector<Mouse
 	float4x4 inverted_m = transform->global_matrix.Transposed().Inverted();
 	segment_localized = inverted_m*segment_localized;
 
-	for (int j = 0; j < ((Geometry*)mesh)->num_indices;)
+	for (int j = 0; j < ((Geometry*)mesh)->num_indices; j += 3)
 	{
 		Triangle triangle;
-		triangle.a.Set(&vertices[indices[j++] * 3]);
-		triangle.b.Set(&vertices[indices[j++] * 3]);
-		triangle.c.Set(&vertices[indices[j++] * 3]);
+		triangle.a.Set(&vertices[indices[j] * 3]);
+		triangle.b.Set(&vertices[indices[j+1] * 3]);
+		triangle.c.Set(&vertices[indices[j+2] * 3]);
 
 		float tmp_distance;
 		if (segment_localized.Intersects(triangle, &tmp_distance, nullptr))
 		{
 			//Save all the hits
-			MouseHit m_hit;
-			m_hit.distance = tmp_distance;
-			m_hit.object = this;
-			hit.push_back(m_hit);
+			hit.distance = tmp_distance;
 		}
 	}
 }

@@ -54,6 +54,8 @@ public:
 	void DrawRay();
 	void AddFrustumBox(math::Frustum* c_frustum);
 
+	void LookForMeshCollision(LineSegment ray_segment, std::vector<MouseHit>& hit);
+
 private:
 	float TriangleCenterAxis(const float &p1, const float &p2, const float &p3);
 

@@ -51,7 +51,7 @@ update_status ModuleScene::PreUpdate(float dt)
 {
 	for (std::vector<GameObject*>::iterator object = game_objects.begin(); object != game_objects.end(); ++object)
 	{
-		if ((*object)->to_delete) //TODO: NOSE PORQUE MIERDAS CUANDO CARGO LA SCENE NO ME BORRA TODOS LOS HIJOS SOLO EL PADRE
+		if ((*object)->to_delete) 
 		{
 			//game_objects.erase(object);
 			//delete (*object);
@@ -77,12 +77,12 @@ update_status ModuleScene::GameUpdate(float game_dt)
 	Timer frustrumTime;
 	frustrumTime.Start();
 
-	std::vector<GameObject*> draw_objects;
+	std::vector<MouseHit> draw_objects;
 	App->scene->octree->CollectObjects(App->camera->my_camera->frustum, draw_objects);
 
-	for (std::vector<GameObject*>::iterator iter = draw_objects.begin(); iter != draw_objects.end(); ++iter)
+	for (std::vector<MouseHit>::iterator iter = draw_objects.begin(); iter != draw_objects.end(); ++iter)
 	{
-		(*iter)->Draw();
+		(*iter).object->Draw();
 	}
 	draw_objects.clear();
 	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)
@@ -127,12 +127,12 @@ update_status ModuleScene::Update(float dt)
 
 		if (App->guiManager->active_octree)
 		{
-			std::vector<GameObject*> draw_objects;
+			std::vector<MouseHit> draw_objects;
 			App->scene->octree->CollectObjects(App->camera->my_camera->frustum, draw_objects);
 
-			for (std::vector<GameObject*>::iterator iter = draw_objects.begin(); iter != draw_objects.end(); ++iter)
+			for (std::vector<MouseHit>::iterator iter = draw_objects.begin(); iter != draw_objects.end(); ++iter)
 			{
-				(*iter)->Draw();
+				(*iter).object->Draw();
 			}
 			draw_objects.clear();
 			if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)

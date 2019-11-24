@@ -139,28 +139,14 @@ void ModuleCamera3D::CatchMousePicking()
 	whithoutOctree.Start();
 	ray_picking = my_camera->frustum.UnProjectLineSegment(mouse_normal.x, mouse_normal.y);
 
-	if (!App->guiManager->active_octree)
+	App->scene->octree->CollectObjects(ray_picking, hit);
+	for (std::vector<MouseHit>::iterator iter = hit.begin(); iter != hit.end(); ++iter)
 	{
-		for (std::vector<GameObject*>::iterator iter = App->scene->game_objects.begin(); iter != App->scene->game_objects.end(); ++iter)
-		{
-			(*iter)->LookForRayCollision(ray_picking, hit);
-		}
-		float time = whithoutOctree.Read();
-		LOG("Collect ray objects without octree %f", time);
-		////with octree
-	}
-	else
-	{
-	
-	std::vector<GameObject*>objects_picked;
-	App->scene->octree->CollectObjects(ray_picking, objects_picked);
-	for (std::vector<GameObject*>::iterator iter = objects_picked.begin(); iter != objects_picked.end(); ++iter)
-	{
-		(*iter)->LookForRayCollision(ray_picking, hit);
+		(*iter).object->LookForMeshCollision(ray_picking, *iter);
 	}
 	float time = whithoutOctree.Read();
 	LOG("Collect ray objects with octree %f", time);
-	}
+
 	if (!hit.empty())
 	{
 		//We order all the hits from closer to furthest

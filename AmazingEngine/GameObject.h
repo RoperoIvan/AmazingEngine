@@ -36,8 +36,7 @@ public:
 	void ShowNormalsVertices(const bool&);
 	void ShowNormalsFaces(const bool&);
 
-	void LookForRayCollision(LineSegment ray_segment, std::vector<MouseHit>& hit);
-	void LookForMeshCollision(LineSegment ray_segment, std::vector<MouseHit>& hit);
+	void LookForMeshCollision(LineSegment ray_segment, MouseHit& hit);
 	void AddComponent(Component* comp) { components.push_back(comp); }
 	Component* GetComponentByType(COMPONENT_TYPE type);
 
