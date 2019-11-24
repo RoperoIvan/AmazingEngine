@@ -3,6 +3,7 @@
 #include "ModuleCamera3D.h"
 #include "Geometry.h"
 #include "Transform.h"
+#include "ImGui/ImGuizmo.h"
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -27,7 +28,7 @@ bool ModuleCamera3D::Start()
 update_status ModuleCamera3D::PreUpdate(float dt)
 {
 	bool ret = true;
-	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN && !write && !ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemFocused() && !ImGui::IsAnyWindowFocused() && !ImGui::IsAnyWindowHovered())
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN && !write && !ImGui::IsAnyItemHovered() && !ImGui::IsAnyItemFocused() && !ImGui::IsAnyWindowFocused() && !ImGui::IsAnyWindowHovered() && !ImGuizmo::IsUsing())
 		CatchMousePicking();
 	
 	return ret ? UPDATE_CONTINUE : UPDATE_STOP;
