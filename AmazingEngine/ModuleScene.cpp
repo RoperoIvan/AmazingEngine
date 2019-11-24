@@ -32,7 +32,7 @@ bool ModuleScene::Init()
 	AABB first;
 	first.SetNegativeInfinity();
 	first.Enclose(&aux[0], 8);
-	octree = new Octree(first, 4, 4, 1);
+	octree = new Octree(first, 4, 3, 1);
 	return true;
 }
 

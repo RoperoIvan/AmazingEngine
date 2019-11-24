@@ -28,10 +28,7 @@ void Transform::Update()
 	global_matrix.Decompose(position, rot, scale);
 	euler_angles = math::RadToDeg(rot.ToEulerXYZ());
 	if (transform_now)
-	{
-		transform_now = false;
-	}
-
+		global_matrix = rotation_matrix;
 }
 
 void Transform::Disable()
@@ -49,7 +46,8 @@ void Transform::Init(const float& x, const float& y, const float& z)
 
 void Transform::Init(float4x4 r)
 {
-	global_matrix = r;
+	rotation_matrix = r;
+	RotateObjects(parent);
 }
 
 bool Transform::LoadTransformation()
@@ -129,8 +127,7 @@ bool Transform::LoadTransformation()
 			rotation_matrix = math::float4x4::FromTRS(position, rot, scale);
 			transform_now = true;
 			RotateObjects(parent);
-			App->scene->octree->Remove(parent);
-			App->scene->octree->Insert(parent);
+			
 		}
 	}
 	return ret;
@@ -138,13 +135,16 @@ bool Transform::LoadTransformation()
 
 void Transform::RotateObjects(GameObject* object_to_rotate)
 {
-	parent->TransformBoundingBox(global_matrix.Inverted());
+	App->scene->octree->Remove(object_to_rotate);
+
+	object_to_rotate->TransformBoundingBox(dynamic_cast<Transform*>(object_to_rotate->GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM))->global_matrix.Inverted());
 	for (std::vector<Component*>::iterator component_iterator = object_to_rotate->components.begin(); component_iterator != object_to_rotate->components.end(); ++component_iterator)
 	{
 		if ((*component_iterator)->type == COMPONENT_TYPE::COMPONENT_TRANSFORM)
 		{
 			Transform* mesh = dynamic_cast<Transform*>(*component_iterator);
-			mesh->global_matrix = rotation_matrix;
+			transform_now = true;
+			mesh->rotation_matrix = rotation_matrix;
 		}
 	}
 	if (object_to_rotate->children.size() > 0)
@@ -152,11 +152,9 @@ void Transform::RotateObjects(GameObject* object_to_rotate)
 		for (std::vector<GameObject*>::iterator it = object_to_rotate->children.begin(); it != object_to_rotate->children.end(); ++it)
 		{
 			RotateObjects(*it);
-			App->scene->octree->Remove(*it);
-			App->scene->octree->Insert(*it);
 		}
 	}
-	parent->TransformBoundingBox(global_matrix);
-
+	object_to_rotate->TransformBoundingBox(dynamic_cast<Transform*>(object_to_rotate->GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM))->global_matrix);
+	App->scene->octree->Insert(object_to_rotate);
 }
 

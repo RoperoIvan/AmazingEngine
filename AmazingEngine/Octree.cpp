@@ -19,7 +19,6 @@ bool Octree::Clear()
 	bool ret = true;
 	for (std::vector<Octree*>::iterator iter = childs.begin(); iter != childs.end(); ++iter)
 	{
-		(*iter)->Clear();
 		delete* iter;
 		*iter = nullptr;
 	}
@@ -106,25 +105,25 @@ bool Octree::Resize()
 	if (parent != nullptr)
 	{
 		float num_objects = static_objects.size();
-
+		std::vector<GameObject*>obj;
 		for (std::vector<Octree*>::iterator iter = parent->childs.begin(); iter != parent->childs.end(); ++iter)
 		{
 			num_objects += parent->static_objects.size();
 			for (std::vector<GameObject*>::iterator it = (*iter)->static_objects.begin(); it != (*iter)->static_objects.end(); ++it)
 			{
-				if (*iter != this)
-					static_objects.push_back(*it);
-
+				obj.push_back(*it);
 			}
 		}
 		if (num_objects <= max_objects)
 		{
-			for (std::vector<GameObject*>::iterator it = static_objects.begin(); it != static_objects.end(); ++it)
+			for (std::vector<GameObject*>::iterator it = obj.begin(); it != obj.end(); ++it)
 			{
 				parent->static_objects.push_back(*it);
 			}
+			obj.clear();
 			return true;
 		}
+		obj.clear();
 	}
 	return false;
 }
@@ -308,6 +307,7 @@ void Octree::DeleteChilds()
 {
 	for (std::vector<Octree*>::iterator iter = childs.begin(); iter != childs.end(); ++iter)
 	{
+		(*iter)->static_objects.clear();
 		delete* iter;
 		*iter = nullptr;		
 	}
