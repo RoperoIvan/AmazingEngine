@@ -31,6 +31,8 @@ bool Octree::Clear()
 
 void Octree::Insert(GameObject* object)
 {
+	if (object->bounding_box == nullptr)
+		return;
 	if (!is_divided)
 	{
 		static_objects.push_back(object);
