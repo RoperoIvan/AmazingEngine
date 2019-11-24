@@ -241,6 +241,7 @@ void ModuleScene::DeleteTexture(Image* tex)
 
 void ModuleScene::RemoveSceneContent()
 {
+	App->scene->game_object_select = nullptr;
 	CleanUp();
 	float3 aux[8] = { float3(-100,-100,-100),float3(-100,-100,100), float3(-100,100,-100), float3(-100,100,100), float3(100,-100,-100), float3(100,-100,100), float3(100,100,-100), float3(100,100,100) };
 	AABB first;
