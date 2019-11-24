@@ -90,18 +90,15 @@ bool Transform::LoadTransformation()
 		float4x4 proj_matrix = App->scene->current_camera->frustum.ProjectionMatrix();
 		view_matrix.Transpose();
 		proj_matrix.Transpose();
-		float4x4 trs_matrix = global_matrix;
 		float3* corners = new float3[8];
-		parent->bounding_box->obb.GetCornerPoints(corners);
-		ImGuizmo::Manipulate(view_matrix.ptr(), proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, trs_matrix.ptr(), (float*)corners, NULL);
+		static math::float4x4 guizmo_matrix = global_matrix;
+		ImGuizmo::Manipulate(view_matrix.ptr(), proj_matrix.ptr(), mCurrentGizmoOperation, mCurrentGizmoMode, guizmo_matrix.ptr(), NULL, NULL);
 		if (ImGuizmo::IsUsing())
 		{
-			trs_matrix.Transpose();
-			float3 new_pos;
-			float3 new_scale;
+			guizmo_matrix.Transpose();
+			float3 new_pos, new_scale;
 			Quat new_q;
-			trs_matrix.Decompose(new_pos, new_q, new_scale);
-
+			guizmo_matrix.Decompose(new_pos, new_q, new_scale);
 			if (mCurrentGizmoOperation == ImGuizmo::TRANSLATE)
 			{
 				position = new_pos;
@@ -110,12 +107,11 @@ bool Transform::LoadTransformation()
 			{
 				scale = new_scale;
 			}
-
 			if (mCurrentGizmoOperation == ImGuizmo::ROTATE)
 			{
-				rot = new_q.Conjugated();
+				rot = new_q;
 				float3 euler = math::RadToDeg(rot.ToEulerXYZ());
-				euler_angles = -euler;
+				euler_angles = euler;
 			}
 			ret = true;
 		}
@@ -140,7 +136,7 @@ void Transform::RotateObjects(GameObject* object_to_rotate)
 		if ((*component_iterator)->type == COMPONENT_TYPE::COMPONENT_TRANSFORM)
 		{
 			Transform* mesh = dynamic_cast<Transform*>(*component_iterator);
-			mesh->global_matrix = float4x4::identity * rotation_matrix;
+			mesh->global_matrix = rotation_matrix;
 		}
 	}
 	if (object_to_rotate->children.size() > 0)
