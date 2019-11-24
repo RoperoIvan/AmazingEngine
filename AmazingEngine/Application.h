@@ -86,7 +86,7 @@ public:
 	float					 dtGame = 0.f;
 	uint16_t				 framerate_cap_game = 0u;
 
-	ENGINE_STATE				 motor_state = ENGINE_STATE::EDIT;
+	ENGINE_STATE				 engine_state = ENGINE_STATE::EDIT;
 
 	bool					 do_iteration = false;
 public:

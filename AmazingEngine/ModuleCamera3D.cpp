@@ -45,7 +45,7 @@ bool ModuleCamera3D::CleanUp()
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {
-	if (App->motor_state != ENGINE_STATE::PLAY)
+	if (App->engine_state != ENGINE_STATE::PLAY)
 	{
 		CameraControls(dt);
 	}

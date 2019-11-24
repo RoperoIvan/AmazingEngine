@@ -157,7 +157,7 @@ update_status Application::Update()
 
 	for (std::list<Module*>::iterator item = list_modules.begin(); item != list_modules.end() && ret == UPDATE_CONTINUE; ++item)
 	{
-		if (motor_state == ENGINE_STATE::EXECUTE)
+		if (engine_state == ENGINE_STATE::EXECUTE)
 			ret = (*item)->GameUpdate(dtGame);
 		else
 			ret = (*item)->Update(dt);
@@ -169,10 +169,10 @@ update_status Application::Update()
 	}
 
 	if (input->GetKey(SDL_SCANCODE_F7))
-		motor_state = ENGINE_STATE::EXECUTE;
+		engine_state = ENGINE_STATE::EXECUTE;
 
 	if (input->GetKey(SDL_SCANCODE_F8))
-		motor_state = ENGINE_STATE::EDIT;
+		engine_state = ENGINE_STATE::EDIT;
 
 	FinishUpdate();
 	return ret;

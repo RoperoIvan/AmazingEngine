@@ -31,7 +31,7 @@ void Camera::Disable()
 void Camera::Update()
 {
 	App->mesh->AddFrustumBox(&frustum);
-	if ((App->motor_state == ENGINE_STATE::PLAY || App->motor_state == ENGINE_STATE::EXECUTE) && camera_active)
+	if ((App->engine_state == ENGINE_STATE::PLAY || App->engine_state == ENGINE_STATE::EXECUTE) && camera_active)
 	{
 		if (App->scene->current_camera != this)
 		{

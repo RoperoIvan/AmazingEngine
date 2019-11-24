@@ -120,9 +120,21 @@ update_status ModuleInput::PreUpdate(float dt)
 
 		}
 	}
-
-	if(quit == true || keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)
-		return UPDATE_STOP;
+	if (App->engine_state != ENGINE_STATE::EXECUTE)
+	{
+		if (quit == true || keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)
+			return UPDATE_STOP;
+	}
+	else
+	{
+		if (quit == true)
+			return UPDATE_STOP;
+		if (keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)
+		{
+			App->engine_state = ENGINE_STATE::EDIT;
+			App->scene->current_camera = App->camera->my_camera;
+		}
+	}
 
 	if (keyboard[SDL_SCANCODE_F5] == KEY_DOWN)
 		App->Save();
