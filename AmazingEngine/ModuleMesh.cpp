@@ -127,8 +127,28 @@ bool ModuleMesh::LoadFBXFile(const char * file_name)
 			GameObject* newfbx = new GameObject();
 			LoadObjects(scene->mRootNode, scene, file_name, newfbx);
 			App->scene->game_objects.push_back(newfbx);
+			App->scene->octree->Insert(newfbx);
 		}
-			
+		if (scene->HasCameras())
+		{
+			for (uint i = 0; i < scene->mNumCameras; ++i)
+			{
+				GameObject* camera = App->scene->CreateCamera();
+				Camera* cam = (Camera*)camera->GetComponentByType(COMPONENT_TYPE::COMPONENT_CAMERA);
+				
+				Transform* transform = (Transform*)camera->GetComponentByType(COMPONENT_TYPE::COMPONENT_TRANSFORM);
+				aiVector3D ai_location;
+				aiVector3D ai_scale;
+				aiQuaternion ai_rotation;
+				aiMatrix4x4 matrix;
+				scene->mCameras[i]->GetCameraMatrix(matrix);
+				matrix.Decompose(ai_scale, ai_rotation, ai_location);
+				float4x4 rot_matrix = math::float4x4::FromTRS(float3(ai_location[0], ai_location[1], ai_location[2]),
+					Quat(ai_rotation.x, ai_rotation.y, ai_rotation.z, ai_rotation.w),
+					float3(ai_scale[0], ai_scale[1], ai_scale[2]));
+				transform->Init(rot_matrix);
+			}
+		}
 		aiReleaseImport(scene);
 		tmp_material.clear();
 	}
@@ -182,6 +202,7 @@ void ModuleMesh::LoadObjects(aiNode* node, const aiScene* scene, const char*& fi
 						
 		LOG("-----------------------------------------");
 		parent->children.push_back(game_object);
+		App->scene->octree->Insert(game_object);
 	}
 	//------------------------------CHILDRENS---------------------------------------\\
 		

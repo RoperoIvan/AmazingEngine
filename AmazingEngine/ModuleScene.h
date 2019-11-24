@@ -14,7 +14,6 @@ public:
 	~ModuleScene();
 
 	bool Init();
-	void CreateCamera();
 	bool Start();
 	update_status PreUpdate(float dt);
 	update_status GameUpdate(float game_dt);
@@ -24,6 +23,7 @@ public:
 	bool CleanUp();
 	void DeleteTexture(Image* tex);
 	void RemoveSceneContent();
+	GameObject* CreateCamera();
 
 public:
 	Camera* current_camera = nullptr;

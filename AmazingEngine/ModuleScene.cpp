@@ -32,9 +32,7 @@ bool ModuleScene::Init()
 	AABB first;
 	first.SetNegativeInfinity();
 	first.Enclose(&aux[0], 8);
-	octree = new Octree(first, 2, 4, 1);
-
-	CreateCamera();
+	octree = new Octree(first, 4, 4, 1);
 	return true;
 }
 
@@ -245,11 +243,14 @@ void ModuleScene::RemoveSceneContent()
 }
 
 
-void ModuleScene::CreateCamera()
+GameObject* ModuleScene::CreateCamera()
 {
 	GameObject* camera = new GameObject();
 	Geometry* mesh = (Geometry*)camera->CreateComponent(COMPONENT_TYPE(COMPONENT_TYPE::COMPONENT_MESH));
 	(Transform*)camera->CreateComponent(COMPONENT_TYPE::COMPONENT_TRANSFORM);
-	camera->CreateComponent(COMPONENT_TYPE::COMPONENT_CAMERA);
+	Camera* cam = (Camera*)camera->CreateComponent(COMPONENT_TYPE::COMPONENT_CAMERA);
 	game_objects.push_back(camera);
+	if (current_camera == App->camera->my_camera)
+		cam->camera_active = true;
+	return camera;
 }
