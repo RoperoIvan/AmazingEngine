@@ -162,6 +162,7 @@
     <ClInclude Include="MathGeoLib\include\Math\sse_mathfun.h" />
     <ClInclude Include="MathGeoLib\include\Math\TransformOps.h" />
     <ClInclude Include="MathGeoLib\include\Time\Clock.h" />
+    <ClInclude Include="ModuleAudio.h" />
     <ClInclude Include="ModuleCamera3D.h" />
     <ClInclude Include="ModuleMesh.h" />
     <ClInclude Include="ModuleRenderer3D.h" />
@@ -173,6 +174,47 @@
     <ClInclude Include="par_shapes.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkBytesMem.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkCallback.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkCommonDefs.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkDynamicDialogue.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkDynamicSequence.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkFPUtilities.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkMemoryMgr.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkMidiTypes.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkModule.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkQueryParameters.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkSimd.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkSoundEngine.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkSoundEngineExport.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkSpeakerConfig.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkSpeakerVolumes.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkStreamMgrModule.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkTypes.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkVirtualAcoustics.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\IAkMixerPlugin.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\IAkPlugin.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\IAkPluginMemAlloc.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\IAkProcessorFeatures.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\IAkRTPCSubscriber.h" />
+    <ClInclude Include="Wwise\include\AK\SoundEngine\Common\IAkStreamMgr.h" />
+    <ClInclude Include="Wwise\include\AK\Wwise\AudioPlugin.h" />
+    <ClInclude Include="Wwise\include\AK\Wwise\IXmlTextReader.h" />
+    <ClInclude Include="Wwise\include\AK\Wwise\IXmlTextWriter.h" />
+    <ClInclude Include="Wwise\include\AK\Wwise\MotionPlugin.h" />
+    <ClInclude Include="Wwise\include\AK\Wwise\PlatformID.h" />
+    <ClInclude Include="Wwise\include\AK\Wwise\TargetVer.h" />
+    <ClInclude Include="Wwise\include\AK\Wwise\Undo.h" />
+    <ClInclude Include="Wwise\include\AK\Wwise\Utilities.h" />
+    <ClInclude Include="Wwise\include\IO_DefaultInterface\AkDefaultIOHookBlocking.h" />
+    <ClInclude Include="Wwise\include\IO_DefaultInterface\AkDefaultLowLevelIODispatcher.h" />
+    <ClInclude Include="Wwise\include\IO_DefaultInterface\akfilehelpers.h" />
+    <ClInclude Include="Wwise\include\IO_DefaultInterface\AkFileLocationBase.h" />
+    <ClInclude Include="Wwise\include\IO_DefaultInterface\AkFilePackage.h" />
+    <ClInclude Include="Wwise\include\IO_DefaultInterface\AkFilePackageLowLevelIO.h" />
+    <ClInclude Include="Wwise\include\IO_DefaultInterface\AkFilePackageLUT.h" />
+    <ClInclude Include="Wwise\include\IO_DefaultInterface\AkMultipleFileLocation.h" />
+    <ClInclude Include="wwise_libraries.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -227,6 +269,7 @@
     <ClCompile Include="MathGeoLib\include\Math\SSEMath.cpp" />
     <ClCompile Include="MathGeoLib\include\Math\TransformOps.cpp" />
     <ClCompile Include="MathGeoLib\include\Time\Clock.cpp" />
+    <ClCompile Include="ModuleAudio.cpp" />
     <ClCompile Include="ModuleCamera3D.cpp" />
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModuleMesh.cpp" />
@@ -237,6 +280,12 @@
     <ClCompile Include="par_shapes.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Wwise\include\IO_DefaultInterface\AkDefaultIOHookBlocking.cpp" />
+    <ClCompile Include="Wwise\include\IO_DefaultInterface\AkDefaultLowLevelIODispatcher.cpp" />
+    <ClCompile Include="Wwise\include\IO_DefaultInterface\AkFileLocationBase.cpp" />
+    <ClCompile Include="Wwise\include\IO_DefaultInterface\AkFilePackage.cpp" />
+    <ClCompile Include="Wwise\include\IO_DefaultInterface\AkFilePackageLUT.cpp" />
+    <ClCompile Include="Wwise\include\IO_DefaultInterface\stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DLL\config.json" />
@@ -246,6 +295,8 @@
     <None Include="MathGeoLib\include\Geometry\TriangleMesh_IntersectRay_CPP.inl" />
     <None Include="MathGeoLib\include\Geometry\TriangleMesh_IntersectRay_SSE.inl" />
     <None Include="MathGeoLib\include\Math\Matrix.inl" />
+    <None Include="Wwise\include\IO_DefaultInterface\AkFilePackageLowLevelIO.inl" />
+    <None Include="Wwise\include\IO_DefaultInterface\AkMultipleFileLocation.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

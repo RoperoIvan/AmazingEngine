@@ -22486,14 +22486,13 @@ struct less< ::nlohmann::detail::value_t>
 
 @since version 1.0.0
 */
-template<>
-inline void swap<nlohmann::json>(nlohmann::json& j1, nlohmann::json& j2) noexcept(
-    is_nothrow_move_constructible<nlohmann::json>::value and
-    is_nothrow_move_assignable<nlohmann::json>::value
-)
-{
-    j1.swap(j2);
-}
+//template<>
+//inline void swap<nlohmann::json>(nlohmann::json& j1, nlohmann::json& j2) noexcept(
+//    is_nothrow_move_constructible<nlohmann::json>::value and
+//    is_nothrow_move_assignable<nlohmann::json>::value)
+//{
+//    j1.swap(j2);
+//}
 
 } // namespace std
 
@@ -22511,10 +22510,10 @@ if no parse error occurred.
 @since version 1.0.0
 */
 JSON_HEDLEY_NON_NULL(1)
-inline nlohmann::json operator "" _json(const char* s, std::size_t n)
-{
-    return nlohmann::json::parse(s, s + n);
-}
+//inline nlohmann::json operator "" _json(const char* s, std::size_t n)
+//{
+//    return nlohmann::json::parse(s, s + n);
+//}
 
 /*!
 @brief user-defined string literal for JSON pointer

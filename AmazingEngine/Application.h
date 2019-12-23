@@ -12,6 +12,7 @@
 #include "ModuleScene.h"
 #include "FileSystem.h"
 #include "Timer.h"
+#include "ModuleAudio.h"
 #include <list>
 #include <vector>
 
@@ -59,6 +60,7 @@ public:
 	ModuleMesh* mesh;
 	ModuleScene* scene;
 	FileSystem* file_system;
+	ModuleAudio* audio;
 private:
 	Timer	ms_timer;
 	uint last_frame_ms;

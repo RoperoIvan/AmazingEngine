@@ -14,6 +14,7 @@ Application::Application()
 	mesh = new ModuleMesh(this);
 	guiManager = new GuiManager(this);
 	scene = new ModuleScene(this);
+	audio = new ModuleAudio(this);
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
 	// They will CleanUp() in reverse order
@@ -26,6 +27,7 @@ Application::Application()
 	AddModule(mesh);
 	AddModule(scene);
 	AddModule(guiManager);
+	AddModule(audio);
 	// Renderer last!
 	AddModule(renderer3D);
 }
