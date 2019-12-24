@@ -1,14 +1,12 @@
 #include "ModuleAudio.h"
 #include "Application.h"
 #include "wwise_libraries.h"
+#include "Wwise/include/Win32/AkFilePackageLowLevelIOBlocking.h"
 
-#include "Wwise/include/IO_DefaultInterface/AkFilePackageLowLevelIO.h"          // Sample low-level I/O implementation
+CAkFilePackageLowLevelIOBlocking g_lowLevelIO;
 
-//CAkFilePackageLowLevelIOBlocking g_lowLevelIO;
-
-ModuleAudio::ModuleAudio(Application* app, bool start_enabled):Module(app,start_enabled)
+ModuleAudio::ModuleAudio(Application* app, bool start_enabled) :Module(app, start_enabled)
 {
-	
 }
 
 ModuleAudio::~ModuleAudio()
@@ -37,13 +35,13 @@ bool ModuleAudio::InitWwise()
 		assert(!"Could not create the Streaming Manager");
 		return false;
 	}
-	/*AkDeviceSettings deviceSettings;
-	AK::StreamMgr::GetDefaultDeviceSettings(deviceSettings);*/
-	/*if (g_lowLevelIO.Init(deviceSettings) != AK_Success)
+	AkDeviceSettings deviceSettings;
+	AK::StreamMgr::GetDefaultDeviceSettings(deviceSettings);
+	if (g_lowLevelIO.Init(deviceSettings) != AK_Success)
 	{
 		assert(!"Could not create the streaming device and Low-Level I/O system");
 		return false;
-	}*/
+	}
 
 	AkInitSettings initSettings;
 	AkPlatformInitSettings platformInitSettings;
@@ -90,4 +88,27 @@ void ModuleAudio::TermSoundEngine()
 	if (AK::IAkStreamMgr::Get())
 		AK::IAkStreamMgr::Get()->Destroy();
 	AK::MemoryMgr::Term();
+}
+
+bool ModuleAudio::LoadBank(const char* path)
+{
+	unsigned long bank_id;
+	if (AK::SoundEngine::LoadBank(path, AK_DEFAULT_POOL_ID, bank_id))
+		return false;
+
+	banks.push_back(path);
+	return true;
+}
+
+void ModuleAudio::UnLoadBank(const char* path)
+{
+	AK::SoundEngine::UnloadBank(path, NULL);
+	for (uint i = 0; i < banks.size(); ++i)
+	{
+		if (banks[i].compare(path) == 0)
+		{
+			banks.erase(banks.begin() + i);
+			break;
+		}
+	}
 }

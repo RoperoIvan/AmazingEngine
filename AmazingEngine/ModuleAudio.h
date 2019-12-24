@@ -12,6 +12,12 @@ public:
 	bool InitWwise();
 	void ProcessAudio();
 	void TermSoundEngine();
+	//banks
+	bool LoadBank(const char* path);
+	void UnLoadBank(const char* path);
+
+public:
+	std::vector<std::string> banks;
 };
 
 #endif
