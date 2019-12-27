@@ -13,6 +13,12 @@ ModuleAudio::~ModuleAudio()
 {
 }
 
+update_status ModuleAudio::GameUpdate(float game_dt)
+{
+	ProcessAudio();
+	return UPDATE_CONTINUE;
+}
+
 bool ModuleAudio::InitWwise()
 {
 	AkMemSettings memSettings;
@@ -111,4 +117,57 @@ void ModuleAudio::UnLoadBank(const char* path)
 			break;
 		}
 	}
+}
+
+void ModuleAudio::CreateEmmiter(char* name, float3 position)
+{
+	SoundEmmiter* emmiter = new SoundEmmiter(new_id, name);
+	++new_id;
+	emmiter->SetPosition(position, float3(position.x + 1, position.y, position.z), float3(position.x, position.y + 1, position.z));
+	emmiters.push_back(emmiter);
+}
+
+void ModuleAudio::DeleteEmmiter(unsigned int id)
+{
+	for (uint i = 0; i < emmiters.size(); ++i)
+	{
+		SoundEmmiter* emmiter = nullptr;
+		if (emmiters[i]->GetID() == id)
+		{
+			emmiter = emmiters[i];
+			emmiters.erase(emmiters.begin() + i);
+			delete emmiter;
+			emmiter = nullptr;
+			break;
+		}
+	}
+}
+void ModuleAudio::DeleteEmmiter(SoundEmmiter* emm)
+{
+	for (uint i = 0; i < emmiters.size(); ++i)
+	{
+		SoundEmmiter* emmiter = nullptr;
+		if (emmiters[i] == emm)
+		{
+			emmiter = emmiters[i];
+			emmiters.erase(emmiters.begin() + i);
+			delete emmiter;
+			emmiter = nullptr;
+			break;
+		}
+	}
+}
+
+void ModuleAudio::StopSounds() const
+{
+	AK::SoundEngine::StopAll();
+}
+void ModuleAudio::PauseSounds() const
+{
+	AK::SoundEngine::PostEvent("Pause_All", AK_INVALID_GAME_OBJECT);
+}
+
+void ModuleAudio::ResumeSounds() const
+{
+	AK::SoundEngine::PostEvent("Resume_All", AK_INVALID_GAME_OBJECT);
 }
