@@ -2,7 +2,7 @@
 #define _MODULEAUDIO_H_
 
 #include "Module.h"
-
+#include "SoundEmmiter.h"
 class ModuleAudio : public Module
 {
 public:
@@ -18,6 +18,7 @@ public:
 
 public:
 	std::vector<std::string> banks;
+	std::vector<SoundEmmiter> emmiters;
 };
 
 #endif
