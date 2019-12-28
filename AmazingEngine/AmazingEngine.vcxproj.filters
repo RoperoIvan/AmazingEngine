@@ -206,10 +206,6 @@
     <ClCompile Include="Wwise\include\IO_DefaultInterface\stdafx.cpp">
       <Filter>Wwise</Filter>
     </ClCompile>
-    <ClCompile Include="SoundEmmiter.cpp" />
-    <ClCompile Include="Audio.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GuiManager.h">
@@ -634,10 +630,6 @@
     </ClInclude>
     <ClInclude Include="Wwise\include\IO_DefaultInterface\AkMultipleFileLocation.h">
       <Filter>Wwise</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundEmmiter.h" />
-    <ClInclude Include="Audio.h">
-      <Filter>GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
