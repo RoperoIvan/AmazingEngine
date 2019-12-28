@@ -172,7 +172,6 @@
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="par_shapes.h" />
-    <ClInclude Include="SoundEmmiter.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Wwise\include\AK\SoundEngine\Common\AkBytesMem.h" />
@@ -279,7 +278,6 @@
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="par_shapes.cpp" />
-    <ClCompile Include="SoundEmmiter.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Wwise\include\IO_DefaultInterface\AkDefaultIOHookBlocking.cpp" />
